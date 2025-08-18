@@ -1,4 +1,4 @@
-# **Automotive Container Monitor
+# Automotive Container Monitor
 
 ## **Project Overview**
 
