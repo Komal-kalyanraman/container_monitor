@@ -1,5 +1,6 @@
 #include "config_parser.hpp"
 #include "common.hpp"
+#include "logger.hpp"
 #include <fstream>
 #include <sstream>
 
@@ -45,7 +46,8 @@ MonitorConfig ConfigParser::toMonitorConfig() const {
     cfg.runtime                 = get(KEY_RUNTIME, DEFAULT_RUNTIME);
     cfg.cgroup                  = get(KEY_CGROUP, DEFAULT_CGROUP);
     cfg.database                = get(KEY_DATABASE, DEFAULT_DATABASE);
-    cfg.sampling_interval_ms    = getInt(KEY_SAMPLING_INTERVAL_MS, DEFAULT_SAMPLING_INTERVAL_MS);
+    cfg.resource_sampling_interval_ms = getInt(KEY_RESOURCE_SAMPLING_INTERVAL_MS, DEFAULT_RESOURCE_SAMPLING_INTERVAL_MS);
+    cfg.container_event_refresh_interval_ms = getInt(KEY_CONTAINER_EVENT_REFRESH_INTERVAL_MS, DEFAULT_CONTAINER_EVENT_REFRESH_INTERVAL_MS);
     cfg.db_path                 = get(KEY_DB_PATH, DEFAULT_DB_PATH);
     cfg.ui_enabled              = getBool(KEY_UI_ENABLED, DEFAULT_UI_ENABLED);
     cfg.batch_size              = getInt(KEY_BATCH_SIZE, DEFAULT_BATCH_SIZE);
@@ -53,4 +55,17 @@ MonitorConfig ConfigParser::toMonitorConfig() const {
     cfg.alert_critical          = getDouble(KEY_ALERT_CRITICAL, DEFAULT_ALERT_CRITICAL);
     cfg.alert_violation         = getDouble(KEY_ALERT_VIOLATION, DEFAULT_ALERT_VIOLATION);
     return cfg;
+}
+
+void ConfigParser::printConfig(const MonitorConfig& cfg) const {
+    CM_LOG_INFO << "Container Monitor started.\n";
+    CM_LOG_INFO << "Runtime: " << cfg.runtime << "\n";
+    CM_LOG_INFO << "Resource sampling interval: " << cfg.resource_sampling_interval_ms << " ms\n";
+    CM_LOG_INFO << "Container event refresh interval: " << cfg.container_event_refresh_interval_ms << " ms\n";
+    CM_LOG_INFO << "DB Path: " << cfg.db_path << "\n";
+    CM_LOG_INFO << "UI Enabled: " << (cfg.ui_enabled ? "true" : "false") << "\n";
+    CM_LOG_INFO << "Batch Size: " << cfg.batch_size << "\n";
+    CM_LOG_INFO << "Alert thresholds: warning=" << cfg.alert_warning
+                << ", critical=" << cfg.alert_critical
+                << ", violation=" << cfg.alert_violation << "\n";
 }

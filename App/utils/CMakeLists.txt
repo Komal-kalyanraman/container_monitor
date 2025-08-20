@@ -1,7 +1,6 @@
 set(APP_NAME utils)
 
 add_library(${APP_NAME} STATIC
-    src/logger.cpp
     src/config_parser.cpp
     src/time_utils.cpp
 )

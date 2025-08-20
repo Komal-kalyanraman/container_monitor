@@ -1,24 +1,50 @@
 #include <iostream>
+#include <memory>
+#include <thread>
+#include <vector>
+#include <atomic>
+#include <csignal>
 #include "logger.hpp"
 #include "common.hpp"
 #include "config_parser.hpp"
+#include "runtime_event_listener.hpp"
+
+std::atomic<bool> shutdown_requested{false};
+
+void SignalHandler(int signum) {
+    shutdown_requested = true;
+    std::cout << "Shutdown signal received. Stopping all services..." << std::endl;
+}
 
 int main() {
+    std::signal(SIGINT, SignalHandler);
+    std::signal(SIGTERM, SignalHandler);
+
     ConfigParser parser;
     if (!parser.load(CONFIG_FILE_PATH)) {
-        CM_LOG_ERROR << "Failed to load configuration file.\n";
+        CM_LOG_ERROR << "Failed to load configuration file. Exiting application\n";
         return 1;
     }
     MonitorConfig cfg = parser.toMonitorConfig();
-    CM_LOG_INFO << "Container Monitor started.\n";
-    CM_LOG_INFO << "Runtime: " << cfg.runtime << "\n";
-    CM_LOG_INFO << "Sampling interval: " << cfg.sampling_interval_ms << " ms\n";
-    CM_LOG_INFO << "DB Path: " << cfg.db_path << "\n";
-    CM_LOG_INFO << "UI Enabled: " << (cfg.ui_enabled ? "true" : "false") << "\n";
-    CM_LOG_INFO << "Batch Size: " << cfg.batch_size << "\n";
-    CM_LOG_INFO << "Alert thresholds: warning=" << cfg.alert_warning
-                << ", critical=" << cfg.alert_critical
-                << ", violation=" << cfg.alert_violation << "\n";
-    // TODO: Pass cfg to modules and start monitoring loop
+    parser.printConfig(cfg);
+
+    // Event callback: replace with real business logic
+    auto event_callback = [](const std::string& event_json) {
+        CM_LOG_INFO << "Container event: " << event_json << "\n";
+        // TODO: Parse event, trigger resource polling, etc.
+    };
+
+    // Start event listener
+    RuntimeEventListener event_listener(cfg, event_callback, shutdown_requested);
+    event_listener.start();
+
+    // Main loop: wait for shutdown signal
+    while (!shutdown_requested) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    event_listener.stop();
+
+    CM_LOG_INFO << "Application shutdown complete.\n";
     return 0;
 }

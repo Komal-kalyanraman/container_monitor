@@ -12,6 +12,7 @@ public:
     double getDouble(std::string_view key, double default_val = 0.0) const;
     bool getBool(std::string_view key, bool default_val = false) const;
     MonitorConfig toMonitorConfig() const;
+    void printConfig(const MonitorConfig& cfg) const;
 private:
     std::unordered_map<std::string, std::string> params_;
 };
