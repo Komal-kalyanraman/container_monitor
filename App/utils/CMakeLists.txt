@@ -1,8 +1,9 @@
 set(APP_NAME utils)
 
 add_library(${APP_NAME} STATIC
-    src/config_parser.cpp
     src/time_utils.cpp
+    src/config_parser.cpp
+    src/json_processing.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC
