@@ -7,7 +7,9 @@
 #include "logger.hpp"
 #include "common.hpp"
 #include "config_parser.hpp"
-#include "runtime_event_listener.hpp"
+#include "event_queue.hpp"
+#include "event_listener.hpp"
+#include "event_processor.hpp"
 
 std::atomic<bool> shutdown_requested{false};
 
@@ -28,6 +30,8 @@ int main() {
     MonitorConfig cfg = parser.toMonitorConfig();
     parser.printConfig(cfg);
 
+    EventQueue event_queue; // Event queue for processing container events
+
     // Event callback: replace with real business logic
     auto event_callback = [](const std::string& event_json) {
         CM_LOG_INFO << "Container event: " << event_json << "\n";
@@ -35,8 +39,10 @@ int main() {
     };
 
     // Start event listener
-    RuntimeEventListener event_listener(cfg, event_callback, shutdown_requested);
+    RuntimeEventListener event_listener(cfg, event_queue, shutdown_requested);
+    EventProcessor event_processor(event_queue, shutdown_requested);
     event_listener.start();
+    event_processor.start();
 
     // Main loop: wait for shutdown signal
     while (!shutdown_requested) {
@@ -44,6 +50,7 @@ int main() {
     }
 
     event_listener.stop();
+    event_processor.stop();
 
     CM_LOG_INFO << "Application shutdown complete.\n";
     return 0;

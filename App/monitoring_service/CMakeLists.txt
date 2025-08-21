@@ -1,7 +1,9 @@
 set(APP_NAME monitoring_service)
 
 add_library(${APP_NAME} STATIC
-    src/runtime_event_listener.cpp
+    src/event_queue.cpp
+    src/event_processor.cpp
+    src/event_listener.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC

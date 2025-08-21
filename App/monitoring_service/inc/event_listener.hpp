@@ -2,16 +2,13 @@
 
 #include <thread>
 #include <atomic>
-#include <functional>
 #include <string>
 #include "common.hpp"
-
-// Callback type for event notifications
-using ContainerEventCallback = std::function<void(const std::string& event_json)>;
+#include "event_queue.hpp"
 
 class RuntimeEventListener {
 public:
-    RuntimeEventListener(const MonitorConfig& config, ContainerEventCallback callback, std::atomic<bool>& shutdown_flag);
+    RuntimeEventListener(const MonitorConfig& config, EventQueue& queue, std::atomic<bool>& shutdown_flag);
     ~RuntimeEventListener();
 
     void start();
@@ -21,7 +18,7 @@ private:
     void eventThreadFunc();
 
     MonitorConfig config_;
-    ContainerEventCallback callback_;
+    EventQueue& event_queue_;
     std::atomic<bool>& shutdown_flag_;
     std::thread event_thread_;
     std::atomic<bool> running_;
