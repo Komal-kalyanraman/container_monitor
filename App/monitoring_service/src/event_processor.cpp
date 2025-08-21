@@ -26,11 +26,16 @@ void EventProcessor::processLoop() {
                 ContainerEventInfo info;
                 if (parseContainerEvent(event, info)) {
                     std::cout << "[Container Event] "
-                              << "Name: " << info.name
-                              << ", ID: " << info.id
-                              << ", Status: " << info.status
-                              << ", Time (ns): " << info.timeNano
-                              << std::endl;
+                            << "Name: " << info.name
+                            << ", ID: " << info.id
+                            << ", Status: " << info.status
+                            << ", Time (ns): " << info.timeNano;
+                    if (info.status == "create") {
+                        std::cout << ", CPUs: " << info.cpus
+                                << ", Memory: " << info.memory
+                                << ", PIDs limit: " << info.pids_limit;
+                    }
+                    std::cout << std::endl;
                 }
             } catch (const std::exception& e) {
                 std::cerr << "Event processing error: " << e.what() << std::endl;
