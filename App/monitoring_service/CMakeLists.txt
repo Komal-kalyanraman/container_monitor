@@ -5,6 +5,7 @@ add_library(${APP_NAME} STATIC
     src/event_processor.cpp
     src/event_listener.cpp
     src/resource_monitor.cpp
+    src/resource_thread_pool.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC

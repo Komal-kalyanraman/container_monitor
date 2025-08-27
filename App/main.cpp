@@ -12,6 +12,7 @@
 #include "event_processor.hpp"
 #include "resource_monitor.hpp"
 #include "sqlite_database.hpp"
+#include "resource_thread_pool.hpp"
 
 std::atomic<bool> shutdown_requested{false};
 
@@ -42,7 +43,10 @@ int main() {
     RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);
     EventProcessor event_processor(*event_queue, shutdown_requested, db);
     
-    ResourceMonitor resource_monitor(db, shutdown_requested);
+    ResourceThreadPool thread_pool(cfg.thread_count, cfg.thread_capacity, shutdown_requested);
+    thread_pool.start();
+
+    ResourceMonitor resource_monitor(db, shutdown_requested, thread_pool);
 
     // Start event listener
     worker_threads.emplace_back([&](){ event_listener.start(); });
@@ -61,6 +65,7 @@ int main() {
     event_listener.stop();
     event_processor.stop();
     resource_monitor.stop();
+    thread_pool.stop();
 
     // Join all threads
     for (auto& thread : worker_threads) {

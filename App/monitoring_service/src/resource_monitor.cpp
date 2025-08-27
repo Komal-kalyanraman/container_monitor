@@ -1,11 +1,12 @@
 #include "resource_monitor.hpp"
-#include "logger.hpp" 
-#include <iostream>
+#include "resource_thread_pool.hpp"
+#include "logger.hpp"
 #include <thread>
 #include <chrono>
+#include <set>
 
-ResourceMonitor::ResourceMonitor(IDatabaseInterface& db, std::atomic<bool>& shutdown_flag)
-    : db_(db), shutdown_flag_(shutdown_flag) {}
+ResourceMonitor::ResourceMonitor(IDatabaseInterface& db, std::atomic<bool>& shutdown_flag, ResourceThreadPool& thread_pool)
+    : db_(db), shutdown_flag_(shutdown_flag), thread_pool_(thread_pool) {}
 
 void ResourceMonitor::start() {
     running_ = true;
@@ -18,20 +19,31 @@ void ResourceMonitor::stop() {
 }
 
 void ResourceMonitor::monitorLoop() {
+    std::set<std::string> previous_containers;
     while (running_ && !shutdown_flag_) {
-        if (db_.size() > 0) {
-            CM_LOG_INFO << "[ResourceMonitor] Current database entries:\n";
-            for (const auto& entry : db_.getAll()) {
-                const auto& name = entry.first;
-                const auto& tup = entry.second;
-                CM_LOG_INFO << "Name: " << name
-                            << ", ID: " << std::get<0>(tup)
-                            << ", CPUs: " << std::get<1>(tup)
-                            << ", Memory: " << std::get<2>(tup)
-                            << ", PIDs limit: " << std::get<3>(tup)
-                            << "\n";
+        std::set<std::string> current_containers;
+        for (const auto& entry : db_.getAll()) {
+            current_containers.insert(entry.first);
+        }
+
+        // Detect new containers (create event)
+        for (const auto& name : current_containers) {
+            if (previous_containers.find(name) == previous_containers.end()) {
+                thread_pool_.addContainer(name);
+                CM_LOG_INFO << "[ResourceMonitor] Detected new container: " << name << "\n";
             }
         }
+
+        // Detect removed containers (destroy event)
+        for (const auto& name : previous_containers) {
+            if (current_containers.find(name) == current_containers.end()) {
+                thread_pool_.removeContainer(name);
+                CM_LOG_INFO << "[ResourceMonitor] Detected removed container: " << name << "\n";
+            }
+        }
+
+        previous_containers = std::move(current_containers);
+
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 }

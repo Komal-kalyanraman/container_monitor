@@ -54,6 +54,8 @@ MonitorConfig ConfigParser::toMonitorConfig() const {
     cfg.alert_warning           = getDouble(KEY_ALERT_WARNING, DEFAULT_ALERT_WARNING);
     cfg.alert_critical          = getDouble(KEY_ALERT_CRITICAL, DEFAULT_ALERT_CRITICAL);
     cfg.alert_violation         = getDouble(KEY_ALERT_VIOLATION, DEFAULT_ALERT_VIOLATION);
+    cfg.thread_count            = getInt(KEY_THREAD_COUNT, DEFAULT_THREAD_COUNT);
+    cfg.thread_capacity         = getInt(KEY_THREAD_CAPACITY, DEFAULT_THREAD_CAPACITY);
     return cfg;
 }
 
@@ -68,4 +70,6 @@ void ConfigParser::printConfig(const MonitorConfig& cfg) const {
     CM_LOG_INFO << "Alert thresholds: warning=" << cfg.alert_warning
                 << ", critical=" << cfg.alert_critical
                 << ", violation=" << cfg.alert_violation << "\n";
+    CM_LOG_INFO << "Thread count: " << cfg.thread_count << "\n";
+    CM_LOG_INFO << "Thread capacity: " << cfg.thread_capacity << "\n";
 }

@@ -14,6 +14,8 @@ struct MonitorConfig {
     double alert_warning;
     double alert_critical;
     double alert_violation;
+    int thread_count;
+    int thread_capacity;
 };
 
 // Configuration file path
@@ -31,6 +33,8 @@ inline constexpr std::string_view KEY_BATCH_SIZE = "batch_size";
 inline constexpr std::string_view KEY_ALERT_WARNING = "alert_warning";
 inline constexpr std::string_view KEY_ALERT_CRITICAL = "alert_critical";
 inline constexpr std::string_view KEY_ALERT_VIOLATION = "alert_violation";
+inline constexpr std::string_view KEY_THREAD_COUNT = "thread_count";
+inline constexpr std::string_view KEY_THREAD_CAPACITY = "thread_capacity";
 
 // Default values as string_view
 inline constexpr std::string_view DEFAULT_RUNTIME = "docker";
@@ -44,3 +48,5 @@ inline constexpr int DEFAULT_BATCH_SIZE = 50;
 inline constexpr double DEFAULT_ALERT_WARNING = 80.0;
 inline constexpr double DEFAULT_ALERT_CRITICAL = 95.0;
 inline constexpr double DEFAULT_ALERT_VIOLATION = 100.0;
+inline constexpr int DEFAULT_THREAD_COUNT = 5;
+inline constexpr int DEFAULT_THREAD_CAPACITY = 10;
