@@ -2,8 +2,8 @@
 #include <iostream>
 #include "json_processing.hpp"
 
-EventProcessor::EventProcessor(EventQueue& queue, std::atomic<bool>& shutdown_flag)
-    : queue_(queue), shutdown_flag_(shutdown_flag) {}
+EventProcessor::EventProcessor(EventQueue& queue, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db)
+    : queue_(queue), shutdown_flag_(shutdown_flag), db_(db) {}
 
 EventProcessor::~EventProcessor() { stop(); }
 
@@ -34,6 +34,11 @@ void EventProcessor::processLoop() {
                         std::cout << ", CPUs: " << info.cpus
                                 << ", Memory: " << info.memory
                                 << ", PIDs limit: " << info.pids_limit;
+                        // Convert if needed
+                        double cpus = std::stod(info.cpus);      // if info.cpus is string
+                        int memory = std::stoi(info.memory);     // if info.memory is string
+                        int pids_limit = std::stoi(info.pids_limit); // if info.pids_limit is string
+                        db_.saveContainer(info.name, std::make_tuple(info.id, cpus, memory, pids_limit));
                     }
                     std::cout << std::endl;
                 }

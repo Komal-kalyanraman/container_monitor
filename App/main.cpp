@@ -10,6 +10,8 @@
 #include "event_queue.hpp"
 #include "event_listener.hpp"
 #include "event_processor.hpp"
+#include "resource_monitor.hpp"
+#include "embedded_database.hpp"
 
 std::atomic<bool> shutdown_requested{false};
 
@@ -32,16 +34,22 @@ int main() {
 
     auto event_queue = std::make_shared<EventQueue>(); // Event queue for processing container events
     std::vector<std::thread> worker_threads;    // Worker threads for event processing
+    EmbeddedDatabase db;
 
     // Start event listener
     RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);
-    EventProcessor event_processor(*event_queue, shutdown_requested);
+    EventProcessor event_processor(*event_queue, shutdown_requested, db);
     
+    ResourceMonitor resource_monitor(db, shutdown_requested);
+
     // Start event listener
     worker_threads.emplace_back([&](){ event_listener.start(); });
     
     // Start event processor
     worker_threads.emplace_back([&](){ event_processor.start(); });
+
+    // Start resource monitor thread
+    worker_threads.emplace_back([&](){ resource_monitor.start(); });
 
     // Main loop: wait for shutdown signal
     while (!shutdown_requested) {
@@ -50,6 +58,7 @@ int main() {
 
     event_listener.stop();
     event_processor.stop();
+    resource_monitor.stop();
 
     // Join all threads
     for (auto& thread : worker_threads) {
