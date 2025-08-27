@@ -17,3 +17,7 @@ size_t EmbeddedDatabase::size() const {
 const std::map<std::string, std::tuple<std::string, double, int, int>>& EmbeddedDatabase::getAll() const {
     return db_;
 }
+
+void EmbeddedDatabase::removeContainer(const std::string& name) {
+    db_.erase(name);
+}

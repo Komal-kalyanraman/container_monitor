@@ -37,6 +37,7 @@ int main() {
     std::vector<std::thread> worker_threads;    // Worker threads for event processing
     // EmbeddedDatabase db;
     SQLiteDatabase db("container_resources.db");
+    db.clearAll(); // Clear all entries at startup
 
     // Start event listener
     RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);

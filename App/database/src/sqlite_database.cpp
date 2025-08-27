@@ -77,3 +77,26 @@ void SQLiteDatabase::loadCache() const {
         sqlite3_finalize(stmt);
     }
 }
+
+void SQLiteDatabase::removeContainer(const std::string& name) {
+    if (!db_) return;
+    const char* sql = "DELETE FROM containers WHERE name = ?;";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    }
+    cache_.erase(name);
+}
+
+void SQLiteDatabase::clearAll() {
+    if (!db_) return;
+    const char* sql = "DELETE FROM containers;";
+    char* err_msg = nullptr;
+    if (sqlite3_exec(db_, sql, nullptr, nullptr, &err_msg) != SQLITE_OK) {
+        std::cerr << "Failed to clear containers table: " << err_msg << std::endl;
+        sqlite3_free(err_msg);
+    }
+    cache_.clear();
+}

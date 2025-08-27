@@ -34,11 +34,13 @@ void EventProcessor::processLoop() {
                         std::cout << ", CPUs: " << info.cpus
                                 << ", Memory: " << info.memory
                                 << ", PIDs limit: " << info.pids_limit;
-                        // Convert if needed
-                        double cpus = std::stod(info.cpus);      // if info.cpus is string
-                        int memory = std::stoi(info.memory);     // if info.memory is string
-                        int pids_limit = std::stoi(info.pids_limit); // if info.pids_limit is string
+                        double cpus = std::stod(info.cpus);
+                        int memory = std::stoi(info.memory);
+                        int pids_limit = std::stoi(info.pids_limit);
                         db_.saveContainer(info.name, std::make_tuple(info.id, cpus, memory, pids_limit));
+                    } else if (info.status == "destroy") {
+                        db_.removeContainer(info.name);
+                        std::cout << " [Container Removed]";
                     }
                     std::cout << std::endl;
                 }
