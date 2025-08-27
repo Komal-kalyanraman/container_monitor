@@ -3,7 +3,7 @@
 
 SQLiteDatabase::SQLiteDatabase(const std::string& db_path) : db_(nullptr) {
     if (sqlite3_open(db_path.c_str(), &db_) != SQLITE_OK) {
-        std::cerr << "Failed to open SQLite database: " << db_path << std::endl;
+        std::cerr << "Failed to open SQLite database: " << db_path << "\n";
         db_ = nullptr;
     } else {
         const char* create_table_sql =
@@ -16,7 +16,7 @@ SQLiteDatabase::SQLiteDatabase(const std::string& db_path) : db_(nullptr) {
             ");";
         char* err_msg = nullptr;
         if (sqlite3_exec(db_, create_table_sql, nullptr, nullptr, &err_msg) != SQLITE_OK) {
-            std::cerr << "Failed to create table: " << err_msg << std::endl;
+            std::cerr << "Failed to create table: " << err_msg << "\n";
             sqlite3_free(err_msg);
         }
     }
@@ -95,7 +95,7 @@ void SQLiteDatabase::clearAll() {
     const char* sql = "DELETE FROM containers;";
     char* err_msg = nullptr;
     if (sqlite3_exec(db_, sql, nullptr, nullptr, &err_msg) != SQLITE_OK) {
-        std::cerr << "Failed to clear containers table: " << err_msg << std::endl;
+        std::cerr << "Failed to clear containers table: " << err_msg << "\n";
         sqlite3_free(err_msg);
     }
     cache_.clear();

@@ -1,4 +1,5 @@
 #include "resource_monitor.hpp"
+#include "logger.hpp" 
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -19,16 +20,16 @@ void ResourceMonitor::stop() {
 void ResourceMonitor::monitorLoop() {
     while (running_ && !shutdown_flag_) {
         if (db_.size() > 0) {
-            std::cout << "[ResourceMonitor] Current database entries:\n";
+            CM_LOG_INFO << "[ResourceMonitor] Current database entries:\n";
             for (const auto& entry : db_.getAll()) {
                 const auto& name = entry.first;
                 const auto& tup = entry.second;
-                std::cout << "Name: " << name
-                          << ", ID: " << std::get<0>(tup)
-                          << ", CPUs: " << std::get<1>(tup)
-                          << ", Memory: " << std::get<2>(tup)
-                          << ", PIDs limit: " << std::get<3>(tup)
-                          << std::endl;
+                CM_LOG_INFO << "Name: " << name
+                            << ", ID: " << std::get<0>(tup)
+                            << ", CPUs: " << std::get<1>(tup)
+                            << ", Memory: " << std::get<2>(tup)
+                            << ", PIDs limit: " << std::get<3>(tup)
+                            << "\n";
             }
         }
         std::this_thread::sleep_for(std::chrono::seconds(2));

@@ -17,7 +17,7 @@ std::atomic<bool> shutdown_requested{false};
 
 void SignalHandler(int signum) {
     shutdown_requested = true;
-    std::cout << "Shutdown signal received. Stopping all services..." << std::endl;
+    CM_LOG_INFO << "Shutdown signal received. Stopping all services... \n";
 }
 
 int main() {
