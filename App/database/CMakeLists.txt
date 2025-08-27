@@ -2,7 +2,6 @@ set(APP_NAME database)
 
 add_library(${APP_NAME} STATIC
     src/sqlite_database.cpp
-    src/embedded_database.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC

@@ -12,7 +12,6 @@
 #include "event_processor.hpp"
 #include "resource_monitor.hpp"
 #include "sqlite_database.hpp"
-#include "embedded_database.hpp"
 
 std::atomic<bool> shutdown_requested{false};
 
@@ -35,8 +34,8 @@ int main() {
 
     auto event_queue = std::make_shared<EventQueue>(); // Event queue for processing container events
     std::vector<std::thread> worker_threads;    // Worker threads for event processing
-    // EmbeddedDatabase db;
-    SQLiteDatabase db("container_resources.db");
+    
+    SQLiteDatabase db(cfg.db_path); // Use path from config
     db.clearAll(); // Clear all entries at startup
 
     // Start event listener
