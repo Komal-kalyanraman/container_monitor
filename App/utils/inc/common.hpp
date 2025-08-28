@@ -18,6 +18,13 @@ struct MonitorConfig {
     int thread_capacity;
 };
 
+struct ResourceSample {
+    int64_t timestamp;
+    double cpu_usage;
+    int memory_usage;
+    int pids;
+};
+
 // Configuration file path
 inline constexpr std::string_view CONFIG_FILE_PATH = "../../config/parameter.conf";
 

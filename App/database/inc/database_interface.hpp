@@ -1,11 +1,14 @@
 #pragma once
 #include <tuple>
+#include <vector>
 #include <map>
+#include "common.hpp"
 
 class IDatabaseInterface {
 public:
     virtual ~IDatabaseInterface() = default;
     virtual void saveContainer(const std::string& name, const std::tuple<std::string, double, int, int>& data) = 0;
+    virtual void insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples) = 0;
     virtual void removeContainer(const std::string& name) = 0;
     virtual void clearAll() = 0;
     virtual std::tuple<std::string, double, int, int> getContainer(const std::string& name) const = 0;

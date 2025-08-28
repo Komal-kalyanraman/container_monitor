@@ -92,11 +92,52 @@ void SQLiteDatabase::removeContainer(const std::string& name) {
 
 void SQLiteDatabase::clearAll() {
     if (!db_) return;
-    const char* sql = "DELETE FROM containers;";
+    const char* sql1 = "DELETE FROM containers;";
+    const char* sql2 = "DELETE FROM resource_samples;";
     char* err_msg = nullptr;
-    if (sqlite3_exec(db_, sql, nullptr, nullptr, &err_msg) != SQLITE_OK) {
+    if (sqlite3_exec(db_, sql1, nullptr, nullptr, &err_msg) != SQLITE_OK) {
         std::cerr << "Failed to clear containers table: " << err_msg << "\n";
         sqlite3_free(err_msg);
     }
+    if (sqlite3_exec(db_, sql2, nullptr, nullptr, &err_msg) != SQLITE_OK) {
+        std::cerr << "Failed to clear resource_samples table: " << err_msg << "\n";
+        sqlite3_free(err_msg);
+    }
     cache_.clear();
+}
+
+void SQLiteDatabase::initialize() {
+    const char* create_table_sql =
+        "CREATE TABLE IF NOT EXISTS resource_samples ("
+        "container_name TEXT,"
+        "timestamp INTEGER,"
+        "cpu_usage REAL,"
+        "memory_usage REAL,"
+        "pids INTEGER"
+        ");";
+    char* errMsg = nullptr;
+    int rc = sqlite3_exec(db_, create_table_sql, nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK) {
+        // Handle error, log errMsg
+        std::cerr << "Failed to create resource_samples table: " << errMsg << "\n";
+        sqlite3_free(errMsg);
+    }
+}
+
+void SQLiteDatabase::insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples) {
+    if (!db_ || samples.empty()) return;
+    const char* sql = "INSERT INTO resource_samples (container_name, timestamp, cpu_usage, memory_usage, pids) VALUES (?, ?, ?, ?, ?);";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        for (const auto& sample : samples) {
+            sqlite3_bind_text(stmt, 1, container_name.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int64(stmt, 2, sample.timestamp);
+            sqlite3_bind_double(stmt, 3, sample.cpu_usage);
+            sqlite3_bind_int(stmt, 4, sample.memory_usage);
+            sqlite3_bind_int(stmt, 5, sample.pids);
+            sqlite3_step(stmt);
+            sqlite3_reset(stmt);
+        }
+        sqlite3_finalize(stmt);
+    }
 }

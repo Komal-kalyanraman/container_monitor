@@ -4,6 +4,8 @@
 #include <string>
 #include <tuple>
 #include <map>
+#include <vector>
+#include "common.hpp"
 
 class SQLiteDatabase : public IDatabaseInterface {
 public:
@@ -16,6 +18,8 @@ public:
     std::tuple<std::string, double, int, int> getContainer(const std::string& name) const override;
     size_t size() const override;
     const std::map<std::string, std::tuple<std::string, double, int, int>>& getAll() const override;
+    void initialize();
+    void insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples);
 
 private:
     sqlite3* db_;

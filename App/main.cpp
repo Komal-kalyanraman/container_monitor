@@ -38,12 +38,13 @@ int main() {
     
     SQLiteDatabase db(cfg.db_path); // Use path from config
     db.clearAll(); // Clear all entries at startup
+    db.initialize(); // Initialize the resource_samples table
 
     // Start event listener
     RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);
     EventProcessor event_processor(*event_queue, shutdown_requested, db);
     
-    ResourceThreadPool thread_pool(cfg.thread_count, cfg.thread_capacity, shutdown_requested);
+    ResourceThreadPool thread_pool(cfg, shutdown_requested, db);
     thread_pool.start();
 
     ResourceMonitor resource_monitor(db, shutdown_requested, thread_pool);
