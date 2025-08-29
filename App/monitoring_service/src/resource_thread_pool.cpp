@@ -5,22 +5,44 @@
 #include <chrono>
 #include "common.hpp"
 #include "logger.hpp"
+#include "docker_cgroup_v1_path.hpp"
 
 ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db)
     : cfg_(cfg), thread_count_(cfg.thread_count), thread_capacity_(cfg.thread_capacity),
       shutdown_flag_(shutdown_flag), db_(db),
       batch_size_(cfg.batch_size), resource_sampling_interval_ms_(cfg.resource_sampling_interval_ms),
       thread_containers_(cfg.thread_count), thread_buffers_(cfg.thread_count)
-{}
+{
+    // Initialize the factory once
+    if (cfg_.runtime == "docker" && cfg_.cgroup == "v1") {
+        pathFactory_ = std::make_unique<DockerCgroupV1PathFactory>();
+    }
+}
 
 ResourceThreadPool::~ResourceThreadPool() {
     stop();
 }
 
-// Add these at the top of resource_thread_pool.cpp for now
-double getCpuUsage(const std::string& name) { return 0.0; }
-int getMemoryUsage(const std::string& name) { return 0; }
-int getPids(const std::string& name) { return 0; }
+double ResourceThreadPool::getCpuUsage(const std::string& name) {
+    std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
+    auto it = container_paths_.find(name);
+    if (it == container_paths_.end()) return 0.0;
+    return 0.0;
+}
+
+int ResourceThreadPool::getMemoryUsage(const std::string& name) {
+    std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
+    auto it = container_paths_.find(name);
+    if (it == container_paths_.end()) return 0;
+    return 0;
+}
+
+int ResourceThreadPool::getPids(const std::string& name) {
+    std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
+    auto it = container_paths_.find(name);
+    if (it == container_paths_.end()) return 0;
+    return 0;
+}
 
 void ResourceThreadPool::start() {
     running_ = true;
@@ -54,6 +76,15 @@ void ResourceThreadPool::addContainer(const std::string& name) {
     }
     thread_containers_[min_thread].push_back(name);
     container_to_thread_[name] = min_thread;
+    std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
+    container_paths_[name] = pathFactory_->getPaths(name);
+
+    const auto& paths = container_paths_[name];
+    CM_LOG_INFO << "[ThreadPool] Paths for container " << name << ":\n"
+                << "  CPU: " << paths.cpu_path << "\n"
+                << "  Memory: " << paths.memory_path << "\n"
+                << "  PIDs: " << paths.pids_path << "\n";
+    
     CM_LOG_INFO << "[ThreadPool] Assigned container " << name << " to thread " << min_thread << "\n";
     cv_.notify_all();
 }
@@ -67,6 +98,8 @@ void ResourceThreadPool::removeContainer(const std::string& name) {
         auto& vec = thread_containers_[thread_idx];
         vec.erase(std::remove(vec.begin(), vec.end(), name), vec.end());
         container_to_thread_.erase(it);
+        std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
+        container_paths_.erase(name);
         CM_LOG_INFO << "[ThreadPool] Removed container " << name << " from thread " << thread_idx << "\n";
         cv_.notify_all();
     }

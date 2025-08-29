@@ -26,6 +26,20 @@ struct ResourceSample {
     int pids;
 };
 
+struct ContainerResourcePaths {
+    std::string cpu_path;
+    std::string memory_path;
+    std::string pids_path;
+};
+
+struct ContainerInfo {
+    std::string id;
+    double cpus;
+    int memory;
+    int pids_limit;
+    // Add more fields as needed
+};
+
 // Configuration file path
 inline constexpr std::string_view CONFIG_FILE_PATH = "../../config/parameter.conf";
 

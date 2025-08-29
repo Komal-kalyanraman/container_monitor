@@ -8,7 +8,8 @@
 #include <unordered_map>
 #include <condition_variable>
 #include "database_interface.hpp" 
-#include "common.hpp" // For ResourceSample
+#include "common.hpp"
+#include "container_runtime_factory_interface.hpp"
 
 class ResourceThreadPool {
 public:
@@ -21,6 +22,10 @@ public:
     void addContainer(const std::string& name);
     void removeContainer(const std::string& name);
     void flushAllBuffers();
+
+    double getCpuUsage(const std::string& name);
+    int getMemoryUsage(const std::string& name);
+    int getPids(const std::string& name);
 
     std::map<int, std::vector<std::string>> getAssignments();
 
@@ -40,5 +45,8 @@ private:
     std::vector<std::map<std::string, std::vector<ResourceSample>>> thread_buffers_;
     std::mutex assign_mutex_;
     std::condition_variable cv_;
+    std::unordered_map<std::string, ContainerResourcePaths> container_paths_;
+    std::mutex container_paths_mutex_;
+    std::unique_ptr<IContainerRuntimePathFactory> pathFactory_;
     bool running_ = false;
 };
