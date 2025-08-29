@@ -76,8 +76,13 @@ void ResourceThreadPool::addContainer(const std::string& name) {
     }
     thread_containers_[min_thread].push_back(name);
     container_to_thread_[name] = min_thread;
+
+    // Fetch full container info from database
+    ContainerInfo info = db_.getContainer(name);
+
+    // Use container id for path generation
     std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
-    container_paths_[name] = pathFactory_->getPaths(name);
+    container_paths_[name] = pathFactory_->getPaths(info.id);
 
     const auto& paths = container_paths_[name];
     CM_LOG_INFO << "[ThreadPool] Paths for container " << name << ":\n"

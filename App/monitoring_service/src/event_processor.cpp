@@ -38,7 +38,7 @@ void EventProcessor::processLoop() {
                         double cpus = std::stod(info.cpus);
                         int memory = std::stoi(info.memory);
                         int pids_limit = std::stoi(info.pids_limit);
-                        db_.saveContainer(info.name, std::make_tuple(info.id, cpus, memory, pids_limit));
+                        db_.saveContainer(info.name, ContainerInfo{info.id, cpus, memory, pids_limit});
                     } else if (info.status == "destroy") {
                         db_.removeContainer(info.name);
                         CM_LOG_INFO << " [Container Removed]";

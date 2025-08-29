@@ -27,23 +27,23 @@ SQLiteDatabase::~SQLiteDatabase() {
     if (db_) sqlite3_close(db_);
 }
 
-void SQLiteDatabase::saveContainer(const std::string& name, const std::tuple<std::string, double, int, int>& data) {
+void SQLiteDatabase::saveContainer(const std::string& name, const ContainerInfo& info) {
     if (!db_) return;
     const char* sql = "INSERT OR REPLACE INTO containers (name, id, cpus, memory, pids_limit) VALUES (?, ?, ?, ?, ?);";
     sqlite3_stmt* stmt;
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 2, std::get<0>(data).c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_double(stmt, 3, std::get<1>(data));
-        sqlite3_bind_int(stmt, 4, std::get<2>(data));
-        sqlite3_bind_int(stmt, 5, std::get<3>(data));
+        sqlite3_bind_text(stmt, 2, info.id.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_double(stmt, 3, info.cpus);
+        sqlite3_bind_int(stmt, 4, info.memory);
+        sqlite3_bind_int(stmt, 5, info.pids_limit);
         sqlite3_step(stmt);
         sqlite3_finalize(stmt);
     }
-    cache_[name] = data;
+    cache_[name] = info;
 }
 
-std::tuple<std::string, double, int, int> SQLiteDatabase::getContainer(const std::string& name) const {
+ContainerInfo SQLiteDatabase::getContainer(const std::string& name) const {
     if (!db_) return {};
     loadCache();
     auto it = cache_.find(name);
@@ -56,7 +56,7 @@ size_t SQLiteDatabase::size() const {
     return cache_.size();
 }
 
-const std::map<std::string, std::tuple<std::string, double, int, int>>& SQLiteDatabase::getAll() const {
+const std::map<std::string, ContainerInfo>& SQLiteDatabase::getAll() const {
     loadCache();
     return cache_;
 }
@@ -69,11 +69,12 @@ void SQLiteDatabase::loadCache() const {
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
         while (sqlite3_step(stmt) == SQLITE_ROW) {
             std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-            std::string id = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-            double cpus = sqlite3_column_double(stmt, 2);
-            int memory = sqlite3_column_int(stmt, 3);
-            int pids_limit = sqlite3_column_int(stmt, 4);
-            cache_[name] = std::make_tuple(id, cpus, memory, pids_limit);
+            ContainerInfo info;
+            info.id = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+            info.cpus = sqlite3_column_double(stmt, 2);
+            info.memory = sqlite3_column_int(stmt, 3);
+            info.pids_limit = sqlite3_column_int(stmt, 4);
+            cache_[name] = info;
         }
         sqlite3_finalize(stmt);
     }
