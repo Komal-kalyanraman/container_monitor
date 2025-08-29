@@ -2,6 +2,7 @@
 #include <tuple>
 #include <vector>
 #include <map>
+#include <string>
 #include "common.hpp"
 
 class IDatabaseInterface {
@@ -14,4 +15,6 @@ public:
     virtual std::tuple<std::string, double, int, int> getContainer(const std::string& name) const = 0;
     virtual size_t size() const = 0;
     virtual const std::map<std::string, std::tuple<std::string, double, int, int>>& getAll() const = 0;
+    virtual void initialize() = 0;
+    virtual void exportToCSV(const std::string& filename) = 0;
 };

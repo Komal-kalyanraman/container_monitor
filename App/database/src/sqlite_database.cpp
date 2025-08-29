@@ -1,5 +1,6 @@
 #include "sqlite_database.hpp"
 #include <iostream>
+#include <fstream>
 
 SQLiteDatabase::SQLiteDatabase(const std::string& db_path) : db_(nullptr) {
     if (sqlite3_open(db_path.c_str(), &db_) != SQLITE_OK) {
@@ -141,4 +142,30 @@ void SQLiteDatabase::insertBatch(const std::string& container_name, const std::v
         }
         sqlite3_finalize(stmt);
     }
+}
+
+void SQLiteDatabase::exportToCSV(const std::string& filename) {
+    std::lock_guard<std::mutex> lock(db_mutex);
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open CSV file for export: " << filename << "\n";
+        return;
+    }
+
+    // Write header
+    file << "container_name,timestamp,cpu_usage,memory_usage,pids\n";
+
+    const char* sql = "SELECT container_name, timestamp, cpu_usage, memory_usage, pids FROM resource_samples;";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            file << reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)) << ",";
+            file << sqlite3_column_int64(stmt, 1) << ",";
+            file << sqlite3_column_double(stmt, 2) << ",";
+            file << sqlite3_column_int(stmt, 3) << ",";
+            file << sqlite3_column_int(stmt, 4) << "\n";
+        }
+        sqlite3_finalize(stmt);
+    }
+    file.close();
 }

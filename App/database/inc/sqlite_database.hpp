@@ -15,12 +15,13 @@ public:
 
     void saveContainer(const std::string& name, const std::tuple<std::string, double, int, int>& data) override;
     void removeContainer(const std::string& name) override;
-    void clearAll();
+    void clearAll() override;
     std::tuple<std::string, double, int, int> getContainer(const std::string& name) const override;
     size_t size() const override;
     const std::map<std::string, std::tuple<std::string, double, int, int>>& getAll() const override;
-    void initialize();
-    void insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples);
+    void initialize() override;
+    void insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples) override;
+    void exportToCSV(const std::string& filename) override;
 
 private:
     sqlite3* db_;
