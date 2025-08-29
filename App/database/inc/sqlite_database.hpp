@@ -4,6 +4,7 @@
 #include <string>
 #include <tuple>
 #include <map>
+#include <mutex>
 #include <vector>
 #include "common.hpp"
 
@@ -23,6 +24,7 @@ public:
 
 private:
     sqlite3* db_;
+    mutable std::mutex db_mutex; 
     mutable std::map<std::string, std::tuple<std::string, double, int, int>> cache_;
     void loadCache() const;
 };

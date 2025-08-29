@@ -116,9 +116,10 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                 CM_LOG_INFO << "[Thread " << thread_index << "] Batch inserted for container: " << name << "\n";
             }
         }
-        // Wait for next sample interval or notification
+        // Wait for per-container sampling time × number of containers
+        int total_wait_ms = containers.size() * resource_sampling_interval_ms_;
         std::unique_lock<std::mutex> lock(assign_mutex_);
-        cv_.wait_for(lock, std::chrono::milliseconds(resource_sampling_interval_ms_), [this]() { return !running_; });
+        cv_.wait_for(lock, std::chrono::milliseconds(total_wait_ms), [this]() { return !running_; });
     }
     // On shutdown, flush all buffers for this thread
     for (auto& [name, buffer] : buffers) {
