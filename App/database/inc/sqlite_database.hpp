@@ -19,9 +19,10 @@ public:
     ContainerInfo getContainer(const std::string& name) const override;
     size_t size() const override;
     const std::map<std::string, ContainerInfo>& getAll() const override;
-    void initialize() override;
+    void setupSchema() override;
     void insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples) override;
     void exportToCSV(const std::string& filename) override;
+    void saveHostUsage(int64_t timestamp_ms, double cpu_usage, uint64_t mem_usage_mb) override;
 
 private:
     sqlite3* db_;

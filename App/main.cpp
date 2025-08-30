@@ -38,7 +38,7 @@ int main() {
     
     SQLiteDatabase db(cfg.db_path); // Use path from config
     db.clearAll(); // Clear all entries at startup
-    db.initialize(); // Initialize the resource_samples table
+    db.setupSchema(); // Initialize the resource_samples table
 
     // Start event listener
     RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);

@@ -24,8 +24,8 @@ void EventProcessor::processLoop() {
     std::string event;
     int refresh_interval = cfg_.container_event_refresh_interval_ms;
     HostInfo host_info = MetricsReader::getHostInfo();
-    std::cout << "[Host Info] CPUs: " << host_info.num_cpus
-              << ", Total Memory: " << host_info.total_memory_mb << " MB\n";
+    CM_LOG_INFO << "[Host Info] CPUs: " << host_info.num_cpus
+                << ", Total Memory: " << host_info.total_memory_mb << " MB\n";
     // db_.saveHostInfo(host_info);
 
     while (running_ && !shutdown_flag_) {
@@ -35,8 +35,8 @@ void EventProcessor::processLoop() {
     
         double cpu_usage = MetricsReader::getHostCpuUsage();
         uint64_t mem_usage_mb = MetricsReader::getHostMemoryUsageMB();
-        // db_.saveHostUsage(cpu_usage, mem_usage_mb);
-        std::cout << "[Host Usage] Timestamp: " << timestamp_ms
+        db_.saveHostUsage(timestamp_ms, cpu_usage, mem_usage_mb);
+        CM_LOG_INFO << "[Host Usage] Timestamp: " << timestamp_ms
               << ", CPU: " << cpu_usage << "%, Memory: " << mem_usage_mb << " MB\n";
 
         if ((queue_.pop(event, refresh_interval))) {
@@ -63,9 +63,9 @@ void EventProcessor::processLoop() {
                     CM_LOG_INFO << "\n";
                 }
             } catch (const std::exception& e) {
-                std::cerr << "Event processing error: " << e.what() << "\n";
+                CM_LOG_ERROR << "Event processing error: " << e.what() << "\n";
             } catch (...) {
-                std::cerr << "Unknown error during event processing. \n";
+                CM_LOG_ERROR << "Unknown error during event processing. \n";
             }
         }        
     }

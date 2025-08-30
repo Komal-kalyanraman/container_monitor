@@ -1,25 +1,12 @@
 #include "sqlite_database.hpp"
 #include <iostream>
 #include <fstream>
+#include "logger.hpp"
 
 SQLiteDatabase::SQLiteDatabase(const std::string& db_path) : db_(nullptr) {
     if (sqlite3_open(db_path.c_str(), &db_) != SQLITE_OK) {
-        std::cerr << "Failed to open SQLite database: " << db_path << "\n";
+        CM_LOG_ERROR << "Failed to open SQLite database: " << db_path << "\n";
         db_ = nullptr;
-    } else {
-        const char* create_table_sql =
-            "CREATE TABLE IF NOT EXISTS containers ("
-            "name TEXT PRIMARY KEY,"
-            "id TEXT,"
-            "cpus REAL,"
-            "memory INTEGER,"
-            "pids_limit INTEGER"
-            ");";
-        char* err_msg = nullptr;
-        if (sqlite3_exec(db_, create_table_sql, nullptr, nullptr, &err_msg) != SQLITE_OK) {
-            std::cerr << "Failed to create table: " << err_msg << "\n";
-            sqlite3_free(err_msg);
-        }
     }
 }
 
@@ -98,18 +85,35 @@ void SQLiteDatabase::clearAll() {
     const char* sql2 = "DELETE FROM resource_samples;";
     char* err_msg = nullptr;
     if (sqlite3_exec(db_, sql1, nullptr, nullptr, &err_msg) != SQLITE_OK) {
-        std::cerr << "Failed to clear containers table: " << err_msg << "\n";
+        CM_LOG_ERROR << "Failed to clear containers table: " << err_msg << "\n";
         sqlite3_free(err_msg);
     }
     if (sqlite3_exec(db_, sql2, nullptr, nullptr, &err_msg) != SQLITE_OK) {
-        std::cerr << "Failed to clear resource_samples table: " << err_msg << "\n";
+        CM_LOG_ERROR << "Failed to clear resource_samples table: " << err_msg << "\n";
         sqlite3_free(err_msg);
     }
     cache_.clear();
 }
 
-void SQLiteDatabase::initialize() {
-    const char* create_table_sql =
+void SQLiteDatabase::setupSchema() {
+    // Create containers table
+    const char* create_containers_sql =
+        "CREATE TABLE IF NOT EXISTS containers ("
+        "name TEXT PRIMARY KEY,"
+        "id TEXT,"
+        "cpus REAL,"
+        "memory INTEGER,"
+        "pids_limit INTEGER"
+        ");";
+    char* errMsg = nullptr;
+    int rc = sqlite3_exec(db_, create_containers_sql, nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK) {
+        CM_LOG_ERROR << "Failed to create containers table: " << errMsg << "\n";
+        sqlite3_free(errMsg);
+    }
+
+    // Create resource_samples table
+    const char* create_resource_samples_sql =
         "CREATE TABLE IF NOT EXISTS resource_samples ("
         "container_name TEXT,"
         "timestamp INTEGER,"
@@ -117,11 +121,22 @@ void SQLiteDatabase::initialize() {
         "memory_usage REAL,"
         "pids INTEGER"
         ");";
-    char* errMsg = nullptr;
-    int rc = sqlite3_exec(db_, create_table_sql, nullptr, nullptr, &errMsg);
+    rc = sqlite3_exec(db_, create_resource_samples_sql, nullptr, nullptr, &errMsg);
     if (rc != SQLITE_OK) {
-        // Handle error, log errMsg
-        std::cerr << "Failed to create resource_samples table: " << errMsg << "\n";
+        CM_LOG_ERROR << "Failed to create resource_samples table: " << errMsg << "\n";
+        sqlite3_free(errMsg);
+    }
+
+    // Create host_usage table
+    const char* create_host_usage_sql =
+        "CREATE TABLE IF NOT EXISTS host_usage ("
+        "timestamp INTEGER,"
+        "cpu_usage REAL,"
+        "memory_usage_mb INTEGER"
+        ");";
+    rc = sqlite3_exec(db_, create_host_usage_sql, nullptr, nullptr, &errMsg);
+    if (rc != SQLITE_OK) {
+        CM_LOG_ERROR << "Failed to create host_usage table: " << errMsg << "\n";
         sqlite3_free(errMsg);
     }
 }
@@ -149,7 +164,7 @@ void SQLiteDatabase::exportToCSV(const std::string& filename) {
     std::lock_guard<std::mutex> lock(db_mutex);
     std::ofstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Failed to open CSV file for export: " << filename << "\n";
+        CM_LOG_ERROR << "Failed to open CSV file for export: " << filename << "\n";
         return;
     }
 
@@ -169,4 +184,17 @@ void SQLiteDatabase::exportToCSV(const std::string& filename) {
         sqlite3_finalize(stmt);
     }
     file.close();
+}
+
+void SQLiteDatabase::saveHostUsage(int64_t timestamp_ms, double cpu_usage, uint64_t mem_usage_mb) {
+    if (!db_) return;
+    const char* sql = "INSERT INTO host_usage (timestamp, cpu_usage, memory_usage_mb) VALUES (?, ?, ?);";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int64(stmt, 1, timestamp_ms);
+        sqlite3_bind_double(stmt, 2, cpu_usage);
+        sqlite3_bind_int64(stmt, 3, mem_usage_mb);
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    }
 }
