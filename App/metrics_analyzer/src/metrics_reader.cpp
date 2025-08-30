@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sys/sysinfo.h>
 #include <string>
+#include <cmath>
 #include <unistd.h>
 
 MetricsReader::MetricsReader(const ContainerResourcePaths& paths, int num_cpus)
@@ -60,6 +61,7 @@ double MetricsReader::getHostCpuUsage() {
         uint64_t delta_total = total - last_total;
         uint64_t delta_idle = total_idle - last_idle;
         usage = (double)(delta_total - delta_idle) / delta_total * 100.0;
+        usage = std::round(usage * 100.0) / 100.0;
     }
     last_total = total;
     last_idle = total_idle;

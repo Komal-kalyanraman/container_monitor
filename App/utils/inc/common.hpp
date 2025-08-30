@@ -16,7 +16,7 @@ struct MonitorConfig {
     double alert_violation;
     int thread_count;
     int thread_capacity;
-    std::string csv_export_path;
+    std::string csv_export_folder_path;
 };
 
 struct ResourceSample {
@@ -62,7 +62,7 @@ inline constexpr std::string_view KEY_ALERT_CRITICAL = "alert_critical";
 inline constexpr std::string_view KEY_ALERT_VIOLATION = "alert_violation";
 inline constexpr std::string_view KEY_THREAD_COUNT = "thread_count";
 inline constexpr std::string_view KEY_THREAD_CAPACITY = "thread_capacity";
-inline constexpr std::string_view KEY_CSV_EXPORT_PATH = "csv_export_path";
+inline constexpr std::string_view KEY_CSV_EXPORT_FOLDER_PATH = "csv_export_folder_path";
 
 // Default values as string_view
 inline constexpr std::string_view DEFAULT_RUNTIME = "docker";

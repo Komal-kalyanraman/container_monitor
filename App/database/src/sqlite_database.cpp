@@ -84,6 +84,7 @@ void SQLiteDatabase::clearAll() {
     if (!db_) return;
     const char* sql1 = "DELETE FROM containers;";
     const char* sql2 = "DELETE FROM resource_samples;";
+    const char* sql3 = "DELETE FROM host_usage;";
     char* err_msg = nullptr;
     if (sqlite3_exec(db_, sql1, nullptr, nullptr, &err_msg) != SQLITE_OK) {
         CM_LOG_ERROR << "Failed to clear containers table: " << err_msg << "\n";
@@ -91,6 +92,10 @@ void SQLiteDatabase::clearAll() {
     }
     if (sqlite3_exec(db_, sql2, nullptr, nullptr, &err_msg) != SQLITE_OK) {
         CM_LOG_ERROR << "Failed to clear resource_samples table: " << err_msg << "\n";
+        sqlite3_free(err_msg);
+    }
+    if (sqlite3_exec(db_, sql3, nullptr, nullptr, &err_msg) != SQLITE_OK) {
+        CM_LOG_ERROR << "Failed to clear host_usage table: " << err_msg << "\n";
         sqlite3_free(err_msg);
     }
     cache_.clear();
