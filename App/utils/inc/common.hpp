@@ -40,6 +40,11 @@ struct ContainerInfo {
     // Add more fields as needed
 };
 
+struct HostInfo {
+    int num_cpus;
+    uint64_t total_memory_mb;
+};
+
 // Configuration file path
 inline constexpr std::string_view CONFIG_FILE_PATH = "../../config/parameter.conf";
 

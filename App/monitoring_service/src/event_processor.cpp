@@ -2,9 +2,10 @@
 #include <iostream>
 #include "logger.hpp"
 #include "json_processing.hpp"
+#include "metrics_reader.hpp"
 
-EventProcessor::EventProcessor(EventQueue& queue, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db)
-    : queue_(queue), shutdown_flag_(shutdown_flag), db_(db) {}
+EventProcessor::EventProcessor(EventQueue& queue, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db, const MonitorConfig& cfg)
+    : queue_(queue), shutdown_flag_(shutdown_flag), db_(db), cfg_(cfg) {}
 
 EventProcessor::~EventProcessor() { stop(); }
 
@@ -21,8 +22,24 @@ void EventProcessor::stop() {
 
 void EventProcessor::processLoop() {
     std::string event;
+    int refresh_interval = cfg_.container_event_refresh_interval_ms;
+    HostInfo host_info = MetricsReader::getHostInfo();
+    std::cout << "[Host Info] CPUs: " << host_info.num_cpus
+              << ", Total Memory: " << host_info.total_memory_mb << " MB\n";
+    // db_.saveHostInfo(host_info);
+
     while (running_ && !shutdown_flag_) {
-        if (queue_.pop(event)) {
+        // Host usage collection
+        auto now = std::chrono::system_clock::now();
+        auto timestamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+    
+        double cpu_usage = MetricsReader::getHostCpuUsage();
+        uint64_t mem_usage_mb = MetricsReader::getHostMemoryUsageMB();
+        // db_.saveHostUsage(cpu_usage, mem_usage_mb);
+        std::cout << "[Host Usage] Timestamp: " << timestamp_ms
+              << ", CPU: " << cpu_usage << "%, Memory: " << mem_usage_mb << " MB\n";
+
+        if ((queue_.pop(event, refresh_interval))) {
             try {
                 ContainerEventInfo info;
                 if (parseContainerEvent(event, info)) {
@@ -50,6 +67,6 @@ void EventProcessor::processLoop() {
             } catch (...) {
                 std::cerr << "Unknown error during event processing. \n";
             }
-        }
+        }        
     }
 }

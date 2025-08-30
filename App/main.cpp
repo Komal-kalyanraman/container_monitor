@@ -42,7 +42,7 @@ int main() {
 
     // Start event listener
     RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);
-    EventProcessor event_processor(*event_queue, shutdown_requested, db);
+    EventProcessor event_processor(*event_queue, shutdown_requested, db, cfg);
     
     ResourceThreadPool thread_pool(cfg, shutdown_requested, db);
     thread_pool.start();

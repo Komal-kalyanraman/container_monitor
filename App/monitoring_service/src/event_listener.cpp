@@ -40,6 +40,7 @@ void RuntimeEventListener::eventThreadFunc() {
     }
 
     char buffer[4096];
+    int refresh_interval = config_.container_event_refresh_interval_ms;
     while (running_ && !shutdown_flag_) {
         if (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
             std::string event_json(buffer);
@@ -47,6 +48,7 @@ void RuntimeEventListener::eventThreadFunc() {
         } else {
             break;
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(refresh_interval));
     }
     pclose(pipe);
 }

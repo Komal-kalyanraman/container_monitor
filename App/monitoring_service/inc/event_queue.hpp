@@ -7,7 +7,7 @@
 class EventQueue {
 public:
     void push(const std::string& event);
-    bool pop(std::string& event); // returns false if shutdown
+    bool pop(std::string& event, int timeout_ms);
     void shutdown();
 
 private:
