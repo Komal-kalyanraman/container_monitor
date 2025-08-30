@@ -43,20 +43,20 @@ bool ConfigParser::getBool(std::string_view key, bool default_val) const {
 
 MonitorConfig ConfigParser::toMonitorConfig() const {
     MonitorConfig cfg;
-    cfg.runtime                 = get(KEY_RUNTIME, DEFAULT_RUNTIME);
-    cfg.cgroup                  = get(KEY_CGROUP, DEFAULT_CGROUP);
-    cfg.database                = get(KEY_DATABASE, DEFAULT_DATABASE);
-    cfg.resource_sampling_interval_ms = getInt(KEY_RESOURCE_SAMPLING_INTERVAL_MS, DEFAULT_RESOURCE_SAMPLING_INTERVAL_MS);
+    cfg.runtime                             = get(KEY_RUNTIME, DEFAULT_RUNTIME);
+    cfg.cgroup                              = get(KEY_CGROUP, DEFAULT_CGROUP);
+    cfg.database                            = get(KEY_DATABASE, DEFAULT_DATABASE);
+    cfg.resource_sampling_interval_ms       = getInt(KEY_RESOURCE_SAMPLING_INTERVAL_MS, DEFAULT_RESOURCE_SAMPLING_INTERVAL_MS);
     cfg.container_event_refresh_interval_ms = getInt(KEY_CONTAINER_EVENT_REFRESH_INTERVAL_MS, DEFAULT_CONTAINER_EVENT_REFRESH_INTERVAL_MS);
-    cfg.db_path                 = get(KEY_DB_PATH, DEFAULT_DB_PATH);
-    cfg.ui_enabled              = getBool(KEY_UI_ENABLED, DEFAULT_UI_ENABLED);
-    cfg.batch_size              = getInt(KEY_BATCH_SIZE, DEFAULT_BATCH_SIZE);
-    cfg.alert_warning           = getDouble(KEY_ALERT_WARNING, DEFAULT_ALERT_WARNING);
-    cfg.alert_critical          = getDouble(KEY_ALERT_CRITICAL, DEFAULT_ALERT_CRITICAL);
-    cfg.alert_violation         = getDouble(KEY_ALERT_VIOLATION, DEFAULT_ALERT_VIOLATION);
-    cfg.thread_count            = getInt(KEY_THREAD_COUNT, DEFAULT_THREAD_COUNT);
-    cfg.thread_capacity         = getInt(KEY_THREAD_CAPACITY, DEFAULT_THREAD_CAPACITY);
-    cfg.csv_export_path         = get(KEY_CSV_EXPORT_PATH, "resource_samples_export.csv");
+    cfg.db_path                             = get(KEY_DB_PATH, DEFAULT_DB_PATH);
+    cfg.ui_enabled                          = getBool(KEY_UI_ENABLED, DEFAULT_UI_ENABLED);
+    cfg.batch_size                          = getInt(KEY_BATCH_SIZE, DEFAULT_BATCH_SIZE);
+    cfg.alert_warning                       = getDouble(KEY_ALERT_WARNING, DEFAULT_ALERT_WARNING);
+    cfg.alert_critical                      = getDouble(KEY_ALERT_CRITICAL, DEFAULT_ALERT_CRITICAL);
+    cfg.alert_violation                     = getDouble(KEY_ALERT_VIOLATION, DEFAULT_ALERT_VIOLATION);
+    cfg.thread_count                        = getInt(KEY_THREAD_COUNT, DEFAULT_THREAD_COUNT);
+    cfg.thread_capacity                     = getInt(KEY_THREAD_CAPACITY, DEFAULT_THREAD_CAPACITY);
+    cfg.csv_export_path                     = get(KEY_CSV_EXPORT_PATH, "container_metrics.csv");
     return cfg;
 }
 

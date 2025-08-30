@@ -76,7 +76,7 @@ int main() {
     }
 
     // Export resource samples to CSV before shutdown
-    db.exportToCSV(cfg.csv_export_path);
+    db.exportAllTablesToCSV(cfg.csv_export_path);
     CM_LOG_INFO << "Resource samples exported to CSV at: " << cfg.csv_export_path << "\n";
 
     CM_LOG_INFO << "Application shutdown complete.\n";
