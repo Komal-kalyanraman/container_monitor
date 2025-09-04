@@ -147,7 +147,7 @@ void SQLiteDatabase::setupSchema() {
     }
 }
 
-void SQLiteDatabase::insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples) {
+void SQLiteDatabase::insertBatch(const std::string& container_name, const std::vector<ContainerMetrics>& samples) {
     std::lock_guard<std::mutex> lock(db_mutex);
     if (!db_ || samples.empty()) return;
     const char* sql = "INSERT INTO resource_samples (container_name, timestamp, cpu_usage, memory_usage, pids) VALUES (?, ?, ?, ?, ?);";

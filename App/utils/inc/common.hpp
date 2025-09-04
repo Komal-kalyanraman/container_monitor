@@ -19,7 +19,7 @@ struct MonitorConfig {
     std::string csv_export_folder_path;
 };
 
-struct ResourceSample {
+struct ContainerMetrics {
     int64_t timestamp;
     double cpu_usage;
     int memory_usage;

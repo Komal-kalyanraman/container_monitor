@@ -42,7 +42,7 @@ private:
     std::vector<std::thread> threads_;
     std::vector<std::vector<std::string>> thread_containers_;
     std::unordered_map<std::string, int> container_to_thread_;
-    std::vector<std::map<std::string, std::vector<ResourceSample>>> thread_buffers_;
+    std::vector<std::map<std::string, std::vector<ContainerMetrics>>> thread_buffers_;
     std::mutex assign_mutex_;
     std::condition_variable cv_;
     std::unordered_map<std::string, ContainerResourcePaths> container_paths_;

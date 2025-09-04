@@ -3,9 +3,11 @@
 #include <map>
 #include <vector>
 #include <chrono>
+#include <unordered_map>
 #include "common.hpp"
 #include "logger.hpp"
 #include "docker_cgroup_v1_path.hpp"
+#include "metrics_reader.hpp"
 
 ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db)
     : cfg_(cfg), thread_count_(cfg.thread_count), thread_capacity_(cfg.thread_capacity),
@@ -21,27 +23,6 @@ ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<boo
 
 ResourceThreadPool::~ResourceThreadPool() {
     stop();
-}
-
-double ResourceThreadPool::getCpuUsage(const std::string& name) {
-    std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
-    auto it = container_paths_.find(name);
-    if (it == container_paths_.end()) return 0.0;
-    return 0.0;
-}
-
-int ResourceThreadPool::getMemoryUsage(const std::string& name) {
-    std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
-    auto it = container_paths_.find(name);
-    if (it == container_paths_.end()) return 0;
-    return 0;
-}
-
-int ResourceThreadPool::getPids(const std::string& name) {
-    std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
-    auto it = container_paths_.find(name);
-    if (it == container_paths_.end()) return 0;
-    return 0;
 }
 
 void ResourceThreadPool::start() {
@@ -139,14 +120,24 @@ void ResourceThreadPool::workerLoop(int thread_index) {
             containers = thread_containers_[thread_index];
         }
         for (const auto& name : containers) {
-            ResourceSample sample;
-            sample.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
+            ContainerMetrics metrics;
+            metrics.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch()).count();
-            sample.cpu_usage = getCpuUsage(name);
-            sample.memory_usage = getMemoryUsage(name);
-            sample.pids = getPids(name);
 
-            buffers[name].push_back(sample);
+            // Get paths and info for this container
+            {
+                std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
+                auto it = container_paths_.find(name);
+                if (it == container_paths_.end()) continue;
+                //ContainerInfo info = db_.getContainer(name);
+                MetricsReader reader(it->second, 1); // CPU count not needed for memory/pids
+
+                //metrics.cpu_usage = 0.0; // CPU usage not collected for now
+                metrics.memory_usage = reader.getMemoryUsage();
+                metrics.pids = reader.getPids();
+            }
+
+            buffers[name].push_back(metrics);
 
             if (buffers[name].size() >= batch_size_) {
                 db_.insertBatch(name, buffers[name]);

@@ -10,7 +10,7 @@ public:
     virtual ~IDatabaseInterface() = default;
     virtual void saveContainer(const std::string& name, const ContainerInfo& info) = 0;
     virtual ContainerInfo getContainer(const std::string& name) const = 0;
-    virtual void insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples) = 0;
+    virtual void insertBatch(const std::string& container_name, const std::vector<ContainerMetrics>& samples) = 0;
     virtual void removeContainer(const std::string& name) = 0;
     virtual void clearAll() = 0;
     virtual size_t size() const = 0;

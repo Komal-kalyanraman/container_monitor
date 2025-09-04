@@ -20,7 +20,7 @@ public:
     size_t size() const override;
     const std::map<std::string, ContainerInfo>& getAll() const override;
     void setupSchema() override;
-    void insertBatch(const std::string& container_name, const std::vector<ResourceSample>& samples) override;
+    void insertBatch(const std::string& container_name, const std::vector<ContainerMetrics>& samples) override;
     void exportAllTablesToCSV(const std::string& export_dir) override;
     void saveHostUsage(int64_t timestamp_ms, double cpu_usage, uint64_t mem_usage_mb) override;
 
