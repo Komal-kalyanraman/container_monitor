@@ -38,7 +38,7 @@ int main() {
     
     SQLiteDatabase db(cfg.db_path); // Use path from config
     db.clearAll(); // Clear all entries at startup
-    db.setupSchema(); // Initialize the resource_samples table
+    db.setupSchema(); // Initialize the container_metrics table
 
     // Start event listener
     RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);
@@ -75,9 +75,9 @@ int main() {
         }
     }
 
-    // Export resource samples to CSV before shutdown
+    // Export container metrics to CSV before shutdown
     db.exportAllTablesToCSV(cfg.csv_export_folder_path);
-    CM_LOG_INFO << "Resource samples exported to CSV at: " << cfg.csv_export_folder_path << "\n";
+    CM_LOG_INFO << "Container metrics exported to CSV at: " << cfg.csv_export_folder_path << "\n";
 
     CM_LOG_INFO << "Application shutdown complete.\n";
     return 0;

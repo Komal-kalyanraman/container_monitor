@@ -22,9 +22,9 @@ void SQLiteDatabase::saveContainer(const std::string& name, const ContainerInfo&
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 2, info.id.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_double(stmt, 3, info.cpus);
-        sqlite3_bind_int(stmt, 4, info.memory);
-        sqlite3_bind_int(stmt, 5, info.pids_limit);
+        sqlite3_bind_double(stmt, 3, info.cpu_limit);
+        sqlite3_bind_int(stmt, 4, info.memory_limit);
+        sqlite3_bind_int(stmt, 5, info.pid_limit);
         sqlite3_step(stmt);
         sqlite3_finalize(stmt);
     }
@@ -59,9 +59,9 @@ void SQLiteDatabase::loadCache() const {
             std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
             ContainerInfo info;
             info.id = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-            info.cpus = sqlite3_column_double(stmt, 2);
-            info.memory = sqlite3_column_int(stmt, 3);
-            info.pids_limit = sqlite3_column_int(stmt, 4);
+            info.cpu_limit = sqlite3_column_double(stmt, 2);
+            info.memory_limit = sqlite3_column_int(stmt, 3);
+            info.pid_limit = sqlite3_column_int(stmt, 4);
             cache_[name] = info;
         }
         sqlite3_finalize(stmt);
@@ -83,19 +83,19 @@ void SQLiteDatabase::removeContainer(const std::string& name) {
 void SQLiteDatabase::clearAll() {
     if (!db_) return;
     const char* sql1 = "DELETE FROM containers;";
-    const char* sql2 = "DELETE FROM resource_samples;";
+    const char* sql2 = "DELETE FROM container_metrics;";
     const char* sql3 = "DELETE FROM host_usage;";
     char* err_msg = nullptr;
     if (sqlite3_exec(db_, sql1, nullptr, nullptr, &err_msg) != SQLITE_OK) {
-        CM_LOG_ERROR << "Failed to clear containers table: " << err_msg << "\n";
+        CM_LOG_ERROR << "Failed to clear containers table: " << (err_msg ? err_msg : "unknown error") << "\n";
         sqlite3_free(err_msg);
     }
     if (sqlite3_exec(db_, sql2, nullptr, nullptr, &err_msg) != SQLITE_OK) {
-        CM_LOG_ERROR << "Failed to clear resource_samples table: " << err_msg << "\n";
+        CM_LOG_ERROR << "Failed to clear container_metrics table: " << (err_msg ? err_msg : "unknown error") << "\n";
         sqlite3_free(err_msg);
     }
     if (sqlite3_exec(db_, sql3, nullptr, nullptr, &err_msg) != SQLITE_OK) {
-        CM_LOG_ERROR << "Failed to clear host_usage table: " << err_msg << "\n";
+        CM_LOG_ERROR << "Failed to clear host_usage table: " << (err_msg ? err_msg : "unknown error") << "\n";
         sqlite3_free(err_msg);
     }
     cache_.clear();
@@ -118,18 +118,18 @@ void SQLiteDatabase::setupSchema() {
         sqlite3_free(errMsg);
     }
 
-    // Create resource_samples table
-    const char* create_resource_samples_sql =
-        "CREATE TABLE IF NOT EXISTS resource_samples ("
+    // Create container_metrics table
+    const char* create_container_metrics_sql =
+        "CREATE TABLE IF NOT EXISTS container_metrics ("
         "container_name TEXT,"
         "timestamp INTEGER,"
         "cpu_usage REAL,"
         "memory_usage REAL,"
-        "pids INTEGER"
+        "pids REAL"
         ");";
-    rc = sqlite3_exec(db_, create_resource_samples_sql, nullptr, nullptr, &errMsg);
+    rc = sqlite3_exec(db_, create_container_metrics_sql, nullptr, nullptr, &errMsg);
     if (rc != SQLITE_OK) {
-        CM_LOG_ERROR << "Failed to create resource_samples table: " << errMsg << "\n";
+        CM_LOG_ERROR << "Failed to create container_metrics table: " << errMsg << "\n";
         sqlite3_free(errMsg);
     }
 
@@ -147,18 +147,18 @@ void SQLiteDatabase::setupSchema() {
     }
 }
 
-void SQLiteDatabase::insertBatch(const std::string& container_name, const std::vector<ContainerMetrics>& samples) {
+void SQLiteDatabase::insertBatch(const std::string& container_name, const std::vector<ContainerMetrics>& metrics_vec) {
     std::lock_guard<std::mutex> lock(db_mutex);
-    if (!db_ || samples.empty()) return;
-    const char* sql = "INSERT INTO resource_samples (container_name, timestamp, cpu_usage, memory_usage, pids) VALUES (?, ?, ?, ?, ?);";
+    if (!db_ || metrics_vec.empty()) return;
+    const char* sql = "INSERT INTO container_metrics (container_name, timestamp, cpu_usage, memory_usage, pids) VALUES (?, ?, ?, ?, ?);";
     sqlite3_stmt* stmt;
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
-        for (const auto& sample : samples) {
+        for (const auto& metrics : metrics_vec) {
             sqlite3_bind_text(stmt, 1, container_name.c_str(), -1, SQLITE_TRANSIENT);
-            sqlite3_bind_int64(stmt, 2, sample.timestamp);
-            sqlite3_bind_double(stmt, 3, sample.cpu_usage);
-            sqlite3_bind_int(stmt, 4, sample.memory_usage);
-            sqlite3_bind_int(stmt, 5, sample.pids);
+            sqlite3_bind_int64(stmt, 2, metrics.timestamp);
+            sqlite3_bind_double(stmt, 3, metrics.cpu_usage_percent);
+            sqlite3_bind_double(stmt, 4, metrics.memory_usage_percent);
+            sqlite3_bind_double(stmt, 5, metrics.pids_percent);
             sqlite3_step(stmt);
             sqlite3_reset(stmt);
         }
@@ -171,25 +171,27 @@ void SQLiteDatabase::exportAllTablesToCSV(const std::string& export_dir) {
     std::lock_guard<std::mutex> lock(db_mutex);
     std::filesystem::create_directories(export_dir);
 
-    // Export resource_samples table
+    // Export container_metrics table
     {
         std::string filename = export_dir + "/container_metrics.csv";
         std::ofstream file(filename);
         if (!file.is_open()) {
-            CM_LOG_ERROR << "Failed to open resource_samples.csv for export: " << filename << "\n";
+            CM_LOG_ERROR << "Failed to open container_metrics.csv for export: " << filename << "\n";
         } else {
             file << "container_name,timestamp,cpu_usage,memory_usage,pids\n";
-            const char* sql = "SELECT container_name, timestamp, cpu_usage, memory_usage, pids FROM resource_samples;";
+            const char* sql = "SELECT container_name, timestamp, cpu_usage, memory_usage, pids FROM container_metrics;";
             sqlite3_stmt* stmt;
             if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
                 while (sqlite3_step(stmt) == SQLITE_ROW) {
                     file << reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)) << ",";
                     file << sqlite3_column_int64(stmt, 1) << ",";
                     file << sqlite3_column_double(stmt, 2) << ",";
-                    file << sqlite3_column_int(stmt, 3) << ",";
-                    file << sqlite3_column_int(stmt, 4) << "\n";
+                    file << sqlite3_column_double(stmt, 3) << ",";
+                    file << sqlite3_column_double(stmt, 4) << "\n";
                 }
                 sqlite3_finalize(stmt);
+            } else {
+                CM_LOG_ERROR << "Failed to prepare export SQL for container_metrics: " << sqlite3_errmsg(db_) << "\n";
             }
             file.close();
         }

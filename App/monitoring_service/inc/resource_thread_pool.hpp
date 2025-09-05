@@ -44,5 +44,7 @@ private:
     std::condition_variable cv_;
     std::unique_ptr<IContainerRuntimePathFactory> pathFactory_;
     std::vector<std::map<std::string, ContainerResourcePaths>> thread_local_paths_;
+    std::vector<std::map<std::string, ContainerInfo>> thread_local_info_;
     bool running_ = false;
+    std::unordered_map<std::string, std::pair<int64_t, uint64_t>> prev_cpu_usage_;
 };

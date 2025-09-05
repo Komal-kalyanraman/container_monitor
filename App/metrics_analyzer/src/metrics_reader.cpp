@@ -18,13 +18,6 @@ uint64_t MetricsReader::readUintFromFile(const std::string& path) {
     return value;
 }
 
-// Container metrics
-double MetricsReader::getCpuUsage() {
-    uint64_t usage_ns = readUintFromFile(paths_.cpu_path);
-    double percent = (double)usage_ns / (1e9 * num_cpus_) * 100.0;
-    return percent;
-}
-
 int MetricsReader::getMemoryUsage() {
     uint64_t mem_bytes = readUintFromFile(paths_.memory_path);
     return static_cast<int>(mem_bytes / (1024 * 1024)); // MB
@@ -32,6 +25,22 @@ int MetricsReader::getMemoryUsage() {
 
 int MetricsReader::getPids() {
     return static_cast<int>(readUintFromFile(paths_.pids_path));
+}
+
+double MetricsReader::round2(double val) const {
+    return std::round(val * 100.0) / 100.0;
+}
+
+double MetricsReader::getMemoryUsagePercent(const ContainerInfo& info) {
+    int mem_mb = getMemoryUsage();
+    double percent = (info.memory_limit > 0) ? ((double)mem_mb / info.memory_limit * 100.0) : 0.0;
+    return round2(percent);
+}
+
+double MetricsReader::getPidsPercent(const ContainerInfo& info) {
+    int pids = getPids();
+    double percent = (info.pid_limit > 0) ? ((double)pids / info.pid_limit * 100.0) : 0.0;
+    return round2(percent);
 }
 
 // Host metrics

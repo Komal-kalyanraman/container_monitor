@@ -1,6 +1,7 @@
 #include "resource_thread_pool.hpp"
 #include <algorithm>
 #include <map>
+#include <cmath> 
 #include <vector>
 #include <chrono>
 #include <unordered_map>
@@ -13,7 +14,8 @@ ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<boo
     : cfg_(cfg), thread_count_(cfg.thread_count), thread_capacity_(cfg.thread_capacity),
       shutdown_flag_(shutdown_flag), db_(db),
       batch_size_(cfg.batch_size), resource_sampling_interval_ms_(cfg.resource_sampling_interval_ms),
-      thread_containers_(cfg.thread_count), thread_buffers_(cfg.thread_count), thread_local_paths_(cfg.thread_count)
+      thread_containers_(cfg.thread_count), thread_buffers_(cfg.thread_count), 
+      thread_local_paths_(cfg.thread_count), thread_local_info_(cfg.thread_count)
 {
     // Initialize the factory once
     if (cfg_.runtime == "docker" && cfg_.cgroup == "v1") {
@@ -61,8 +63,7 @@ void ResourceThreadPool::addContainer(const std::string& name) {
 
     // Fetch full container info from database
     ContainerInfo info = db_.getContainer(name);
-
-    // Generate and store paths in thread-local map
+    thread_local_info_[min_thread][name] = info;
     ContainerResourcePaths paths = pathFactory_->getPaths(info.id);
     thread_local_paths_[min_thread][name] = paths;
 
@@ -84,8 +85,9 @@ void ResourceThreadPool::removeContainer(const std::string& name) {
         auto& vec = thread_containers_[thread_idx];
         vec.erase(std::remove(vec.begin(), vec.end(), name), vec.end());
         container_to_thread_.erase(it);
-        container_count_--; 
-        thread_local_paths_[thread_idx].erase(name); // Remove from thread-local paths
+        container_count_--;
+        thread_local_info_[thread_idx].erase(name);
+        thread_local_paths_[thread_idx].erase(name);
         CM_LOG_INFO << "[ThreadPool] Removed container " << name << " from thread " << thread_idx << "\n";
         cv_.notify_all();
     }
@@ -125,13 +127,38 @@ void ResourceThreadPool::workerLoop(int thread_index) {
             metrics.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch()).count();
 
-            // Use thread-local paths, no mutex needed
             auto it = local_paths.find(name);
             if (it == local_paths.end()) continue;
             MetricsReader reader(it->second, 1);
 
-            metrics.memory_usage = reader.getMemoryUsage();
-            metrics.pids = reader.getPids();
+            // Fetch container limits from local cache
+            auto info_it = thread_local_info_[thread_index].find(name);
+            if (info_it == thread_local_info_[thread_index].end()) continue;
+            const ContainerInfo& info = info_it->second;
+
+            // Memory and pids as percent
+            metrics.memory_usage_percent = reader.getMemoryUsagePercent(info);
+            metrics.pids_percent = reader.getPidsPercent(info);
+
+            // CPU usage delta calculation
+            uint64_t curr_cpu_ns = reader.readUintFromFile(it->second.cpu_path);
+            auto prev_it = prev_cpu_usage_.find(name);
+            metrics.cpu_usage_percent = 0.0;
+            if (prev_it != prev_cpu_usage_.end()) {
+                int64_t prev_ts = prev_it->second.first;
+                uint64_t prev_ns = prev_it->second.second;
+                int64_t delta_ms = metrics.timestamp - prev_ts;
+                int64_t delta_ns = static_cast<int64_t>(curr_cpu_ns) - static_cast<int64_t>(prev_ns);
+                if (delta_ms > 0 && delta_ns > 0 && info.cpu_limit > 0) {
+                    double cpu_sec = (double)delta_ns / 1e9;
+                    double interval_sec = (double)delta_ms / 1000.0;
+                    double percent = (cpu_sec / interval_sec) / info.cpu_limit * 100.0;
+                    metrics.cpu_usage_percent = std::round(percent * 100.0) / 100.0;
+                } else {
+                    metrics.cpu_usage_percent = 0.0;
+                }
+            }
+            prev_cpu_usage_[name] = {metrics.timestamp, curr_cpu_ns};
 
             buffers[name].push_back(metrics);
 

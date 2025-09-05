@@ -21,9 +21,9 @@ struct MonitorConfig {
 
 struct ContainerMetrics {
     int64_t timestamp;
-    double cpu_usage;
-    int memory_usage;
-    int pids;
+    double cpu_usage_percent;    // % of cpu_limit
+    double memory_usage_percent; // % of memory_limit
+    double pids_percent;         // % of pid_limit
 };
 
 struct ContainerResourcePaths {
@@ -34,9 +34,9 @@ struct ContainerResourcePaths {
 
 struct ContainerInfo {
     std::string id;
-    double cpus;
-    int memory;
-    int pids_limit;
+    double cpu_limit;
+    int memory_limit;
+    int pid_limit;
     // Add more fields as needed
 };
 
