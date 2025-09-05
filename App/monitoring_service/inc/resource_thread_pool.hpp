@@ -23,10 +23,6 @@ public:
     void removeContainer(const std::string& name);
     void flushAllBuffers();
 
-    double getCpuUsage(const std::string& name);
-    int getMemoryUsage(const std::string& name);
-    int getPids(const std::string& name);
-
     std::map<int, std::vector<std::string>> getAssignments();
 
 private:
@@ -34,6 +30,7 @@ private:
 
     int thread_count_;
     int thread_capacity_;
+    int container_count_ = 0;
     std::atomic<bool>& shutdown_flag_;
     IDatabaseInterface& db_;
     const MonitorConfig& cfg_;
@@ -45,8 +42,7 @@ private:
     std::vector<std::map<std::string, std::vector<ContainerMetrics>>> thread_buffers_;
     std::mutex assign_mutex_;
     std::condition_variable cv_;
-    std::unordered_map<std::string, ContainerResourcePaths> container_paths_;
-    std::mutex container_paths_mutex_;
     std::unique_ptr<IContainerRuntimePathFactory> pathFactory_;
+    std::vector<std::map<std::string, ContainerResourcePaths>> thread_local_paths_;
     bool running_ = false;
 };

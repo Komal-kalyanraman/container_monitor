@@ -13,7 +13,7 @@ ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<boo
     : cfg_(cfg), thread_count_(cfg.thread_count), thread_capacity_(cfg.thread_capacity),
       shutdown_flag_(shutdown_flag), db_(db),
       batch_size_(cfg.batch_size), resource_sampling_interval_ms_(cfg.resource_sampling_interval_ms),
-      thread_containers_(cfg.thread_count), thread_buffers_(cfg.thread_count)
+      thread_containers_(cfg.thread_count), thread_buffers_(cfg.thread_count), thread_local_paths_(cfg.thread_count)
 {
     // Initialize the factory once
     if (cfg_.runtime == "docker" && cfg_.cgroup == "v1") {
@@ -57,15 +57,15 @@ void ResourceThreadPool::addContainer(const std::string& name) {
     }
     thread_containers_[min_thread].push_back(name);
     container_to_thread_[name] = min_thread;
+    container_count_++; 
 
     // Fetch full container info from database
     ContainerInfo info = db_.getContainer(name);
 
-    // Use container id for path generation
-    std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
-    container_paths_[name] = pathFactory_->getPaths(info.id);
+    // Generate and store paths in thread-local map
+    ContainerResourcePaths paths = pathFactory_->getPaths(info.id);
+    thread_local_paths_[min_thread][name] = paths;
 
-    const auto& paths = container_paths_[name];
     CM_LOG_INFO << "[ThreadPool] Paths for container " << name << ":\n"
                 << "  CPU: " << paths.cpu_path << "\n"
                 << "  Memory: " << paths.memory_path << "\n"
@@ -84,8 +84,8 @@ void ResourceThreadPool::removeContainer(const std::string& name) {
         auto& vec = thread_containers_[thread_idx];
         vec.erase(std::remove(vec.begin(), vec.end(), name), vec.end());
         container_to_thread_.erase(it);
-        std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
-        container_paths_.erase(name);
+        container_count_--; 
+        thread_local_paths_[thread_idx].erase(name); // Remove from thread-local paths
         CM_LOG_INFO << "[ThreadPool] Removed container " << name << " from thread " << thread_idx << "\n";
         cv_.notify_all();
     }
@@ -112,6 +112,7 @@ std::map<int, std::vector<std::string>> ResourceThreadPool::getAssignments() {
 
 void ResourceThreadPool::workerLoop(int thread_index) {
     auto& buffers = thread_buffers_[thread_index];
+    auto& local_paths = thread_local_paths_[thread_index];
 
     while (running_ && !shutdown_flag_) {
         std::vector<std::string> containers;
@@ -124,18 +125,13 @@ void ResourceThreadPool::workerLoop(int thread_index) {
             metrics.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch()).count();
 
-            // Get paths and info for this container
-            {
-                std::unique_lock<std::mutex> map_lock(container_paths_mutex_);
-                auto it = container_paths_.find(name);
-                if (it == container_paths_.end()) continue;
-                //ContainerInfo info = db_.getContainer(name);
-                MetricsReader reader(it->second, 1); // CPU count not needed for memory/pids
+            // Use thread-local paths, no mutex needed
+            auto it = local_paths.find(name);
+            if (it == local_paths.end()) continue;
+            MetricsReader reader(it->second, 1);
 
-                //metrics.cpu_usage = 0.0; // CPU usage not collected for now
-                metrics.memory_usage = reader.getMemoryUsage();
-                metrics.pids = reader.getPids();
-            }
+            metrics.memory_usage = reader.getMemoryUsage();
+            metrics.pids = reader.getPids();
 
             buffers[name].push_back(metrics);
 

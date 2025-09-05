@@ -17,5 +17,5 @@ RUN apt-get update && \
 # Set default shell
 SHELL ["/bin/bash", "-c"]
 
-# CMD show help if no command is given
-CMD ["stress-ng", "--help"]
+# Run stress-ng in the background to keep CPU, memory, and pids fluctuating
+CMD ["stress-ng", "--cpu", "2", "--vm", "2", "--vm-bytes", "256M", "--fork", "4", "--timeout", "0"]
