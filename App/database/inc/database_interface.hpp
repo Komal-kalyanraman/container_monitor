@@ -17,5 +17,5 @@ public:
     virtual const std::map<std::string, ContainerInfo>& getAll() const = 0;
     virtual void setupSchema() = 0;
     virtual void exportAllTablesToCSV(const std::string& export_dir) = 0;
-    virtual void saveHostUsage(int64_t timestamp_ms, double cpu_usage, uint64_t mem_usage_mb) = 0;
+    virtual void saveHostUsage(int64_t timestamp_ms, double cpu_usage_percent, double mem_usage_percent) = 0;
 };

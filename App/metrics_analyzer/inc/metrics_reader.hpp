@@ -13,9 +13,9 @@ public:
     double getPidsPercent(const ContainerInfo& info);
 
     // Host metrics (static methods)
-    static HostInfo getHostInfo();
-    static double getHostCpuUsage();         // % (since last call)
-    static uint64_t getHostMemoryUsageMB();  // MB
+    HostInfo getHostInfo();
+    double getHostCpuUsagePercentage();    // %
+    double getHostMemoryUsagePercent();    // % 
 
     uint64_t readUintFromFile(const std::string& path);
 

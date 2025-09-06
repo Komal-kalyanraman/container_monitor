@@ -137,8 +137,8 @@ void SQLiteDatabase::setupSchema() {
     const char* create_host_usage_sql =
         "CREATE TABLE IF NOT EXISTS host_usage ("
         "timestamp INTEGER,"
-        "cpu_usage REAL,"
-        "memory_usage_mb INTEGER"
+        "cpu_usage_percent REAL,"
+        "memory_usage_percent INTEGER"
         ");";
     rc = sqlite3_exec(db_, create_host_usage_sql, nullptr, nullptr, &errMsg);
     if (rc != SQLITE_OK) {
@@ -205,7 +205,7 @@ void SQLiteDatabase::exportAllTablesToCSV(const std::string& export_dir) {
             CM_LOG_ERROR << "Failed to open host_usage.csv for export: " << filename << "\n";
         } else {
             file << "timestamp,cpu_usage,memory_usage_mb\n";
-            const char* sql = "SELECT timestamp, cpu_usage, memory_usage_mb FROM host_usage;";
+            const char* sql = "SELECT timestamp, cpu_usage_percent, memory_usage_percent FROM host_usage;";
             sqlite3_stmt* stmt;
             if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
                 while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -220,14 +220,14 @@ void SQLiteDatabase::exportAllTablesToCSV(const std::string& export_dir) {
     }
 }
 
-void SQLiteDatabase::saveHostUsage(int64_t timestamp_ms, double cpu_usage, uint64_t mem_usage_mb) {
+void SQLiteDatabase::saveHostUsage(int64_t timestamp_ms, double cpu_usage_percent, double mem_usage_percent) {
     if (!db_) return;
-    const char* sql = "INSERT INTO host_usage (timestamp, cpu_usage, memory_usage_mb) VALUES (?, ?, ?);";
+    const char* sql = "INSERT INTO host_usage (timestamp, cpu_usage_percent, memory_usage_percent) VALUES (?, ?, ?);";
     sqlite3_stmt* stmt;
     if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {
         sqlite3_bind_int64(stmt, 1, timestamp_ms);
-        sqlite3_bind_double(stmt, 2, cpu_usage);
-        sqlite3_bind_int64(stmt, 3, mem_usage_mb);
+        sqlite3_bind_double(stmt, 2, cpu_usage_percent);
+        sqlite3_bind_double(stmt, 3, mem_usage_percent);
         sqlite3_step(stmt);
         sqlite3_finalize(stmt);
     }

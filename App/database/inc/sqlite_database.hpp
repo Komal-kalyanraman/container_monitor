@@ -22,7 +22,7 @@ public:
     void setupSchema() override;
     void insertBatch(const std::string& container_name, const std::vector<ContainerMetrics>& metrics_vec) override;
     void exportAllTablesToCSV(const std::string& export_dir) override;
-    void saveHostUsage(int64_t timestamp_ms, double cpu_usage, uint64_t mem_usage_mb) override;
+    void saveHostUsage(int64_t timestamp_ms, double cpu_usage_percent, double mem_usage_percent) override;
 
 private:
     sqlite3* db_;

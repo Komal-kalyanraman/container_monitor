@@ -23,7 +23,8 @@ void EventProcessor::stop() {
 void EventProcessor::processLoop() {
     std::string event;
     int refresh_interval = cfg_.container_event_refresh_interval_ms;
-    HostInfo host_info = MetricsReader::getHostInfo();
+    MetricsReader metrics_reader({}, 0);
+    HostInfo host_info = metrics_reader.getHostInfo();
     CM_LOG_INFO << "[Host Info] CPUs: " << host_info.num_cpus
                 << ", Total Memory: " << host_info.total_memory_mb << " MB\n";
     // db_.saveHostInfo(host_info);
@@ -33,9 +34,9 @@ void EventProcessor::processLoop() {
         auto now = std::chrono::system_clock::now();
         auto timestamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
     
-        double cpu_usage = MetricsReader::getHostCpuUsage();
-        uint64_t mem_usage_mb = MetricsReader::getHostMemoryUsageMB();
-        db_.saveHostUsage(timestamp_ms, cpu_usage, mem_usage_mb);
+        double cpu_usage_percentage = metrics_reader.getHostCpuUsagePercentage();
+        double mem_usage_percentage = metrics_reader.getHostMemoryUsagePercent();
+        db_.saveHostUsage(timestamp_ms, cpu_usage_percentage, mem_usage_percentage);
         // CM_LOG_INFO << "[Host Usage] Timestamp: " << timestamp_ms << ", CPU: " << cpu_usage << "%, Memory: " << mem_usage_mb << " MB\n";
 
         if ((queue_.pop(event, refresh_interval))) {

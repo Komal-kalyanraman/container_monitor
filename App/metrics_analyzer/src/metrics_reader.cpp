@@ -55,7 +55,7 @@ HostInfo MetricsReader::getHostInfo() {
 
 static uint64_t last_total = 0, last_idle = 0;
 
-double MetricsReader::getHostCpuUsage() {
+double MetricsReader::getHostCpuUsagePercentage() {
     std::ifstream file("/proc/stat");
     std::string line;
     std::getline(file, line);
@@ -77,7 +77,7 @@ double MetricsReader::getHostCpuUsage() {
     return usage;
 }
 
-uint64_t MetricsReader::getHostMemoryUsageMB() {
+double MetricsReader::getHostMemoryUsagePercent() {
     std::ifstream file("/proc/meminfo");
     std::string line;
     uint64_t mem_total = 0, mem_free = 0, buffers = 0, cached = 0;
@@ -92,5 +92,6 @@ uint64_t MetricsReader::getHostMemoryUsageMB() {
             sscanf(line.c_str(), "Cached: %lu kB", &cached);
     }
     uint64_t used = mem_total - mem_free - buffers - cached;
-    return used / 1024; // MB
+    double percent = (mem_total > 0) ? ((double)used / mem_total * 100.0) : 0.0;
+    return std::round(percent * 100.0) / 100.0;
 }
