@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include <unistd.h>
+#include "common.hpp"
 
 MetricsReader::MetricsReader(const ContainerResourcePaths& paths, int num_cpus)
     : paths_(paths), num_cpus_(num_cpus)
@@ -18,9 +19,10 @@ uint64_t MetricsReader::readUintFromFile(const std::string& path) {
     return value;
 }
 
+// Convert bytes to megabytes
 int MetricsReader::getMemoryUsage() {
     uint64_t mem_bytes = readUintFromFile(paths_.memory_path);
-    return static_cast<int>(mem_bytes / (1024 * 1024)); // MB
+    return static_cast<int>(mem_bytes / (BYTES_PER_KILOBYTE * KILOBYTES_PER_MEGABYTE)); // MB
 }
 
 int MetricsReader::getPids() {
@@ -28,32 +30,30 @@ int MetricsReader::getPids() {
 }
 
 double MetricsReader::round2(double val) const {
-    return std::round(val * 100.0) / 100.0;
+    return std::round(val * PERCENT_FACTOR) / PERCENT_FACTOR;
 }
 
 double MetricsReader::getMemoryUsagePercent(const ContainerInfo& info) {
     int mem_mb = getMemoryUsage();
-    double percent = (info.memory_limit > 0) ? ((double)mem_mb / info.memory_limit * 100.0) : 0.0;
+    double percent = (info.memory_limit > 0) ? ((double)mem_mb / info.memory_limit * PERCENT_FACTOR) : ZERO_PERCENT;
     return round2(percent);
 }
 
 double MetricsReader::getPidsPercent(const ContainerInfo& info) {
     int pids = getPids();
-    double percent = (info.pid_limit > 0) ? ((double)pids / info.pid_limit * 100.0) : 0.0;
+    double percent = (info.pid_limit > 0) ? ((double)pids / info.pid_limit * PERCENT_FACTOR) : ZERO_PERCENT;
     return round2(percent);
 }
 
-// Host metrics
+// Convert total memory from bytes to megabytes
 HostInfo MetricsReader::getHostInfo() {
     HostInfo info;
     info.num_cpus = get_nprocs();
     struct sysinfo s_info;
     sysinfo(&s_info);
-    info.total_memory_mb = s_info.totalram / (1024 * 1024);
+    info.total_memory_mb = s_info.totalram / (BYTES_PER_KILOBYTE * KILOBYTES_PER_MEGABYTE);
     return info;
 }
-
-static uint64_t last_total = 0, last_idle = 0;
 
 double MetricsReader::getHostCpuUsagePercentage() {
     std::ifstream file("/proc/stat");
@@ -65,12 +65,12 @@ double MetricsReader::getHostCpuUsagePercentage() {
     uint64_t total = user + nice + system + idle + iowait + irq + softirq + steal;
     uint64_t total_idle = idle + iowait;
 
-    double usage = 0.0;
+    double usage = ZERO_PERCENT;
     if (last_total != 0 && last_idle != 0) {
         uint64_t delta_total = total - last_total;
         uint64_t delta_idle = total_idle - last_idle;
-        usage = (double)(delta_total - delta_idle) / delta_total * 100.0;
-        usage = std::round(usage * 100.0) / 100.0;
+        usage = (double)(delta_total - delta_idle) / delta_total * PERCENT_FACTOR;
+        usage = std::round(usage * PERCENT_FACTOR) / PERCENT_FACTOR;
     }
     last_total = total;
     last_idle = total_idle;
@@ -92,6 +92,6 @@ double MetricsReader::getHostMemoryUsagePercent() {
             sscanf(line.c_str(), "Cached: %lu kB", &cached);
     }
     uint64_t used = mem_total - mem_free - buffers - cached;
-    double percent = (mem_total > 0) ? ((double)used / mem_total * 100.0) : 0.0;
-    return std::round(percent * 100.0) / 100.0;
+    double percent = (mem_total > 0) ? ((double)used / mem_total * PERCENT_FACTOR) : ZERO_PERCENT;
+    return std::round(percent * PERCENT_FACTOR) / PERCENT_FACTOR;
 }

@@ -28,6 +28,9 @@ class PlotApp:
         self.xmax = host_df['time'].max()
         self.window = (self.xmax - self.xmin) / 5  # Initial window size
 
+        # Host usage plot toggle
+        self.show_host_usage = tk.BooleanVar(value=True)
+
         # Container selection
         self.selected = {c: tk.BooleanVar(value=True) for c in containers}
         self.check_frame = tk.LabelFrame(master, text="Containers")
@@ -46,6 +49,8 @@ class PlotApp:
         self.scrollbar.set(self.xmin)
         self.scrollbar.pack(side=tk.LEFT, padx=10)
         tk.Label(self.control_frame, text="Scroll X axis").pack(side=tk.LEFT)
+        # Host usage toggle
+        tk.Checkbutton(self.control_frame, text="Show Host Usage", variable=self.show_host_usage, command=self.update_plot).pack(side=tk.LEFT, padx=10)
 
         # Main plot frame (fixed height)
         self.plot_frame = tk.Frame(master, height=500)
@@ -98,10 +103,11 @@ class PlotApp:
         xmin = self.scrollbar.get()
         xmax = xmin + self.window
         padding = 0.01 * (xmax - xmin)
-        # Draw host usage lines (black, normal width)
-        mask_host = (host_df['time'] >= xmin) & (host_df['time'] <= xmax)
-        self.ax_cpu.plot(host_df['time'][mask_host], host_df['cpu_usage_percent'][mask_host], label='Host CPU', color='black')
-        self.ax_mem.plot(host_df['time'][mask_host], host_df['memory_usage_percent'][mask_host], label='Host Memory', color='black')
+        # Draw host usage lines (black, normal width) if enabled
+        if self.show_host_usage.get():
+            mask_host = (host_df['time'] >= xmin) & (host_df['time'] <= xmax)
+            self.ax_cpu.plot(host_df['time'][mask_host], host_df['cpu_usage_percent'][mask_host], color='black')
+            self.ax_mem.plot(host_df['time'][mask_host], host_df['memory_usage_percent'][mask_host], color='black')
         # Draw lines for each container
         self.lines_cpu = {}
         self.lines_mem = {}

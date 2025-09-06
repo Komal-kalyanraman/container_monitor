@@ -143,19 +143,19 @@ void ResourceThreadPool::workerLoop(int thread_index) {
             // CPU usage delta calculation
             uint64_t curr_cpu_ns = reader.readUintFromFile(it->second.cpu_path);
             auto prev_it = prev_cpu_usage_.find(name);
-            metrics.cpu_usage_percent = 0.0;
+            metrics.cpu_usage_percent = ZERO_PERCENT;
             if (prev_it != prev_cpu_usage_.end()) {
                 int64_t prev_ts = prev_it->second.first;
                 uint64_t prev_ns = prev_it->second.second;
                 int64_t delta_ms = metrics.timestamp - prev_ts;
                 int64_t delta_ns = static_cast<int64_t>(curr_cpu_ns) - static_cast<int64_t>(prev_ns);
                 if (delta_ms > 0 && delta_ns > 0 && info.cpu_limit > 0) {
-                    double cpu_sec = (double)delta_ns / 1e9;
-                    double interval_sec = (double)delta_ms / 1000.0;
-                    double percent = (cpu_sec / interval_sec) / info.cpu_limit * 100.0;
-                    metrics.cpu_usage_percent = std::round(percent * 100.0) / 100.0;
+                    double cpu_sec = (double)delta_ns / NANOSECONDS_PER_SECOND;
+                    double interval_sec = (double)delta_ms / MILLISECONDS_PER_SECOND;
+                    double percent = (cpu_sec / interval_sec) / info.cpu_limit * PERCENT_FACTOR;
+                    metrics.cpu_usage_percent = std::round(percent * PERCENT_FACTOR) / PERCENT_FACTOR;
                 } else {
-                    metrics.cpu_usage_percent = 0.0;
+                    metrics.cpu_usage_percent = ZERO_PERCENT;
                 }
             }
             prev_cpu_usage_[name] = {metrics.timestamp, curr_cpu_ns};

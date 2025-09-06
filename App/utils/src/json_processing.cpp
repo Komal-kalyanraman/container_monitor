@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdio>
 #include <sstream>
+#include "common.hpp"
 
 bool getResourceConstraintsFromInspect(const std::string& container_id, ContainerEventInfo& info) {
     std::string cmd = "docker inspect " + container_id;
@@ -24,12 +25,12 @@ bool getResourceConstraintsFromInspect(const std::string& container_id, Containe
         // CPUs: Docker stores as NanoCpus (divide by 1e9 for cores)
         if (hostConfig.contains("NanoCpus")) {
             long long nano_cpus = hostConfig["NanoCpus"];
-            info.cpus = std::to_string(nano_cpus / 1000000000.0);
+            info.cpus = std::to_string(nano_cpus / NANOSECONDS_PER_SECOND);
         }
         // Memory: bytes, convert to MB
         if (hostConfig.contains("Memory")) {
             long long mem_bytes = hostConfig["Memory"];
-            info.memory = std::to_string(mem_bytes / (1024 * 1024)) + "MB";
+            info.memory = std::to_string(mem_bytes / (BYTES_PER_KILOBYTE * KILOBYTES_PER_MEGABYTE)) + "MB";
         }
         // PIDs limit
         if (hostConfig.contains("PidsLimit")) {

@@ -108,7 +108,7 @@ void SQLiteDatabase::setupSchema() {
         "name TEXT PRIMARY KEY,"
         "id TEXT,"
         "cpus REAL,"
-        "memory INTEGER,"
+        "memory REAL,"
         "pids_limit INTEGER"
         ");";
     char* errMsg = nullptr;
@@ -125,7 +125,7 @@ void SQLiteDatabase::setupSchema() {
         "timestamp INTEGER,"
         "cpu_usage REAL,"
         "memory_usage REAL,"
-        "pids REAL"
+        "pids INTEGER"
         ");";
     rc = sqlite3_exec(db_, create_container_metrics_sql, nullptr, nullptr, &errMsg);
     if (rc != SQLITE_OK) {
@@ -138,7 +138,7 @@ void SQLiteDatabase::setupSchema() {
         "CREATE TABLE IF NOT EXISTS host_usage ("
         "timestamp INTEGER,"
         "cpu_usage_percent REAL,"
-        "memory_usage_percent INTEGER"
+        "memory_usage_percent REAL"
         ");";
     rc = sqlite3_exec(db_, create_host_usage_sql, nullptr, nullptr, &errMsg);
     if (rc != SQLITE_OK) {

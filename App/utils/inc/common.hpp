@@ -45,6 +45,14 @@ struct HostInfo {
     uint64_t total_memory_mb;
 };
 
+// Unit conversion and percentage constants
+constexpr double NANOSECONDS_PER_SECOND = 1e9;
+constexpr double MILLISECONDS_PER_SECOND = 1000.0;
+constexpr double PERCENT_FACTOR = 100.0;
+constexpr double ZERO_PERCENT = 0.0;
+constexpr uint64_t BYTES_PER_KILOBYTE = 1024;
+constexpr uint64_t KILOBYTES_PER_MEGABYTE = 1024;
+
 // Configuration file path
 inline constexpr std::string_view CONFIG_FILE_PATH = "../../config/parameter.conf";
 

@@ -24,4 +24,6 @@ private:
     ContainerResourcePaths paths_;
     double round2(double val) const;
     int num_cpus_;
+    uint64_t last_total = 0;
+    uint64_t last_idle = 0;
 };
