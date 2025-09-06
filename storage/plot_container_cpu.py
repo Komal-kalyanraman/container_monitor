@@ -52,21 +52,22 @@ class PlotApp:
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.plot_frame)
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-        # Info label frame below plot
+        # Info label frame below plot with vertical scrollbar
         self.label_frame = tk.Frame(self.plot_frame)
         self.label_frame.pack(side=tk.BOTTOM, fill=tk.X)
-        self.info_label = tk.Label(
+        self.info_scrollbar = tk.Scrollbar(self.label_frame, orient=tk.VERTICAL)
+        self.info_text = tk.Text(
             self.label_frame,
-            text="",
             font=("Courier New", 12),
-            anchor="w",
-            justify="left",
             width=70,
             height=8,
             bg="white",
-            relief=tk.SUNKEN
+            relief=tk.SUNKEN,
+            yscrollcommand=self.info_scrollbar.set
         )
-        self.info_label.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
+        self.info_scrollbar.config(command=self.info_text.yview)
+        self.info_text.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=10, pady=10)
+        self.info_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # For each plot: lines and vertical line
         self.lines_cpu = {}
@@ -115,14 +116,12 @@ class PlotApp:
             ax.grid(True)
         self.ax_cpu.set_ylabel('CPU Usage (%)')
         self.ax_cpu.set_title('Container CPU Usage Over Time')
-        self.ax_cpu.legend()  # Default legend position (inside plot)
         self.ax_mem.set_ylabel('Memory Usage')
         self.ax_mem.set_title('Container Memory Usage Over Time')
-        self.ax_mem.legend()
         self.ax_pid.set_ylabel('PIDs')
         self.ax_pid.set_xlabel('Time (seconds)')
         self.ax_pid.set_title('Container PIDs Over Time')
-        self.ax_pid.legend()
+        self.ax_pid.legend() # Default legend position (inside plot)
         # Draw vertical lines (hidden initially)
         for vline in [self.vline_cpu, self.vline_mem, self.vline_pid]:
             if vline is not None:
@@ -131,7 +130,7 @@ class PlotApp:
         self.vline_mem = self.ax_mem.axvline(x=xmin, color='gray', linestyle='dotted', linewidth=1, visible=False)
         self.vline_pid = self.ax_pid.axvline(x=xmin, color='gray', linestyle='dotted', linewidth=1, visible=False)
         self.canvas.draw()
-        self.info_label.config(text="")
+        self.info_text.delete("1.0", tk.END)
 
     def on_mouse_move(self, event):
         # Only respond if mouse is in one of the axes and xdata is valid
@@ -171,17 +170,15 @@ class PlotApp:
                         idx = np.argmin(np.abs(times - x))
                         pid_val = f"{pids[idx]:8.0f}"
                     info_lines.append(f"{cname:15}: CPU={cpu_val}  MEM={mem_val}  PIDs={pid_val}")
-            # Pad/truncate to fixed number of lines
-            while len(info_lines) < 8:
-                info_lines.append("")
-            info_text = "\n".join(info_lines[:8])
-            self.info_label.config(text=info_text)
+            info_text = "\n".join(info_lines)
+            self.info_text.delete("1.0", tk.END)
+            self.info_text.insert(tk.END, info_text)
             self.canvas.draw_idle()
         else:
             for vline in [self.vline_cpu, self.vline_mem, self.vline_pid]:
                 if vline is not None:
                     vline.set_visible(False)
-            self.info_label.config(text="\n" * 8)
+            self.info_text.delete("1.0", tk.END)
             self.canvas.draw_idle()
 
     def zoom_in(self):
