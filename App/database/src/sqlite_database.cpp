@@ -204,7 +204,7 @@ void SQLiteDatabase::exportAllTablesToCSV(const std::string& export_dir) {
         if (!file.is_open()) {
             CM_LOG_ERROR << "Failed to open host_usage.csv for export: " << filename << "\n";
         } else {
-            file << "timestamp,cpu_usage,memory_usage_mb\n";
+            file << "timestamp,cpu_usage_percent,memory_usage_percent\n";
             const char* sql = "SELECT timestamp, cpu_usage_percent, memory_usage_percent FROM host_usage;";
             sqlite3_stmt* stmt;
             if (sqlite3_prepare_v2(db_, sql, -1, &stmt, nullptr) == SQLITE_OK) {

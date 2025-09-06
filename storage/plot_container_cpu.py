@@ -7,9 +7,14 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 
-# Load CSV
+# Load CSVs
 df = pd.read_csv('container_metrics.csv')
-df['time'] = (df['timestamp'] - df['timestamp'].min()) / 1000.0
+host_df = pd.read_csv('host_usage.csv')
+
+# Compute time axis based on host_usage.csv
+host_df['time'] = (host_df['timestamp'] - host_df['timestamp'].min()) / 1000.0
+df['time'] = (df['timestamp'] - host_df['timestamp'].min()) / 1000.0  # Align container time to host time
+
 containers = sorted(df['container_name'].unique())
 
 class PlotApp:
@@ -18,9 +23,9 @@ class PlotApp:
         master.title("Container Resource Usage Dashboard")
         master.minsize(900, 700)
 
-        # Initial plot range
-        self.xmin = df['time'].min()
-        self.xmax = df['time'].max()
+        # Initial plot range based on host_df
+        self.xmin = host_df['time'].min()
+        self.xmax = host_df['time'].max()
         self.window = (self.xmax - self.xmin) / 5  # Initial window size
 
         # Container selection
@@ -93,6 +98,10 @@ class PlotApp:
         xmin = self.scrollbar.get()
         xmax = xmin + self.window
         padding = 0.01 * (xmax - xmin)
+        # Draw host usage lines (black, normal width)
+        mask_host = (host_df['time'] >= xmin) & (host_df['time'] <= xmax)
+        self.ax_cpu.plot(host_df['time'][mask_host], host_df['cpu_usage_percent'][mask_host], label='Host CPU', color='black')
+        self.ax_mem.plot(host_df['time'][mask_host], host_df['memory_usage_percent'][mask_host], label='Host Memory', color='black')
         # Draw lines for each container
         self.lines_cpu = {}
         self.lines_mem = {}
@@ -115,13 +124,13 @@ class PlotApp:
             ax.set_xlim(xmin - padding, xmax + padding)
             ax.grid(True)
         self.ax_cpu.set_ylabel('CPU Usage (%)')
-        self.ax_cpu.set_title('Container CPU Usage Over Time')
-        self.ax_mem.set_ylabel('Memory Usage')
-        self.ax_mem.set_title('Container Memory Usage Over Time')
+        self.ax_cpu.set_title('Container & Host CPU Usage Over Time')
+        self.ax_mem.set_ylabel('Memory Usage (%)')
+        self.ax_mem.set_title('Container & Host Memory Usage Over Time')
         self.ax_pid.set_ylabel('PIDs')
         self.ax_pid.set_xlabel('Time (seconds)')
         self.ax_pid.set_title('Container PIDs Over Time')
-        self.ax_pid.legend() # Default legend position (inside plot)
+        self.ax_pid.legend() # Legend only for PIDs
         # Draw vertical lines (hidden initially)
         for vline in [self.vline_cpu, self.vline_mem, self.vline_pid]:
             if vline is not None:
@@ -143,6 +152,11 @@ class PlotApp:
                     vline.set_visible(True)
             # Gather values for all visible containers at x
             info_lines = [f"Time: {x:8.2f}"]
+            # Host info
+            host_idx = np.argmin(np.abs(host_df['time'].values - x))
+            host_cpu = host_df['cpu_usage_percent'].values[host_idx]
+            host_mem = host_df['memory_usage_percent'].values[host_idx]
+            info_lines.append(f"{'Host':15}: CPU={host_cpu:8.2f}  MEM={host_mem:8.2f}")
             for cname in containers:
                 if self.selected[cname].get():
                     # CPU
