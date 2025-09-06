@@ -1,2 +1,4 @@
 App/build/*
-storage/*
+storage/container_metrics.csv
+storage/host_usage.csv
+storage/metrics.db

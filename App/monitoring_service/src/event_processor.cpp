@@ -36,8 +36,7 @@ void EventProcessor::processLoop() {
         double cpu_usage = MetricsReader::getHostCpuUsage();
         uint64_t mem_usage_mb = MetricsReader::getHostMemoryUsageMB();
         db_.saveHostUsage(timestamp_ms, cpu_usage, mem_usage_mb);
-        CM_LOG_INFO << "[Host Usage] Timestamp: " << timestamp_ms
-              << ", CPU: " << cpu_usage << "%, Memory: " << mem_usage_mb << " MB\n";
+        // CM_LOG_INFO << "[Host Usage] Timestamp: " << timestamp_ms << ", CPU: " << cpu_usage << "%, Memory: " << mem_usage_mb << " MB\n";
 
         if ((queue_.pop(event, refresh_interval))) {
             try {
