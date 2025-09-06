@@ -15,7 +15,8 @@ containers = sorted(df['container_name'].unique())
 class PlotApp:
     def __init__(self, master):
         self.master = master
-        master.title("Container CPU Usage Dashboard")
+        master.title("Container Resource Usage Dashboard")
+        master.minsize(900, 700)
 
         # Initial plot range
         self.xmin = df['time'].min()
@@ -35,20 +36,19 @@ class PlotApp:
         tk.Button(self.control_frame, text="Zoom In", command=self.zoom_in).pack(side=tk.LEFT)
         tk.Button(self.control_frame, text="Zoom Out", command=self.zoom_out).pack(side=tk.LEFT)
         tk.Button(self.control_frame, text="Quit", command=self.quit_app, bg="red", fg="white").pack(side=tk.LEFT, padx=10)
-
-        # Scrollbar
         self.scrollbar = tk.Scale(self.control_frame, from_=self.xmin, to=self.xmax-self.window, orient=tk.HORIZONTAL,
                                   resolution=0.1, length=400, command=self.scroll)
         self.scrollbar.set(self.xmin)
         self.scrollbar.pack(side=tk.LEFT, padx=10)
         tk.Label(self.control_frame, text="Scroll X axis").pack(side=tk.LEFT)
 
-        # Main plot frame
-        self.plot_frame = tk.Frame(master)
+        # Main plot frame (fixed height)
+        self.plot_frame = tk.Frame(master, height=500)
         self.plot_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
 
-        # Matplotlib Figure
-        self.fig, self.ax = plt.subplots(figsize=(10, 5))
+        # Create three subplots: CPU, Memory, PIDs (fixed figure size, reduced hspace)
+        self.fig, (self.ax_cpu, self.ax_mem, self.ax_pid) = plt.subplots(3, 1, figsize=(10, 7), sharex=True)
+        self.fig.subplots_adjust(hspace=0.15)
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.plot_frame)
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
@@ -61,15 +61,21 @@ class PlotApp:
             font=("Courier New", 12),
             anchor="w",
             justify="left",
-            width=50,
-            height=6,
+            width=70,
+            height=8,
             bg="white",
             relief=tk.SUNKEN
         )
         self.info_label.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
 
-        self.lines = {}
-        self.vline = None
+        # For each plot: lines and vertical line
+        self.lines_cpu = {}
+        self.lines_mem = {}
+        self.lines_pid = {}
+        self.vline_cpu = None
+        self.vline_mem = None
+        self.vline_pid = None
+
         self.update_plot()
 
         # Mouse motion event
@@ -79,57 +85,103 @@ class PlotApp:
         master.bind('<Control-c>', lambda event: self.quit_app())
 
     def update_plot(self):
-        self.ax.clear()
+        # Clear all axes
+        self.ax_cpu.clear()
+        self.ax_mem.clear()
+        self.ax_pid.clear()
         xmin = self.scrollbar.get()
         xmax = xmin + self.window
-        self.lines = {}
+        padding = 0.01 * (xmax - xmin)
+        # Draw lines for each container
+        self.lines_cpu = {}
+        self.lines_mem = {}
+        self.lines_pid = {}
         for c in containers:
             if self.selected[c].get():
                 group = df[df['container_name'] == c]
                 mask = (group['time'] >= xmin) & (group['time'] <= xmax)
-                line, = self.ax.plot(group['time'][mask], group['cpu_usage'][mask], label=c)
-                self.lines[c] = (line, group[mask])
-        padding = 0.01 * (xmax - xmin)
-        self.ax.set_xlim(xmin - padding, xmax + padding)
-        self.ax.set_xlabel('Time (seconds)')
-        self.ax.set_ylabel('CPU Usage (%)')
-        self.ax.set_title('Container CPU Usage Over Time')
-        self.ax.legend()
-        self.ax.grid(True)
-        # Draw vertical line (hidden initially)
-        if self.vline is not None:
-            self.vline.remove()
-        self.vline = self.ax.axvline(x=xmin, color='gray', linestyle='dotted', linewidth=1, visible=False)
+                # CPU
+                line_cpu, = self.ax_cpu.plot(group['time'][mask], group['cpu_usage'][mask], label=c)
+                self.lines_cpu[c] = (line_cpu, group[mask])
+                # Memory
+                line_mem, = self.ax_mem.plot(group['time'][mask], group['memory_usage'][mask], label=c)
+                self.lines_mem[c] = (line_mem, group[mask])
+                # PIDs
+                line_pid, = self.ax_pid.plot(group['time'][mask], group['pids'][mask], label=c)
+                self.lines_pid[c] = (line_pid, group[mask])
+        # Set axis labels and limits
+        for ax in [self.ax_cpu, self.ax_mem, self.ax_pid]:
+            ax.set_xlim(xmin - padding, xmax + padding)
+            ax.grid(True)
+        self.ax_cpu.set_ylabel('CPU Usage (%)')
+        self.ax_cpu.set_title('Container CPU Usage Over Time')
+        self.ax_cpu.legend()  # Default legend position (inside plot)
+        self.ax_mem.set_ylabel('Memory Usage')
+        self.ax_mem.set_title('Container Memory Usage Over Time')
+        self.ax_mem.legend()
+        self.ax_pid.set_ylabel('PIDs')
+        self.ax_pid.set_xlabel('Time (seconds)')
+        self.ax_pid.set_title('Container PIDs Over Time')
+        self.ax_pid.legend()
+        # Draw vertical lines (hidden initially)
+        for vline in [self.vline_cpu, self.vline_mem, self.vline_pid]:
+            if vline is not None:
+                vline.remove()
+        self.vline_cpu = self.ax_cpu.axvline(x=xmin, color='gray', linestyle='dotted', linewidth=1, visible=False)
+        self.vline_mem = self.ax_mem.axvline(x=xmin, color='gray', linestyle='dotted', linewidth=1, visible=False)
+        self.vline_pid = self.ax_pid.axvline(x=xmin, color='gray', linestyle='dotted', linewidth=1, visible=False)
         self.canvas.draw()
         self.info_label.config(text="")
 
     def on_mouse_move(self, event):
-        if event.inaxes == self.ax and event.xdata is not None:
+        # Only respond if mouse is in one of the axes and xdata is valid
+        if event.inaxes in [self.ax_cpu, self.ax_mem, self.ax_pid] and event.xdata is not None:
             x = event.xdata
-            # Move vertical line
-            if self.vline is not None:
-                self.vline.set_xdata(x)
-                self.vline.set_visible(True)
-            # Gather y values for all visible containers at x
+            # Move vertical lines in all plots
+            for vline in [self.vline_cpu, self.vline_mem, self.vline_pid]:
+                if vline is not None:
+                    vline.set_xdata(x)
+                    vline.set_visible(True)
+            # Gather values for all visible containers at x
             info_lines = [f"Time: {x:8.2f}"]
-            for cname, (line, group) in self.lines.items():
-                times = group['time'].values
-                cpus = group['cpu_usage'].values
-                if len(times) == 0:
-                    continue
-                idx = np.argmin(np.abs(times - x))
-                info_lines.append(f"{cname:15}: CPU={cpus[idx]:8.2f}")
+            for cname in containers:
+                if self.selected[cname].get():
+                    # CPU
+                    group_cpu = self.lines_cpu.get(cname, (None, None))[1]
+                    cpu_val = ""
+                    if group_cpu is not None and len(group_cpu) > 0:
+                        times = group_cpu['time'].values
+                        cpus = group_cpu['cpu_usage'].values
+                        idx = np.argmin(np.abs(times - x))
+                        cpu_val = f"{cpus[idx]:8.2f}"
+                    # Memory
+                    group_mem = self.lines_mem.get(cname, (None, None))[1]
+                    mem_val = ""
+                    if group_mem is not None and len(group_mem) > 0:
+                        times = group_mem['time'].values
+                        mems = group_mem['memory_usage'].values
+                        idx = np.argmin(np.abs(times - x))
+                        mem_val = f"{mems[idx]:8.2f}"
+                    # PIDs
+                    group_pid = self.lines_pid.get(cname, (None, None))[1]
+                    pid_val = ""
+                    if group_pid is not None and len(group_pid) > 0:
+                        times = group_pid['time'].values
+                        pids = group_pid['pids'].values
+                        idx = np.argmin(np.abs(times - x))
+                        pid_val = f"{pids[idx]:8.0f}"
+                    info_lines.append(f"{cname:15}: CPU={cpu_val}  MEM={mem_val}  PIDs={pid_val}")
             # Pad/truncate to fixed number of lines
-            while len(info_lines) < 6:
+            while len(info_lines) < 8:
                 info_lines.append("")
-            info_text = "\n".join(info_lines[:6])
+            info_text = "\n".join(info_lines[:8])
             self.info_label.config(text=info_text)
             self.canvas.draw_idle()
         else:
-            if self.vline is not None:
-                self.vline.set_visible(False)
-            # Clear but keep label size
-            self.info_label.config(text="\n" * 6)
+            for vline in [self.vline_cpu, self.vline_mem, self.vline_pid]:
+                if vline is not None:
+                    vline.set_visible(False)
+            self.info_label.config(text="\n" * 8)
             self.canvas.draw_idle()
 
     def zoom_in(self):
