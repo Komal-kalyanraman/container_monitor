@@ -1,7 +1,7 @@
-set(APP_NAME kernel)
+set(APP_NAME metrics_analyzer)
 
 add_library(${APP_NAME} STATIC
-    src/resource_reader.cpp
+    src/metrics_reader.cpp
     src/metrics_calculator.cpp
 )
 

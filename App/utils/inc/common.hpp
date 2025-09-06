@@ -16,7 +16,42 @@ struct MonitorConfig {
     double alert_violation;
     int thread_count;
     int thread_capacity;
+    std::string csv_export_folder_path;
 };
+
+struct ContainerMetrics {
+    int64_t timestamp;
+    double cpu_usage_percent;    // % of cpu_limit
+    double memory_usage_percent; // % of memory_limit
+    double pids_percent;         // % of pid_limit
+};
+
+struct ContainerResourcePaths {
+    std::string cpu_path;
+    std::string memory_path;
+    std::string pids_path;
+};
+
+struct ContainerInfo {
+    std::string id;
+    double cpu_limit;
+    int memory_limit;
+    int pid_limit;
+    // Add more fields as needed
+};
+
+struct HostInfo {
+    int num_cpus;
+    uint64_t total_memory_mb;
+};
+
+// Unit conversion and percentage constants
+constexpr double NANOSECONDS_PER_SECOND = 1e9;
+constexpr double MILLISECONDS_PER_SECOND = 1000.0;
+constexpr double PERCENT_FACTOR = 100.0;
+constexpr double ZERO_PERCENT = 0.0;
+constexpr uint64_t BYTES_PER_KILOBYTE = 1024;
+constexpr uint64_t KILOBYTES_PER_MEGABYTE = 1024;
 
 // Configuration file path
 inline constexpr std::string_view CONFIG_FILE_PATH = "../../config/parameter.conf";
@@ -35,6 +70,7 @@ inline constexpr std::string_view KEY_ALERT_CRITICAL = "alert_critical";
 inline constexpr std::string_view KEY_ALERT_VIOLATION = "alert_violation";
 inline constexpr std::string_view KEY_THREAD_COUNT = "thread_count";
 inline constexpr std::string_view KEY_THREAD_CAPACITY = "thread_capacity";
+inline constexpr std::string_view KEY_CSV_EXPORT_FOLDER_PATH = "csv_export_folder_path";
 
 // Default values as string_view
 inline constexpr std::string_view DEFAULT_RUNTIME = "docker";

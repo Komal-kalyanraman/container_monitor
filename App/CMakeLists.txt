@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(ContainerMonitor VERSION 0.0.1 LANGUAGES CXX)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # Set C++ standard and compiler options
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS ON)
@@ -17,7 +19,7 @@ find_package(nlohmann_json REQUIRED)
 # Add subdirectories for modules
 add_subdirectory(analysis)
 add_subdirectory(ui)
-add_subdirectory(kernel)
+add_subdirectory(metrics_analyzer)
 add_subdirectory(database)
 add_subdirectory(utils)
 add_subdirectory(container_runtime)
@@ -30,7 +32,7 @@ add_executable(container_monitor main.cpp)
 target_link_libraries(container_monitor
     analysis
     ui
-    kernel
+    metrics_analyzer
     database
     utils
     container_runtime
@@ -43,7 +45,7 @@ target_link_libraries(container_monitor
 target_include_directories(container_monitor PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/analysis/inc
     ${CMAKE_CURRENT_SOURCE_DIR}/ui/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/metrics_analyzer/inc
     ${CMAKE_CURRENT_SOURCE_DIR}/database/inc
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/inc
     ${CMAKE_CURRENT_SOURCE_DIR}/container_runtime/inc

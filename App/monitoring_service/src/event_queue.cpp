@@ -8,9 +8,12 @@ void EventQueue::push(const std::string& event) {
     cv_.notify_one();
 }
 
-bool EventQueue::pop(std::string& event) {
+bool EventQueue::pop(std::string& event, int timeout_ms) {
     std::unique_lock<std::mutex> lock(mutex_);
-    cv_.wait(lock, [this]{ return !queue_.empty() || stopped_; });
+    if (!cv_.wait_for(lock, std::chrono::milliseconds(timeout_ms), [this]{ return !queue_.empty() || stopped_; })) {
+        // Timeout occurred, no event
+        return false;
+    }
     if (stopped_ && queue_.empty()) return false;
     event = queue_.front();
     queue_.pop();

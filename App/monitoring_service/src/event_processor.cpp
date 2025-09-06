@@ -2,9 +2,10 @@
 #include <iostream>
 #include "logger.hpp"
 #include "json_processing.hpp"
+#include "metrics_reader.hpp"
 
-EventProcessor::EventProcessor(EventQueue& queue, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db)
-    : queue_(queue), shutdown_flag_(shutdown_flag), db_(db) {}
+EventProcessor::EventProcessor(EventQueue& queue, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db, const MonitorConfig& cfg)
+    : queue_(queue), shutdown_flag_(shutdown_flag), db_(db), cfg_(cfg) {}
 
 EventProcessor::~EventProcessor() { stop(); }
 
@@ -21,8 +22,24 @@ void EventProcessor::stop() {
 
 void EventProcessor::processLoop() {
     std::string event;
+    int refresh_interval = cfg_.container_event_refresh_interval_ms;
+    MetricsReader metrics_reader({}, 0);
+    HostInfo host_info = metrics_reader.getHostInfo();
+    CM_LOG_INFO << "[Host Info] CPUs: " << host_info.num_cpus
+                << ", Total Memory: " << host_info.total_memory_mb << " MB\n";
+    // db_.saveHostInfo(host_info);
+
     while (running_ && !shutdown_flag_) {
-        if (queue_.pop(event)) {
+        // Host usage collection
+        auto now = std::chrono::system_clock::now();
+        auto timestamp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+    
+        double cpu_usage_percentage = metrics_reader.getHostCpuUsagePercentage();
+        double mem_usage_percentage = metrics_reader.getHostMemoryUsagePercent();
+        db_.saveHostUsage(timestamp_ms, cpu_usage_percentage, mem_usage_percentage);
+        // CM_LOG_INFO << "[Host Usage] Timestamp: " << timestamp_ms << ", CPU: " << cpu_usage << "%, Memory: " << mem_usage_mb << " MB\n";
+
+        if ((queue_.pop(event, refresh_interval))) {
             try {
                 ContainerEventInfo info;
                 if (parseContainerEvent(event, info)) {
@@ -38,7 +55,7 @@ void EventProcessor::processLoop() {
                         double cpus = std::stod(info.cpus);
                         int memory = std::stoi(info.memory);
                         int pids_limit = std::stoi(info.pids_limit);
-                        db_.saveContainer(info.name, std::make_tuple(info.id, cpus, memory, pids_limit));
+                        db_.saveContainer(info.name, ContainerInfo{info.id, cpus, memory, pids_limit});
                     } else if (info.status == "destroy") {
                         db_.removeContainer(info.name);
                         CM_LOG_INFO << " [Container Removed]";
@@ -46,10 +63,10 @@ void EventProcessor::processLoop() {
                     CM_LOG_INFO << "\n";
                 }
             } catch (const std::exception& e) {
-                std::cerr << "Event processing error: " << e.what() << "\n";
+                CM_LOG_ERROR << "Event processing error: " << e.what() << "\n";
             } catch (...) {
-                std::cerr << "Unknown error during event processing. \n";
+                CM_LOG_ERROR << "Unknown error during event processing. \n";
             }
-        }
+        }        
     }
 }
