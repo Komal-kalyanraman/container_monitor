@@ -4,6 +4,8 @@
 #include <cmath> 
 #include <vector>
 #include <chrono>
+#include <cstring>
+#include <mqueue.h>
 #include <unordered_map>
 #include "common.hpp"
 #include "logger.hpp"
@@ -116,6 +118,31 @@ void ResourceThreadPool::workerLoop(int thread_index) {
     auto& buffers = thread_buffers_[thread_index];
     auto& local_paths = thread_local_paths_[thread_index];
 
+    // Print METRIC_MQ_MSG_SIZE for debugging
+    std::cout << "[Thread " << thread_index << "] METRIC_MQ_MSG_SIZE: " << METRIC_MQ_MSG_SIZE << std::endl;
+
+    // Open message queue (shared, fixed size)
+    mqd_t mq;
+    struct mq_attr attr;
+    attr.mq_flags = 0;
+    attr.mq_maxmsg = METRIC_MQ_MAX_MSG;
+    attr.mq_msgsize = METRIC_MQ_MSG_SIZE;
+    attr.mq_curmsgs = 0;
+
+    std::cout << "[Thread " << thread_index << "] mq_attr: "
+          << "mq_flags=" << attr.mq_flags
+          << ", mq_maxmsg=" << attr.mq_maxmsg
+          << ", mq_msgsize=" << attr.mq_msgsize
+          << ", mq_curmsgs=" << attr.mq_curmsgs << std::endl;
+    
+    mq = mq_open(METRIC_MQ_NAME.data(), O_RDWR | O_CREAT, 0644, &attr);
+
+    if (mq == (mqd_t)-1) {
+        std::cerr << "[Thread " << thread_index << "] Failed to open message queue: " << strerror(errno) << std::endl;
+    } else {
+        std::cout << "[Thread " << thread_index << "] Message queue opened successfully." << std::endl;
+    }
+
     while (running_ && !shutdown_flag_) {
         std::vector<std::string> containers;
         {
@@ -163,6 +190,34 @@ void ResourceThreadPool::workerLoop(int thread_index) {
             buffers[name].push_back(metrics);
 
             if (buffers[name].size() >= batch_size_) {
+                // Find max values in the batch
+                double max_cpu = ZERO_PERCENT;
+                double max_mem = ZERO_PERCENT;
+                double max_pids = ZERO_PERCENT;
+                for (const auto& m : buffers[name]) {
+                    max_cpu = std::max(max_cpu, m.cpu_usage_percent);
+                    max_mem = std::max(max_mem, m.memory_usage_percent);
+                    max_pids = std::max(max_pids, m.pids_percent);
+                }
+
+                // Print max values for debugging
+                std::cout << "[Thread " << thread_index << "] Max for container " << name
+                        << " | CPU: " << max_cpu
+                        << " | Mem: " << max_mem
+                        << " | PIDs: " << max_pids << std::endl;
+
+                // Prepare message
+                ContainerMaxMetricsMsg max_msg;
+                std::memset(&max_msg, 0, sizeof(max_msg));
+                std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
+                max_msg.max_cpu_usage_percent = max_cpu;
+                max_msg.max_memory_usage_percent = max_mem;
+                max_msg.max_pids_percent = max_pids;
+
+                // Send to message queue
+                mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);
+
+                // Insert batch to DB and clear buffer
                 db_.insertBatch(name, buffers[name]);
                 buffers[name].clear();
                 CM_LOG_INFO << "[Thread " << thread_index << "] Batch inserted for container: " << name << "\n";
@@ -173,6 +228,9 @@ void ResourceThreadPool::workerLoop(int thread_index) {
         std::unique_lock<std::mutex> lock(assign_mutex_);
         cv_.wait_for(lock, std::chrono::milliseconds(total_wait_ms), [this]() { return !running_; });
     }
+
+    mq_close(mq);
+    
     // On shutdown, flush all buffers for this thread
     for (auto& [name, buffer] : buffers) {
         if (!buffer.empty()) db_.insertBatch(name, buffer);

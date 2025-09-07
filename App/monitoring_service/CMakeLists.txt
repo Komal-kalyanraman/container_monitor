@@ -16,5 +16,5 @@ target_include_directories(${APP_NAME} PUBLIC
     ${CMAKE_SOURCE_DIR}/metrics_analyzer/inc
 )
 
-target_link_libraries(${APP_NAME} PUBLIC utils metrics_analyzer glog::glog)
+target_link_libraries(${APP_NAME} PUBLIC utils metrics_analyzer rt glog::glog)
 set_target_properties(${APP_NAME} PROPERTIES CXX_STANDARD 17)
