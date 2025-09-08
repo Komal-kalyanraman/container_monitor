@@ -28,7 +28,7 @@ int main() {
     std::cout << "Struct populated with sample data." << std::endl;
 
     // Message queue setup
-    const char* queue_name = "/test_queue";
+    const char* queue_name = "/container_max_metric_mq";
     struct mq_attr attr;
     attr.mq_flags = 0;
     attr.mq_maxmsg = 10;

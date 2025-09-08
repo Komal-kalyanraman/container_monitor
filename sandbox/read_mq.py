@@ -1,14 +1,10 @@
 import posix_ipc
-try:
-    posix_ipc.unlink_message_queue('/test_queue')
-except Exception:
-    pass
 import struct
 import time
 
 STRUCT_FORMAT = '<ddd100s'
 MSG_SIZE = struct.calcsize(STRUCT_FORMAT)
-QUEUE_NAME = '/test_queue'
+QUEUE_NAME = '/container_max_metric_mq'
 
 print(f"[Python] Waiting for message queue '{QUEUE_NAME}' to appear...")
 
@@ -20,10 +16,7 @@ for attempt in range(50):
         break
     except posix_ipc.ExistentialError:
         print(f"[Python] Attempt {attempt + 1}: Queue not found, retrying...")
-        time.sleep(0.1)
-    except Exception as e:
-        print(f"[Python] Attempt {attempt + 1}: Unexpected error: {e}")
-        time.sleep(0.1)
+        time.sleep(1)
 
 if mq is None:
     print("[Python] Message queue not found after waiting.")
@@ -34,7 +27,6 @@ try:
     while True:
         msg, _ = mq.receive(MSG_SIZE)
         max_cpu, max_mem, max_pids, container_id = struct.unpack(STRUCT_FORMAT, msg)
-        print("Raw container_id bytes:", container_id)
         print("Container:", container_id.decode('utf-8', errors='replace').rstrip('\x00'),
               "| Max CPU:", max_cpu,
               "| Max Mem:", max_mem,

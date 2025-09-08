@@ -129,16 +129,18 @@ void ResourceThreadPool::workerLoop(int thread_index) {
     attr.mq_msgsize = METRIC_MQ_MSG_SIZE;
     attr.mq_curmsgs = 0;
 
+    std::cout << "[Thread " << thread_index << "] Attempting mq_open with name: " << METRIC_MQ_NAME << std::endl;
     std::cout << "[Thread " << thread_index << "] mq_attr: "
-          << "mq_flags=" << attr.mq_flags
-          << ", mq_maxmsg=" << attr.mq_maxmsg
-          << ", mq_msgsize=" << attr.mq_msgsize
-          << ", mq_curmsgs=" << attr.mq_curmsgs << std::endl;
-    
+              << "mq_flags=" << attr.mq_flags
+              << ", mq_maxmsg=" << attr.mq_maxmsg
+              << ", mq_msgsize=" << attr.mq_msgsize
+              << ", mq_curmsgs=" << attr.mq_curmsgs << std::endl;
+
     mq = mq_open(METRIC_MQ_NAME.data(), O_RDWR | O_CREAT, 0644, &attr);
 
     if (mq == (mqd_t)-1) {
-        std::cerr << "[Thread " << thread_index << "] Failed to open message queue: " << strerror(errno) << std::endl;
+        std::cerr << "[Thread " << thread_index << "] Failed to open message queue: " << strerror(errno)
+                  << " (errno=" << errno << ")" << std::endl;
     } else {
         std::cout << "[Thread " << thread_index << "] Message queue opened successfully." << std::endl;
     }
@@ -209,10 +211,11 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                 // Prepare message
                 ContainerMaxMetricsMsg max_msg;
                 std::memset(&max_msg, 0, sizeof(max_msg));
-                std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
                 max_msg.max_cpu_usage_percent = max_cpu;
                 max_msg.max_memory_usage_percent = max_mem;
                 max_msg.max_pids_percent = max_pids;
+                std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
+                max_msg.container_id[sizeof(max_msg.container_id) - 1] = '\0'; // Ensure null-termination
 
                 // Send to message queue
                 mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);

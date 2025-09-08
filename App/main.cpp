@@ -4,6 +4,8 @@
 #include <vector>
 #include <atomic>
 #include <csignal>
+#include <cerrno>
+#include <mqueue.h>
 #include "logger.hpp"
 #include "common.hpp"
 #include "config_parser.hpp"
@@ -22,6 +24,15 @@ void SignalHandler(int signum) {
 }
 
 int main() {
+    // Remove existing message queue at startup
+    std::cout << "[Main] Attempting to unlink message queue: /test_queue" << std::endl;
+    int unlink_result = mq_unlink("/test_queue");
+    if (unlink_result == 0) {
+        std::cout << "[Main] Successfully unlinked /test_queue" << std::endl;
+    } else {
+        std::cout << "[Main] mq_unlink failed: " << strerror(errno) << std::endl;
+    }
+
     std::signal(SIGINT, SignalHandler);
     std::signal(SIGTERM, SignalHandler);
 

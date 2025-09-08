@@ -27,12 +27,14 @@ struct ContainerMetrics {
     double pids_percent;         // % of pid_limit
 };
 
+#pragma pack(push, 1)
 struct ContainerMaxMetricsMsg {
-    char container_id[100]; // fixed size for message queue
     double max_cpu_usage_percent;
     double max_memory_usage_percent;
     double max_pids_percent;
+    char container_id[100];
 };
+#pragma pack(pop)
 
 struct ContainerResourcePaths {
     std::string cpu_path;
@@ -64,7 +66,7 @@ constexpr uint64_t KILOBYTES_PER_MEGABYTE = 1024;
 // Message queue constants
 inline constexpr std::string_view METRIC_MQ_NAME = "/container_max_metric_mq";
 inline constexpr size_t METRIC_MQ_MSG_SIZE = sizeof(ContainerMaxMetricsMsg);
-inline constexpr long METRIC_MQ_MAX_MSG = 128; // fixed size queue
+inline constexpr long METRIC_MQ_MAX_MSG = 100; // fixed size queue
 
 // Configuration file path
 inline constexpr std::string_view CONFIG_FILE_PATH = "../../config/parameter.conf";
