@@ -203,10 +203,10 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                 }
 
                 // Print max values for debugging
-                std::cout << "[Thread " << thread_index << "] Max for container " << name
-                        << " | CPU: " << max_cpu
-                        << " | Mem: " << max_mem
-                        << " | PIDs: " << max_pids << std::endl;
+                // std::cout << "[Thread " << thread_index << "] Max for container " << name
+                //         << " | CPU: " << max_cpu
+                //         << " | Mem: " << max_mem
+                //         << " | PIDs: " << max_pids << std::endl;
 
                 // Prepare message
                 ContainerMaxMetricsMsg max_msg;

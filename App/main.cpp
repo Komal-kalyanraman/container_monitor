@@ -15,6 +15,7 @@
 #include "resource_monitor.hpp"
 #include "sqlite_database.hpp"
 #include "resource_thread_pool.hpp"
+#include "live_metric_aggregator.hpp"
 
 std::atomic<bool> shutdown_requested{false};
 
@@ -51,33 +52,38 @@ int main() {
     db.clearAll(); // Clear all entries at startup
     db.setupSchema(); // Initialize the container_metrics table
 
-    // Start event listener
-    RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);
-    EventProcessor event_processor(*event_queue, shutdown_requested, db, cfg);
-    
     ResourceThreadPool thread_pool(cfg, shutdown_requested, db);
     thread_pool.start();
 
+    // Create event listener instance
+    RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);
+    // Create event processor instance
+    EventProcessor event_processor(*event_queue, shutdown_requested, db, cfg);
+    // Create resource monitor instance
     ResourceMonitor resource_monitor(db, shutdown_requested, thread_pool);
+    // Create LiveMetricAggregator instance
+    LiveMetricAggregator live_metric_aggregator(shutdown_requested);
 
     // Start event listener
-    worker_threads.emplace_back([&](){ event_listener.start(); });
-    
+    worker_threads.emplace_back([&](){ event_listener.start(); });    
     // Start event processor
     worker_threads.emplace_back([&](){ event_processor.start(); });
-
     // Start resource monitor thread
     worker_threads.emplace_back([&](){ resource_monitor.start(); });
+    // Start live metric aggregator thread
+    worker_threads.emplace_back([&](){ live_metric_aggregator.start(); });
 
     // Main loop: wait for shutdown signal
     while (!shutdown_requested) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
+    thread_pool.stop();
+
     event_listener.stop();
     event_processor.stop();
     resource_monitor.stop();
-    thread_pool.stop();
+    live_metric_aggregator.stop();   
 
     // Join all threads
     for (auto& thread : worker_threads) {
