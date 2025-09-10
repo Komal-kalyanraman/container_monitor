@@ -4,10 +4,12 @@
 #include <cstring>
 #include <cerrno>
 #include <thread>
+#include <chrono>
 #include "common.hpp"
+#include "monitor_dashboard.hpp"
 
-LiveMetricAggregator::LiveMetricAggregator(std::atomic<bool>& shutdown_flag)
-    : shutdown_flag_(shutdown_flag) {}
+LiveMetricAggregator::LiveMetricAggregator(std::atomic<bool>& shutdown_flag, MonitorDashboard* dashboard, int ui_refresh_interval_ms)
+    : shutdown_flag_(shutdown_flag), dashboard_(dashboard), ui_refresh_interval_ms_(ui_refresh_interval_ms) {}
 
 LiveMetricAggregator::~LiveMetricAggregator() {
     stop();
@@ -51,19 +53,40 @@ void LiveMetricAggregator::run() {
     std::cout << "[C++] Waiting for messages..." << std::endl;
     ContainerMaxMetricsMsg msg;
     unsigned int prio;
+    int64_t last_cleanup = 0;
     while (running_ && !shutdown_flag_) {
         ssize_t bytes = mq_receive(mqd, reinterpret_cast<char*>(&msg), METRIC_MQ_MSG_SIZE, &prio);
+        int64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+
         if (bytes >= 0) {
-            std::cout << "Container: " << std::string(msg.container_id)
-                      << " | Max CPU: " << msg.max_cpu_usage_percent
-                      << " | Max Mem: " << msg.max_memory_usage_percent
-                      << " | Max PIDs: " << msg.max_pids_percent << std::endl;
+            std::string id(msg.container_id);
+            last_update_map_[id] = now;
+            if (dashboard_) {
+                dashboard_->pushMetrics(msg);
+            }
         } else if (errno == EAGAIN) {
             // No message, just wait
         } else if (errno == EINTR) {
             break; // Interrupted by signal
         } else {
             std::cerr << "[C++] mq_receive error: " << strerror(errno) << std::endl;
+        }
+
+        // Periodically check for stale containers
+        if (now - last_cleanup > ui_refresh_interval_ms_) {
+            last_cleanup = now;
+            for (auto it = last_update_map_.begin(); it != last_update_map_.end(); ) {
+                if (now - it->second > ui_refresh_interval_ms_) {
+                    // std::cout << "[Aggregator] Removing stale container: " << it->first << std::endl;
+                    if (dashboard_) {
+                        dashboard_->pushMetricsRemoved(it->first);
+                    }
+                    it = last_update_map_.erase(it);
+                } else {
+                    ++it;
+                }
+            }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }

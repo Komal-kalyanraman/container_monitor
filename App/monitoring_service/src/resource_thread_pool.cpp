@@ -11,6 +11,8 @@
 #include "logger.hpp"
 #include "docker_cgroup_v1_path.hpp"
 #include "metrics_reader.hpp"
+#include <mutex>
+std::mutex cout_mutex;
 
 ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db)
     : cfg_(cfg), thread_count_(cfg.thread_count), thread_capacity_(cfg.thread_capacity),
@@ -152,6 +154,13 @@ void ResourceThreadPool::workerLoop(int thread_index) {
             std::unique_lock<std::mutex> lock(assign_mutex_);
             containers = thread_containers_[thread_index];
         }
+        
+        // Add this check right here:
+        if (containers.empty()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(500)); // or 1000ms
+            continue;
+        }
+
         for (const auto& name : containers) {
             ContainerMetrics metrics;
             metrics.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -218,12 +227,20 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                     std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
                     max_msg.container_id[sizeof(max_msg.container_id) - 1] = '\0';
 
+                    std::lock_guard<std::mutex> lock(cout_mutex);
+                    std::cout << "[Thread " << thread_index << "] Sending batch for container: " << name
+                            << " | Buffer size: " << buffers[name].size()
+                            << " | Max CPU: " << max_cpu
+                            << " | Max Mem: " << max_mem
+                            << " | Max PIDs: " << max_pids << std::endl;
+
                     mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);
                 }
 
                 // Insert batch to DB and clear buffer
                 db_.insertBatch(name, buffers[name]);
                 buffers[name].clear();
+                std::lock_guard<std::mutex> lock(cout_mutex);
                 CM_LOG_INFO << "[Thread " << thread_index << "] Batch inserted for container: " << name << "\n";
             }
         }

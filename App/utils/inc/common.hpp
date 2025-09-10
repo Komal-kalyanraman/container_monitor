@@ -18,6 +18,7 @@ struct MonitorConfig {
     int thread_count;
     int thread_capacity;
     std::string csv_export_folder_path;
+    int ui_refresh_interval_ms;
 };
 
 struct ContainerMetrics {
@@ -86,6 +87,7 @@ inline constexpr std::string_view KEY_ALERT_VIOLATION = "alert_violation";
 inline constexpr std::string_view KEY_THREAD_COUNT = "thread_count";
 inline constexpr std::string_view KEY_THREAD_CAPACITY = "thread_capacity";
 inline constexpr std::string_view KEY_CSV_EXPORT_FOLDER_PATH = "csv_export_folder_path";
+inline constexpr std::string_view KEY_UI_REFRESH_INTERVAL_MS = "ui_refresh_interval_ms";
 
 // Default values as string_view
 inline constexpr std::string_view DEFAULT_RUNTIME = "docker";
@@ -101,3 +103,4 @@ inline constexpr double DEFAULT_ALERT_CRITICAL = 95.0;
 inline constexpr double DEFAULT_ALERT_VIOLATION = 100.0;
 inline constexpr int DEFAULT_THREAD_COUNT = 5;
 inline constexpr int DEFAULT_THREAD_CAPACITY = 10;
+inline constexpr int DEFAULT_UI_REFRESH_INTERVAL_MS = 2000;

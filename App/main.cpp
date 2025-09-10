@@ -14,6 +14,7 @@
 #include "event_processor.hpp"
 #include "resource_monitor.hpp"
 #include "sqlite_database.hpp"
+#include "monitor_dashboard.hpp"
 #include "resource_thread_pool.hpp"
 #include "live_metric_aggregator.hpp"
 
@@ -26,10 +27,10 @@ void SignalHandler(int signum) {
 
 int main() {
     // Remove existing message queue at startup
-    std::cout << "[Main] Attempting to unlink message queue: /test_queue" << std::endl;
-    int unlink_result = mq_unlink("/test_queue");
+    std::cout << "[Main] Attempting to unlink message queue: /container_max_metric_mq" << std::endl;
+    int unlink_result = mq_unlink(METRIC_MQ_NAME.data());
     if (unlink_result == 0) {
-        std::cout << "[Main] Successfully unlinked /test_queue" << std::endl;
+        std::cout << "[Main] Successfully unlinked /container_max_metric_mq" << std::endl;
     } else {
         std::cout << "[Main] mq_unlink failed: " << strerror(errno) << std::endl;
     }
@@ -60,9 +61,11 @@ int main() {
     auto event_processor = std::make_unique<EventProcessor>(*event_queue, shutdown_requested, db, cfg);
     auto resource_monitor = std::make_unique<ResourceMonitor>(db, shutdown_requested, thread_pool);
 
+    std::unique_ptr<MonitorDashboard> monitor_dashboard;
     std::unique_ptr<LiveMetricAggregator> live_metric_aggregator;
     if (cfg.ui_enabled) {
-        live_metric_aggregator = std::make_unique<LiveMetricAggregator>(shutdown_requested);
+        monitor_dashboard = std::make_unique<MonitorDashboard>(shutdown_requested, cfg.ui_refresh_interval_ms);
+        live_metric_aggregator = std::make_unique<LiveMetricAggregator>(shutdown_requested, monitor_dashboard.get(), cfg.ui_refresh_interval_ms);
     }
 
     // Start event listener
@@ -71,7 +74,10 @@ int main() {
     worker_threads.emplace_back([&](){ event_processor->start(); });
     // Start resource monitor thread
     worker_threads.emplace_back([&](){ resource_monitor->start(); });
-    // Start live metric aggregator thread if enabled
+    // Start UI components if enabled
+    if (cfg.ui_enabled && monitor_dashboard) {
+        worker_threads.emplace_back([&](){ monitor_dashboard->start(); });
+    }
     if (cfg.ui_enabled && live_metric_aggregator) {
         worker_threads.emplace_back([&](){ live_metric_aggregator->start(); });
     }
@@ -86,8 +92,12 @@ int main() {
     event_listener->stop();
     event_processor->stop();
     resource_monitor->stop();
+    // Stop UI components if running
     if (cfg.ui_enabled && live_metric_aggregator) {
         live_metric_aggregator->stop();
+    }
+    if (cfg.ui_enabled && monitor_dashboard) {
+        monitor_dashboard->stop();
     }
 
     // Join all threads

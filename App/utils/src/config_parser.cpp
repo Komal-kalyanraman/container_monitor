@@ -57,6 +57,7 @@ MonitorConfig ConfigParser::toMonitorConfig() const {
     cfg.thread_count                        = getInt(KEY_THREAD_COUNT, DEFAULT_THREAD_COUNT);
     cfg.thread_capacity                     = getInt(KEY_THREAD_CAPACITY, DEFAULT_THREAD_CAPACITY);
     cfg.csv_export_folder_path              = get(KEY_CSV_EXPORT_FOLDER_PATH, "../../storage");
+    cfg.ui_refresh_interval_ms              = getInt(KEY_UI_REFRESH_INTERVAL_MS, DEFAULT_UI_REFRESH_INTERVAL_MS);
     return cfg;
 }
 
@@ -74,4 +75,5 @@ void ConfigParser::printConfig(const MonitorConfig& cfg) const {
     CM_LOG_INFO << "Thread count: " << cfg.thread_count << "\n";
     CM_LOG_INFO << "Thread capacity: " << cfg.thread_capacity << "\n";
     CM_LOG_INFO << "CSV Export Path: " << cfg.csv_export_folder_path << "\n";
+    CM_LOG_INFO << "UI Refresh Interval: " << cfg.ui_refresh_interval_ms << " ms\n";
 }
