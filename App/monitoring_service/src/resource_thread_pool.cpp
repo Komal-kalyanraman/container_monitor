@@ -17,7 +17,8 @@ ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<boo
       shutdown_flag_(shutdown_flag), db_(db),
       batch_size_(cfg.batch_size), resource_sampling_interval_ms_(cfg.resource_sampling_interval_ms),
       thread_containers_(cfg.thread_count), thread_buffers_(cfg.thread_count), 
-      thread_local_paths_(cfg.thread_count), thread_local_info_(cfg.thread_count)
+      thread_local_paths_(cfg.thread_count), thread_local_info_(cfg.thread_count),
+      ui_enabled_(cfg.ui_enabled)
 {
     // Initialize the factory once
     if (cfg_.runtime == "docker" && cfg_.cgroup == "v1") {
@@ -192,15 +193,15 @@ void ResourceThreadPool::workerLoop(int thread_index) {
             buffers[name].push_back(metrics);
 
             if (buffers[name].size() >= batch_size_) {
-                // Find max values in the batch
-                double max_cpu = ZERO_PERCENT;
-                double max_mem = ZERO_PERCENT;
-                double max_pids = ZERO_PERCENT;
-                for (const auto& m : buffers[name]) {
-                    max_cpu = std::max(max_cpu, m.cpu_usage_percent);
-                    max_mem = std::max(max_mem, m.memory_usage_percent);
-                    max_pids = std::max(max_pids, m.pids_percent);
-                }
+                if (ui_enabled_) { 
+                    double max_cpu = ZERO_PERCENT;
+                    double max_mem = ZERO_PERCENT;
+                    double max_pids = ZERO_PERCENT;
+                    for (const auto& m : buffers[name]) {
+                        max_cpu = std::max(max_cpu, m.cpu_usage_percent);
+                        max_mem = std::max(max_mem, m.memory_usage_percent);
+                        max_pids = std::max(max_pids, m.pids_percent);
+                    }
 
                 // Print max values for debugging
                 // std::cout << "[Thread " << thread_index << "] Max for container " << name
@@ -209,16 +210,16 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                 //         << " | PIDs: " << max_pids << std::endl;
 
                 // Prepare message
-                ContainerMaxMetricsMsg max_msg;
-                std::memset(&max_msg, 0, sizeof(max_msg));
-                max_msg.max_cpu_usage_percent = max_cpu;
-                max_msg.max_memory_usage_percent = max_mem;
-                max_msg.max_pids_percent = max_pids;
-                std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
-                max_msg.container_id[sizeof(max_msg.container_id) - 1] = '\0'; // Ensure null-termination
+                    ContainerMaxMetricsMsg max_msg;
+                    std::memset(&max_msg, 0, sizeof(max_msg));
+                    max_msg.max_cpu_usage_percent = max_cpu;
+                    max_msg.max_memory_usage_percent = max_mem;
+                    max_msg.max_pids_percent = max_pids;
+                    std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
+                    max_msg.container_id[sizeof(max_msg.container_id) - 1] = '\0';
 
-                // Send to message queue
-                mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);
+                    mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);
+                }
 
                 // Insert batch to DB and clear buffer
                 db_.insertBatch(name, buffers[name]);

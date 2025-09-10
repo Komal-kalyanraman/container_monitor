@@ -55,23 +55,26 @@ int main() {
     ResourceThreadPool thread_pool(cfg, shutdown_requested, db);
     thread_pool.start();
 
-    // Create event listener instance
-    RuntimeEventListener event_listener(cfg, *event_queue, shutdown_requested);
-    // Create event processor instance
-    EventProcessor event_processor(*event_queue, shutdown_requested, db, cfg);
-    // Create resource monitor instance
-    ResourceMonitor resource_monitor(db, shutdown_requested, thread_pool);
-    // Create LiveMetricAggregator instance
-    LiveMetricAggregator live_metric_aggregator(shutdown_requested);
+    // Create worker objects as unique_ptr
+    auto event_listener = std::make_unique<RuntimeEventListener>(cfg, *event_queue, shutdown_requested);
+    auto event_processor = std::make_unique<EventProcessor>(*event_queue, shutdown_requested, db, cfg);
+    auto resource_monitor = std::make_unique<ResourceMonitor>(db, shutdown_requested, thread_pool);
+
+    std::unique_ptr<LiveMetricAggregator> live_metric_aggregator;
+    if (cfg.ui_enabled) {
+        live_metric_aggregator = std::make_unique<LiveMetricAggregator>(shutdown_requested);
+    }
 
     // Start event listener
-    worker_threads.emplace_back([&](){ event_listener.start(); });    
+    worker_threads.emplace_back([&](){ event_listener->start(); });    
     // Start event processor
-    worker_threads.emplace_back([&](){ event_processor.start(); });
+    worker_threads.emplace_back([&](){ event_processor->start(); });
     // Start resource monitor thread
-    worker_threads.emplace_back([&](){ resource_monitor.start(); });
-    // Start live metric aggregator thread
-    worker_threads.emplace_back([&](){ live_metric_aggregator.start(); });
+    worker_threads.emplace_back([&](){ resource_monitor->start(); });
+    // Start live metric aggregator thread if enabled
+    if (cfg.ui_enabled && live_metric_aggregator) {
+        worker_threads.emplace_back([&](){ live_metric_aggregator->start(); });
+    }
 
     // Main loop: wait for shutdown signal
     while (!shutdown_requested) {
@@ -80,10 +83,12 @@ int main() {
 
     thread_pool.stop();
 
-    event_listener.stop();
-    event_processor.stop();
-    resource_monitor.stop();
-    live_metric_aggregator.stop();   
+    event_listener->stop();
+    event_processor->stop();
+    resource_monitor->stop();
+    if (cfg.ui_enabled && live_metric_aggregator) {
+        live_metric_aggregator->stop();
+    }
 
     // Join all threads
     for (auto& thread : worker_threads) {
