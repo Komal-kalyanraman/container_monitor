@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <map>
 #include <cmath> 
+#include <mutex>
 #include <vector>
 #include <chrono>
 #include <cstring>
@@ -9,15 +10,14 @@
 #include <unordered_map>
 #include "common.hpp"
 #include "logger.hpp"
-#include "docker_cgroup_v1_path.hpp"
 #include "metrics_reader.hpp"
-#include <mutex>
+#include "docker_cgroup_v1_path.hpp"
+
 std::mutex cout_mutex;
 
 ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db)
-    : cfg_(cfg), shutdown_flag_(shutdown_flag), db_(db),
-      thread_containers_(cfg.thread_count), thread_buffers_(cfg.thread_count), 
-      thread_local_paths_(cfg.thread_count), thread_local_info_(cfg.thread_count)
+    : cfg_(cfg), shutdown_flag_(shutdown_flag), db_(db), thread_containers_(cfg.thread_count),
+      thread_buffers_(cfg.thread_count), thread_local_paths_(cfg.thread_count), thread_local_info_(cfg.thread_count)
 {
     // Initialize the factory once
     if (cfg_.runtime == "docker" && cfg_.cgroup == "v1") {
@@ -132,7 +132,7 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                 << "mq_flags=" << attr.mq_flags
                 << ", mq_maxmsg=" << attr.mq_maxmsg
                 << ", mq_msgsize=" << attr.mq_msgsize
-                << ", mq_curmsgs=" << attr.mq_curmsgs << std::endl;
+                << ", mq_curmsgs=" << attr.mq_curmsgs << "\n";
 
     mq = mq_open(METRIC_MQ_NAME.data(), O_RDWR | O_CREAT, 0644, &attr);
 
@@ -152,7 +152,7 @@ void ResourceThreadPool::workerLoop(int thread_index) {
         
         // Add this check right here:
         if (containers.empty()) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500)); // or 1000ms
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS_MEDIUM)); // or 1000ms
             continue;
         }
 
@@ -207,12 +207,6 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                         max_pids = std::max(max_pids, m.pids_percent);
                     }
 
-                // Print max values for debugging
-                // CM_LOG_INFO  << "[Thread " << thread_index << "] Max for container " << name
-                //              << " | CPU: " << max_cpu
-                //              << " | Mem: " << max_mem
-                //              << " | PIDs: " << max_pids << "\n";
-
                 // Prepare message
                     ContainerMaxMetricsMsg max_msg;
                     std::memset(&max_msg, 0, sizeof(max_msg));
@@ -222,21 +216,12 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                     std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
                     max_msg.container_id[sizeof(max_msg.container_id) - 1] = '\0';
 
-                    // std::lock_guard<std::mutex> lock(cout_mutex);
-                    // CM_LOG_INFO  << "[Thread " << thread_index << "] Sending batch for container: " << name
-                    //              << " | Buffer size: " << buffers[name].size()
-                    //              << " | Max CPU: " << max_cpu
-                    //              << " | Max Mem: " << max_mem
-                    //              << " | Max PIDs: " << max_pids << "\n";
-
                     mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);
                 }
 
                 // Insert batch to DB and clear buffer
                 db_.insertBatch(name, buffers[name]);
                 buffers[name].clear();
-                // std::lock_guard<std::mutex> lock(cout_mutex);
-                // CM_LOG_INFO << "[Thread " << thread_index << "] Batch inserted for container: " << name << "\n";
             }
         }
         // Wait for per-container sampling time × number of containers

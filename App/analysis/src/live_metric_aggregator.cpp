@@ -43,7 +43,7 @@ void LiveMetricAggregator::run() {
         } else {
             CM_LOG_WARN << "Attempt " << (attempts + 1) << ": Queue not found, retrying... \n";
             attempts++;
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS_LONG));
         }
     }
     if (mqd == (mqd_t)-1) {
@@ -89,7 +89,7 @@ void LiveMetricAggregator::run() {
                 }
             }
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS_SHORT));
     }
     mq_close(mqd);
     CM_LOG_INFO << "Message queue closed. \n";

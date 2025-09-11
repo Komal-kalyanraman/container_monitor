@@ -68,8 +68,11 @@ constexpr double ZERO_PERCENT = 0.0;
 constexpr uint64_t BYTES_PER_KILOBYTE = 1024;
 constexpr uint64_t KILOBYTES_PER_MEGABYTE = 1024;
 
-// Sleep duration for main loop in milliseconds
+// Sleep duration in milliseconds
 inline constexpr int MAIN_LOOP_SLEEP_MS = 100;
+inline constexpr int SLEEP_MS_SHORT   = 1;
+inline constexpr int SLEEP_MS_MEDIUM  = 500;
+inline constexpr int SLEEP_MS_LONG    = 1000;
 
 // Message queue constants
 inline constexpr std::string_view METRIC_MQ_NAME = "/container_max_metric_mq";
