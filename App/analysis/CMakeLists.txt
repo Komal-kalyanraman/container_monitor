@@ -1,8 +1,6 @@
 set(APP_NAME analysis)
 
 add_library(${APP_NAME} STATIC
-    src/color_mapper.cpp
-    src/violation_logger.cpp
     src/live_metric_aggregator.cpp
 )
 

@@ -1,7 +1,6 @@
 set(APP_NAME utils)
 
 add_library(${APP_NAME} STATIC
-    src/time_utils.cpp
     src/initializer.cpp
     src/config_parser.cpp
     src/json_processing.cpp    

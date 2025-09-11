@@ -2,7 +2,6 @@ set(APP_NAME metrics_analyzer)
 
 add_library(${APP_NAME} STATIC
     src/metrics_reader.cpp
-    src/metrics_calculator.cpp
 )
 
 target_include_directories(${APP_NAME} PUBLIC
