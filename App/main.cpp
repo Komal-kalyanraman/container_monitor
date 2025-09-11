@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
     
     // Only initialize if UI is enabled in config
     if (cfg.ui_enabled) {
-        monitor_dashboard = std::make_unique<MonitorDashboard>(shutdown_requested, cfg.ui_refresh_interval_ms);
+        monitor_dashboard = std::make_unique<MonitorDashboard>(shutdown_requested, cfg);
         live_metric_aggregator = std::make_unique<LiveMetricAggregator>(shutdown_requested, monitor_dashboard.get(), cfg.ui_refresh_interval_ms);
     }
 
@@ -123,9 +123,7 @@ int main(int argc, char* argv[]) {
 
     // Export container metrics to a file before shutdown
     db.exportAllTablesToCSV(cfg.file_export_folder_path);
-
     CM_LOG_INFO << "Container metrics exported to CSV at: " << cfg.file_export_folder_path << "\n";
-
     CM_LOG_INFO << "Application shutdown complete.\n";
     
     // Release glog resources
