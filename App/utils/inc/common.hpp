@@ -139,3 +139,67 @@ inline constexpr size_t CGROUP_PATH_BUF_SIZE = 512;
 inline constexpr const char* CGROUP_V1_CPU_PATH_FMT    = "/sys/fs/cgroup/cpu/docker/%s/cpuacct.usage";
 inline constexpr const char* CGROUP_V1_MEMORY_PATH_FMT = "/sys/fs/cgroup/memory/docker/%s/memory.usage_in_bytes";
 inline constexpr const char* CGROUP_V1_PIDS_PATH_FMT   = "/sys/fs/cgroup/pids/docker/%s/pids.current";
+
+// SQLite table schema and SQL statements
+inline constexpr const char* SQL_CREATE_CONTAINERS_TABLE =
+    "CREATE TABLE IF NOT EXISTS containers ("
+    "name TEXT PRIMARY KEY,"
+    "id TEXT,"
+    "cpus REAL,"
+    "memory REAL,"
+    "pids_limit INTEGER"
+    ");";
+
+inline constexpr const char* SQL_CREATE_CONTAINER_METRICS_TABLE =
+    "CREATE TABLE IF NOT EXISTS container_metrics ("
+    "container_name TEXT,"
+    "timestamp INTEGER,"
+    "cpu_usage REAL,"
+    "memory_usage REAL,"
+    "pids INTEGER"
+    ");";
+
+inline constexpr const char* SQL_CREATE_HOST_USAGE_TABLE =
+    "CREATE TABLE IF NOT EXISTS host_usage ("
+    "timestamp INTEGER,"
+    "cpu_usage_percent REAL,"
+    "memory_usage_percent REAL"
+    ");";
+
+inline constexpr const char* SQL_INSERT_OR_REPLACE_CONTAINER =
+    "INSERT OR REPLACE INTO containers (name, id, cpus, memory, pids_limit) VALUES (?, ?, ?, ?, ?);";
+
+inline constexpr const char* SQL_SELECT_CONTAINER =
+    "SELECT name, id, cpus, memory, pids_limit FROM containers;";
+
+inline constexpr const char* SQL_DELETE_CONTAINER_BY_NAME =
+    "DELETE FROM containers WHERE name = ?;";
+
+inline constexpr const char* SQL_DELETE_ALL_CONTAINERS =
+    "DELETE FROM containers;";
+
+inline constexpr const char* SQL_DELETE_CONTAINER_METRICS =
+    "DELETE FROM container_metrics;";
+
+inline constexpr const char* SQL_DELETE_HOST_USAGE =
+    "DELETE FROM host_usage;";
+
+inline constexpr const char* SQL_INSERT_CONTAINER_METRICS =
+    "INSERT INTO container_metrics (container_name, timestamp, cpu_usage, memory_usage, pids) VALUES (?, ?, ?, ?, ?);";
+
+inline constexpr const char* SQL_SELECT_CONTAINER_METRICS =
+    "SELECT container_name, timestamp, cpu_usage, memory_usage, pids FROM container_metrics;";
+
+inline constexpr const char* SQL_SELECT_HOST_USAGE =
+    "SELECT timestamp, cpu_usage_percent, memory_usage_percent FROM host_usage;";
+
+inline constexpr const char* SQL_INSERT_HOST_USAGE =
+    "INSERT INTO host_usage (timestamp, cpu_usage_percent, memory_usage_percent) VALUES (?, ?, ?);";
+
+// CSV export filenames
+inline constexpr const char* CSV_CONTAINER_METRICS_FILENAME = "/container_metrics.csv";
+inline constexpr const char* CSV_HOST_USAGE_FILENAME        = "/host_usage.csv";
+
+// CSV header strings
+inline constexpr const char* CSV_CONTAINER_METRICS_HEADER = "container_name,timestamp,cpu_usage,memory_usage,pids\n";
+inline constexpr const char* CSV_HOST_USAGE_HEADER        = "timestamp,cpu_usage_percent,memory_usage_percent\n";
