@@ -115,3 +115,27 @@ inline constexpr const char* COL_CONTAINER_NAME = "Container Name";
 inline constexpr const char* COL_MAX_CPU = "Max CPU %";
 inline constexpr const char* COL_MAX_MEM = "Max Memory %";
 inline constexpr const char* COL_MAX_PIDS = "Max PIDs %";
+
+// System resource file paths
+inline constexpr const char* PROC_STAT_PATH    = "/proc/stat";
+inline constexpr const char* PROC_MEMINFO_PATH = "/proc/meminfo";
+
+// /proc/stat parsing format
+inline constexpr const char* CPU_STAT_FORMAT = "cpu  %lu %lu %lu %lu %lu %lu %lu %lu";
+
+// /proc/meminfo parsing tokens
+inline constexpr const char* MEMINFO_TOTAL   = "MemTotal:";
+inline constexpr const char* MEMINFO_FREE    = "MemFree:";
+inline constexpr const char* MEMINFO_BUFFERS = "Buffers:";
+inline constexpr const char* MEMINFO_CACHED  = "Cached:";
+
+// /proc/meminfo parsing format
+inline constexpr const char* MEMINFO_FORMAT  = "%lu kB";
+
+// Cgroup path buffer size
+inline constexpr size_t CGROUP_PATH_BUF_SIZE = 512;
+
+// Docker Cgroup v1 path formats
+inline constexpr const char* CGROUP_V1_CPU_PATH_FMT    = "/sys/fs/cgroup/cpu/docker/%s/cpuacct.usage";
+inline constexpr const char* CGROUP_V1_MEMORY_PATH_FMT = "/sys/fs/cgroup/memory/docker/%s/memory.usage_in_bytes";
+inline constexpr const char* CGROUP_V1_PIDS_PATH_FMT   = "/sys/fs/cgroup/pids/docker/%s/pids.current";

@@ -28,14 +28,9 @@ public:
 private:
     void workerLoop(int thread_index);
 
-    int thread_count_;
-    int thread_capacity_;
-    int container_count_ = 0;
     std::atomic<bool>& shutdown_flag_;
     IDatabaseInterface& db_;
     const MonitorConfig& cfg_;
-    int batch_size_;
-    int resource_sampling_interval_ms_;
     std::vector<std::thread> threads_;
     std::vector<std::vector<std::string>> thread_containers_;
     std::unordered_map<std::string, int> container_to_thread_;
@@ -46,6 +41,5 @@ private:
     std::vector<std::map<std::string, ContainerResourcePaths>> thread_local_paths_;
     std::vector<std::map<std::string, ContainerInfo>> thread_local_info_;
     bool running_ = false;
-    bool ui_enabled_;
     std::unordered_map<std::string, std::pair<int64_t, uint64_t>> prev_cpu_usage_;
 };
