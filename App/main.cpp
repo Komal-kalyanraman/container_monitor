@@ -25,14 +25,16 @@ void SignalHandler(int signum) {
     CM_LOG_INFO << "Shutdown signal received. Stopping all services... \n";
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    google::InitGoogleLogging(argv[0]);
+
     // Remove existing message queue at startup
-    std::cout << "[Main] Attempting to unlink message queue: /container_max_metric_mq" << std::endl;
+    CM_LOG_INFO << "[Main] Attempting to unlink message queue \n";
     int unlink_result = mq_unlink(METRIC_MQ_NAME.data());
     if (unlink_result == 0) {
-        std::cout << "[Main] Successfully unlinked /container_max_metric_mq" << std::endl;
+        CM_LOG_INFO << "[Main] Successfully unlinked message queue \n";
     } else {
-        std::cout << "[Main] mq_unlink failed: " << strerror(errno) << std::endl;
+        CM_LOG_ERROR << "[Main] mq_unlink failed: " << strerror(errno) << "\n";
     }
 
     std::signal(SIGINT, SignalHandler);
@@ -108,9 +110,10 @@ int main() {
     }
 
     // Export container metrics to CSV before shutdown
-    db.exportAllTablesToCSV(cfg.csv_export_folder_path);
-    CM_LOG_INFO << "Container metrics exported to CSV at: " << cfg.csv_export_folder_path << "\n";
+    db.exportAllTablesToCSV(cfg.file_export_folder_path);
+    CM_LOG_INFO << "Container metrics exported to CSV at: " << cfg.file_export_folder_path << "\n";
 
     CM_LOG_INFO << "Application shutdown complete.\n";
+    google::ShutdownGoogleLogging();
     return 0;
 }

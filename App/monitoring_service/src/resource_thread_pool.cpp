@@ -122,7 +122,7 @@ void ResourceThreadPool::workerLoop(int thread_index) {
     auto& local_paths = thread_local_paths_[thread_index];
 
     // Print METRIC_MQ_MSG_SIZE for debugging
-    std::cout << "[Thread " << thread_index << "] METRIC_MQ_MSG_SIZE: " << METRIC_MQ_MSG_SIZE << std::endl;
+    CM_LOG_INFO << "[Thread " << thread_index << "] METRIC_MQ_MSG_SIZE: " << METRIC_MQ_MSG_SIZE << "\n";
 
     // Open message queue (shared, fixed size)
     mqd_t mq;
@@ -132,20 +132,20 @@ void ResourceThreadPool::workerLoop(int thread_index) {
     attr.mq_msgsize = METRIC_MQ_MSG_SIZE;
     attr.mq_curmsgs = 0;
 
-    std::cout << "[Thread " << thread_index << "] Attempting mq_open with name: " << METRIC_MQ_NAME << std::endl;
-    std::cout << "[Thread " << thread_index << "] mq_attr: "
-              << "mq_flags=" << attr.mq_flags
-              << ", mq_maxmsg=" << attr.mq_maxmsg
-              << ", mq_msgsize=" << attr.mq_msgsize
-              << ", mq_curmsgs=" << attr.mq_curmsgs << std::endl;
+    CM_LOG_INFO << "[Thread " << thread_index << "] Attempting mq_open with name: " << METRIC_MQ_NAME << "\n";
+    CM_LOG_INFO << "[Thread " << thread_index << "] mq_attr: "
+                << "mq_flags=" << attr.mq_flags
+                << ", mq_maxmsg=" << attr.mq_maxmsg
+                << ", mq_msgsize=" << attr.mq_msgsize
+                << ", mq_curmsgs=" << attr.mq_curmsgs << std::endl;
 
     mq = mq_open(METRIC_MQ_NAME.data(), O_RDWR | O_CREAT, 0644, &attr);
 
     if (mq == (mqd_t)-1) {
-        std::cerr << "[Thread " << thread_index << "] Failed to open message queue: " << strerror(errno)
-                  << " (errno=" << errno << ")" << std::endl;
+        CM_LOG_ERROR << "[Thread " << thread_index << "] Failed to open message queue: " << strerror(errno)
+                     << " (errno=" << errno << ")" << "\n";
     } else {
-        std::cout << "[Thread " << thread_index << "] Message queue opened successfully." << std::endl;
+        CM_LOG_INFO << "[Thread " << thread_index << "] Message queue opened successfully. \n";
     }
 
     while (running_ && !shutdown_flag_) {
@@ -213,10 +213,10 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                     }
 
                 // Print max values for debugging
-                // std::cout << "[Thread " << thread_index << "] Max for container " << name
-                //         << " | CPU: " << max_cpu
-                //         << " | Mem: " << max_mem
-                //         << " | PIDs: " << max_pids << std::endl;
+                // CM_LOG_INFO  << "[Thread " << thread_index << "] Max for container " << name
+                //              << " | CPU: " << max_cpu
+                //              << " | Mem: " << max_mem
+                //              << " | PIDs: " << max_pids << "\n";
 
                 // Prepare message
                     ContainerMaxMetricsMsg max_msg;
@@ -228,11 +228,11 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                     max_msg.container_id[sizeof(max_msg.container_id) - 1] = '\0';
 
                     // std::lock_guard<std::mutex> lock(cout_mutex);
-                    // std::cout << "[Thread " << thread_index << "] Sending batch for container: " << name
-                    //         << " | Buffer size: " << buffers[name].size()
-                    //         << " | Max CPU: " << max_cpu
-                    //         << " | Max Mem: " << max_mem
-                    //         << " | Max PIDs: " << max_pids << std::endl;
+                    // CM_LOG_INFO  << "[Thread " << thread_index << "] Sending batch for container: " << name
+                    //              << " | Buffer size: " << buffers[name].size()
+                    //              << " | Max CPU: " << max_cpu
+                    //              << " | Max Mem: " << max_mem
+                    //              << " | Max PIDs: " << max_pids << "\n";
 
                     mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);
                 }

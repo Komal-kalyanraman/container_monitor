@@ -1,7 +1,7 @@
 #pragma once
 
 // Uncomment the next line to enable glog logging
-// #define ENABLE_GLOG_LOGGING
+#define ENABLE_GLOG_LOGGING
 
 #ifdef ENABLE_GLOG_LOGGING
 #include <glog/logging.h>

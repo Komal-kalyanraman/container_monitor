@@ -17,7 +17,7 @@ struct MonitorConfig {
     double alert_violation;
     int thread_count;
     int thread_capacity;
-    std::string csv_export_folder_path;
+    std::string file_export_folder_path;
     int ui_refresh_interval_ms;
 };
 
@@ -86,7 +86,7 @@ inline constexpr std::string_view KEY_ALERT_CRITICAL = "alert_critical";
 inline constexpr std::string_view KEY_ALERT_VIOLATION = "alert_violation";
 inline constexpr std::string_view KEY_THREAD_COUNT = "thread_count";
 inline constexpr std::string_view KEY_THREAD_CAPACITY = "thread_capacity";
-inline constexpr std::string_view KEY_CSV_EXPORT_FOLDER_PATH = "csv_export_folder_path";
+inline constexpr std::string_view KEY_FILE_EXPORT_FOLDER_PATH = "file_export_folder_path";
 inline constexpr std::string_view KEY_UI_REFRESH_INTERVAL_MS = "ui_refresh_interval_ms";
 
 // Default values as string_view

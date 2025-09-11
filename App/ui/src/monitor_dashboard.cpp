@@ -2,11 +2,12 @@
 #include <ncurses.h>
 #include <chrono>
 #include <iostream>
+#include "logger.hpp"
 #include "common.hpp"
 
 MonitorDashboard::MonitorDashboard(std::atomic<bool>& shutdown_flag, int ui_refresh_interval_ms)
     : shutdown_flag_(shutdown_flag), ui_refresh_interval_ms_(ui_refresh_interval_ms) {
-    std::cout << "[MonitorDashboard] ui_refresh_interval_ms_: " << ui_refresh_interval_ms_ << std::endl;
+    CM_LOG_INFO << "[MonitorDashboard] ui_refresh_interval_ms_: " << ui_refresh_interval_ms_ << "\n";
 }
 
 MonitorDashboard::~MonitorDashboard() {
@@ -18,10 +19,10 @@ void MonitorDashboard::pushMetrics(const ContainerMaxMetricsMsg& metrics) {
         std::chrono::system_clock::now().time_since_epoch()).count();
     {
         std::lock_guard<std::mutex> lock(data_mutex_);
-        std::cout << "[MonitorDashboard] pushMetrics: " << metrics.container_id
-                  << " | CPU: " << metrics.max_cpu_usage_percent
-                  << " | Mem: " << metrics.max_memory_usage_percent
-                  << " | PIDs: " << metrics.max_pids_percent << std::endl;
+        CM_LOG_INFO << "[MonitorDashboard] pushMetrics: " << metrics.container_id
+                    << " | CPU: " << metrics.max_cpu_usage_percent
+                    << " | Mem: " << metrics.max_memory_usage_percent
+                    << " | PIDs: " << metrics.max_pids_percent << "\n";
         metrics_map_[metrics.container_id] = std::make_pair(metrics, now);
         data_updated_ = true;
     }
@@ -31,7 +32,7 @@ void MonitorDashboard::pushMetrics(const ContainerMaxMetricsMsg& metrics) {
 void MonitorDashboard::pushMetricsRemoved(const std::string& container_id) {
     {
         std::lock_guard<std::mutex> lock(data_mutex_);
-        std::cout << "[MonitorDashboard] pushMetricsRemoved: " << container_id << std::endl;
+        CM_LOG_INFO << "[MonitorDashboard] pushMetricsRemoved: " << container_id << "\n";
         metrics_map_.erase(container_id);
         data_updated_ = true;
     }

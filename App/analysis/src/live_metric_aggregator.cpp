@@ -5,6 +5,7 @@
 #include <cerrno>
 #include <thread>
 #include <chrono>
+#include "logger.hpp"
 #include "common.hpp"
 #include "monitor_dashboard.hpp"
 
@@ -30,27 +31,27 @@ void LiveMetricAggregator::stop() {
 }
 
 void LiveMetricAggregator::run() {
-    std::cout << "[C++] Waiting for message queue '" << METRIC_MQ_NAME << "' to appear..." << std::endl;
+    CM_LOG_INFO << "Waiting for message queue '" << METRIC_MQ_NAME << "' to appear... \n";
 
     mqd_t mqd;
     int attempts = 0;
     while (attempts < 50 && !shutdown_flag_) {
         mqd = mq_open(METRIC_MQ_NAME.data(), O_RDONLY | O_NONBLOCK);
         if (mqd != (mqd_t)-1) {
-            std::cout << "[C++] Message queue opened successfully on attempt " << (attempts + 1) << "." << std::endl;
+            CM_LOG_INFO << "Message queue opened successfully on attempt " << (attempts + 1) << ". \n";
             break;
         } else {
-            std::cout << "[C++] Attempt " << (attempts + 1) << ": Queue not found, retrying..." << std::endl;
+            CM_LOG_WARN << "Attempt " << (attempts + 1) << ": Queue not found, retrying... \n";
             attempts++;
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
     if (mqd == (mqd_t)-1) {
-        std::cout << "[C++] Message queue not found after waiting." << std::endl;
+        CM_LOG_FATAL << "Message queue not found after waiting. \n";
         return;
     }
 
-    std::cout << "[C++] Waiting for messages..." << std::endl;
+    CM_LOG_INFO << "Waiting for messages... \n";
     ContainerMaxMetricsMsg msg;
     unsigned int prio;
     int64_t last_cleanup = 0;
@@ -70,7 +71,7 @@ void LiveMetricAggregator::run() {
         } else if (errno == EINTR) {
             break; // Interrupted by signal
         } else {
-            std::cerr << "[C++] mq_receive error: " << strerror(errno) << std::endl;
+            CM_LOG_ERROR << "mq_receive error: " << strerror(errno) << "\n";
         }
 
         // Periodically check for stale containers
@@ -78,7 +79,7 @@ void LiveMetricAggregator::run() {
             last_cleanup = now;
             for (auto it = last_update_map_.begin(); it != last_update_map_.end(); ) {
                 if (now - it->second > ui_refresh_interval_ms_) {
-                    // std::cout << "[Aggregator] Removing stale container: " << it->first << std::endl;
+                    // CM_LOG_INFO << "[Aggregator] Removing stale container: " << it->first << "\n";
                     if (dashboard_) {
                         dashboard_->pushMetricsRemoved(it->first);
                     }
@@ -91,5 +92,5 @@ void LiveMetricAggregator::run() {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     mq_close(mqd);
-    std::cout << "[C++] Message queue closed." << std::endl;
+    CM_LOG_INFO << "Message queue closed. \n";
 }
