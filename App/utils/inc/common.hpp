@@ -3,6 +3,7 @@
 #include <cstring>
 #include <string_view>
 
+// Configuration structure
 struct MonitorConfig {
     std::string runtime;
     std::string cgroup;
@@ -21,14 +22,16 @@ struct MonitorConfig {
     int ui_refresh_interval_ms;
 };
 
+// Metrics structure for storing data as percentages
 struct ContainerMetrics {
     int64_t timestamp;
-    double cpu_usage_percent;    // % of cpu_limit
-    double memory_usage_percent; // % of memory_limit
-    double pids_percent;         // % of pid_limit
+    double cpu_usage_percent;
+    double memory_usage_percent;
+    double pids_percent;
 };
 
 #pragma pack(push, 1)
+// Message structure for POSIX message queue
 struct ContainerMaxMetricsMsg {
     double max_cpu_usage_percent;
     double max_memory_usage_percent;
@@ -37,20 +40,22 @@ struct ContainerMaxMetricsMsg {
 };
 #pragma pack(pop)
 
+// Structure for container resource paths
 struct ContainerResourcePaths {
     std::string cpu_path;
     std::string memory_path;
     std::string pids_path;
 };
 
+// Structure for container limits information
 struct ContainerInfo {
     std::string id;
     double cpu_limit;
     int memory_limit;
     int pid_limit;
-    // Add more fields as needed
 };
 
+// Structure for host system information
 struct HostInfo {
     int num_cpus;
     uint64_t total_memory_mb;
@@ -63,6 +68,9 @@ constexpr double PERCENT_FACTOR = 100.0;
 constexpr double ZERO_PERCENT = 0.0;
 constexpr uint64_t BYTES_PER_KILOBYTE = 1024;
 constexpr uint64_t KILOBYTES_PER_MEGABYTE = 1024;
+
+// Sleep duration for main loop in milliseconds
+inline constexpr int MAIN_LOOP_SLEEP_MS = 100;
 
 // Message queue constants
 inline constexpr std::string_view METRIC_MQ_NAME = "/container_max_metric_mq";
