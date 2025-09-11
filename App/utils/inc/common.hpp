@@ -104,3 +104,9 @@ inline constexpr double DEFAULT_ALERT_VIOLATION = 100.0;
 inline constexpr int DEFAULT_THREAD_COUNT = 5;
 inline constexpr int DEFAULT_THREAD_CAPACITY = 10;
 inline constexpr int DEFAULT_UI_REFRESH_INTERVAL_MS = 2000;
+
+// UI Table Column Names
+inline constexpr const char* COL_CONTAINER_NAME = "Container Name";
+inline constexpr const char* COL_MAX_CPU = "Max CPU %";
+inline constexpr const char* COL_MAX_MEM = "Max Memory %";
+inline constexpr const char* COL_MAX_PIDS = "Max PIDs %";

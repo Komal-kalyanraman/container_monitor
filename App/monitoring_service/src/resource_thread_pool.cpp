@@ -227,12 +227,12 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                     std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
                     max_msg.container_id[sizeof(max_msg.container_id) - 1] = '\0';
 
-                    std::lock_guard<std::mutex> lock(cout_mutex);
-                    std::cout << "[Thread " << thread_index << "] Sending batch for container: " << name
-                            << " | Buffer size: " << buffers[name].size()
-                            << " | Max CPU: " << max_cpu
-                            << " | Max Mem: " << max_mem
-                            << " | Max PIDs: " << max_pids << std::endl;
+                    // std::lock_guard<std::mutex> lock(cout_mutex);
+                    // std::cout << "[Thread " << thread_index << "] Sending batch for container: " << name
+                    //         << " | Buffer size: " << buffers[name].size()
+                    //         << " | Max CPU: " << max_cpu
+                    //         << " | Max Mem: " << max_mem
+                    //         << " | Max PIDs: " << max_pids << std::endl;
 
                     mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);
                 }
@@ -240,8 +240,8 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                 // Insert batch to DB and clear buffer
                 db_.insertBatch(name, buffers[name]);
                 buffers[name].clear();
-                std::lock_guard<std::mutex> lock(cout_mutex);
-                CM_LOG_INFO << "[Thread " << thread_index << "] Batch inserted for container: " << name << "\n";
+                // std::lock_guard<std::mutex> lock(cout_mutex);
+                // CM_LOG_INFO << "[Thread " << thread_index << "] Batch inserted for container: " << name << "\n";
             }
         }
         // Wait for per-container sampling time × number of containers
