@@ -1,0 +1,4 @@
+<map id="EventProcessor::stop" name="EventProcessor::stop">
+<area shape="rect" id="node1" title="Stops the event processor thread." alt="" coords="5,5,164,32"/>
+<area shape="rect" id="node2" href="$classEventQueue.html#ad38b433a417c6c203ca0bf9c07314720" title="Signals shutdown and wakes all waiting threads." alt="" coords="212,5,384,32"/>
+</map>

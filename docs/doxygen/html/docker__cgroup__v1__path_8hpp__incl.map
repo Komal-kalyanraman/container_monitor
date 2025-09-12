@@ -1,0 +1,9 @@
+<map id="container_runtime/inc/docker_cgroup_v1_path.hpp" name="container_runtime/inc/docker_cgroup_v1_path.hpp">
+<area shape="rect" id="node1" title="Declares the DockerCgroupV1PathFactory for Docker cgroup v1 resource paths." alt="" coords="85,5,291,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,102,67,129"/>
+<area shape="rect" id="node3" href="$common_8hpp.html" title="Common data structures, constants, and configuration for container monitoring." alt="" coords="225,184,332,211"/>
+<area shape="rect" id="node7" href="$container__runtime__factory__interface_8hpp.html" title="Declares the interface for container runtime path factories." alt="" coords="91,95,285,136"/>
+<area shape="rect" id="node4" title=" " alt="" coords="160,259,219,285"/>
+<area shape="rect" id="node5" title=" " alt="" coords="244,259,311,285"/>
+<area shape="rect" id="node6" title=" " alt="" coords="335,259,433,285"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="ResourceThreadPool::~ResourceThreadPool" name="ResourceThreadPool::~ResourceThreadPool">
+<area shape="rect" id="node1" title="Destructor. Ensures all threads are stopped and buffers flushed." alt="" coords="5,5,180,47"/>
+<area shape="rect" id="node2" href="$classResourceThreadPool.html#a3e77793eacec2e53588c114068c494f6" title="Stops all worker threads and flushes buffers." alt="" coords="228,5,383,47"/>
+<area shape="rect" id="node3" href="$classResourceThreadPool.html#abc537653319086744ca546aecdbabf46" title="Flushes all metric buffers to the database." alt="" coords="431,5,585,47"/>
+<area shape="rect" id="node4" href="$classIDatabaseInterface.html#a199124b634381e618bf28ae09152b41f" title="Insert a batch of metrics for a container." alt="" coords="633,5,780,47"/>
+</map>

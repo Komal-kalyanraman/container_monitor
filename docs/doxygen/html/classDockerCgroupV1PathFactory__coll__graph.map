@@ -1,0 +1,4 @@
+<map id="DockerCgroupV1PathFactory" name="DockerCgroupV1PathFactory">
+<area shape="rect" id="node1" title="Factory for generating Docker cgroup v1 resource file paths." alt="" coords="30,145,235,223"/>
+<area shape="rect" id="node2" href="$classIContainerRuntimePathFactory.html" title="Interface for container runtime resource path factories." alt="" coords="5,5,260,97"/>
+</map>

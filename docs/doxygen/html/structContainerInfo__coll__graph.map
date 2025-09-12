@@ -1,0 +1,5 @@
+<map id="ContainerInfo" name="ContainerInfo">
+<area shape="rect" id="node1" title="Holds resource limits for a container at the time of creation." alt="" coords="10,287,139,393"/>
+<area shape="rect" id="node2" title="STL class." alt="" coords="31,147,118,224"/>
+<area shape="rect" id="node3" title="STL class." alt="" coords="5,5,144,97"/>
+</map>

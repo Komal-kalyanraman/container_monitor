@@ -1,0 +1,3 @@
+<map id="LiveMetricAggregator" name="LiveMetricAggregator">
+<area shape="rect" id="node1" title="Aggregates live container metrics from a POSIX message queue and updates the dashboard." alt="" coords="5,5,204,127"/>
+</map>

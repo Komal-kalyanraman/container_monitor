@@ -1,0 +1,3 @@
+<map id="ResourceThreadPool" name="ResourceThreadPool">
+<area shape="rect" id="node1" title="Manages a pool of threads for collecting container resource metrics in parallel." alt="" coords="5,5,196,185"/>
+</map>

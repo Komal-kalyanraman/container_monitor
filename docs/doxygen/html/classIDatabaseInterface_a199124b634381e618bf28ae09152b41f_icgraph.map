@@ -1,0 +1,9 @@
+<map id="IDatabaseInterface::insertBatch" name="IDatabaseInterface::insertBatch">
+<area shape="rect" id="node1" title="Insert a batch of metrics for a container." alt="" coords="633,71,780,112"/>
+<area shape="rect" id="node2" href="$classResourceThreadPool.html#abc537653319086744ca546aecdbabf46" title="Flushes all metric buffers to the database." alt="" coords="431,71,585,112"/>
+<area shape="rect" id="node3" href="$classResourceThreadPool.html#a0795466eeecdbed227e6faa9d0c0f7ac" title="Adds a container to the thread pool for monitoring." alt="" coords="228,5,383,47"/>
+<area shape="rect" id="node4" href="$classResourceThreadPool.html#ab3fec67194eab02147ae7cd7a87d86cf" title="Removes a container from the thread pool." alt="" coords="228,71,383,112"/>
+<area shape="rect" id="node5" href="$classResourceThreadPool.html#a3e77793eacec2e53588c114068c494f6" title="Stops all worker threads and flushes buffers." alt="" coords="228,136,383,177"/>
+<area shape="rect" id="node6" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="Main entry point for the Container Monitor application." alt="" coords="65,114,120,141"/>
+<area shape="rect" id="node7" href="$classResourceThreadPool.html#acd8ec1d827c84498c6adcb937773f4a9" title="Destructor. Ensures all threads are stopped and buffers flushed." alt="" coords="5,165,180,207"/>
+</map>

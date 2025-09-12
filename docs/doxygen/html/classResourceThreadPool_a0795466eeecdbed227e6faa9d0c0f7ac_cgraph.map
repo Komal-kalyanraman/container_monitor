@@ -1,0 +1,6 @@
+<map id="ResourceThreadPool::addContainer" name="ResourceThreadPool::addContainer">
+<area shape="rect" id="node1" title="Adds a container to the thread pool for monitoring." alt="" coords="5,39,160,80"/>
+<area shape="rect" id="node2" href="$classResourceThreadPool.html#abc537653319086744ca546aecdbabf46" title="Flushes all metric buffers to the database." alt="" coords="208,5,363,47"/>
+<area shape="rect" id="node4" href="$classIDatabaseInterface.html#aa4b43c762af709d3374326f73f24bd3e" title="Retrieve container information by name." alt="" coords="212,71,359,112"/>
+<area shape="rect" id="node3" href="$classIDatabaseInterface.html#a199124b634381e618bf28ae09152b41f" title="Insert a batch of metrics for a container." alt="" coords="411,5,557,47"/>
+</map>

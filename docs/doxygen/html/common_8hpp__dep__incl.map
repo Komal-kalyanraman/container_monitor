@@ -1,0 +1,29 @@
+<map id="utils/inc/common.hpp" name="utils/inc/common.hpp">
+<area shape="rect" id="node1" title="Common data structures, constants, and configuration for container monitoring." alt="" coords="1407,5,1570,32"/>
+<area shape="rect" id="node2" href="$live__metric__aggregator_8cpp.html" title="Implements the LiveMetricAggregator class for real&#45;time container metrics aggregation." alt="" coords="1759,191,1935,233"/>
+<area shape="rect" id="node3" href="$container__runtime__factory__interface_8hpp.html" title="Declares the interface for container runtime path factories." alt="" coords="253,80,452,136"/>
+<area shape="rect" id="node6" href="$docker__cgroup__v1__path_8hpp.html" title="Declares the DockerCgroupV1PathFactory for Docker cgroup v1 resource paths." alt="" coords="295,191,501,233"/>
+<area shape="rect" id="node7" href="$resource__thread__pool_8cpp.html" title="Implements the ResourceThreadPool class for parallel container resource monitoring." alt="" coords="411,288,566,344"/>
+<area shape="rect" id="node8" href="$resource__thread__pool_8hpp.html" title="Declares the ResourceThreadPool class for parallel container resource monitoring." alt="" coords="577,184,731,240"/>
+<area shape="rect" id="node9" href="$main_8cpp.html" title="Entry point for the Container Monitor application." alt="" coords="1630,399,1713,426"/>
+<area shape="rect" id="node12" href="$database__interface_8hpp.html" title="Declares the abstract interface for database operations in container monitoring." alt="" coords="795,87,964,129"/>
+<area shape="rect" id="node13" href="$sqlite__database_8hpp.html" title="Declares the SQLiteDatabase class for SQLite&#45;based database operations." alt="" coords="807,191,952,233"/>
+<area shape="rect" id="node15" href="$event__processor_8hpp.html" title="Declares the EventProcessor class for processing container events and host metrics." alt="" coords="976,191,1159,233"/>
+<area shape="rect" id="node17" href="$metrics__reader_8hpp.html" title="Declares the MetricsReader class for reading container and host metrics." alt="" coords="1201,87,1358,129"/>
+<area shape="rect" id="node18" href="$metrics__reader_8cpp.html" title="Implements the MetricsReader class for reading container and host metrics." alt="" coords="1285,191,1442,233"/>
+<area shape="rect" id="node19" href="$event__listener_8hpp.html" title="Declares the RuntimeEventListener class for container event monitoring." alt="" coords="1465,87,1635,129"/>
+<area shape="rect" id="node21" href="$monitor__dashboard_8hpp.html" title="Declares the MonitorDashboard class for ncurses&#45;based container metrics UI." alt="" coords="1851,95,2065,121"/>
+<area shape="rect" id="node22" href="$monitor__dashboard_8cpp.html" title="Implements the MonitorDashboard class for ncurses&#45;based container metrics UI." alt="" coords="2011,199,2225,225"/>
+<area shape="rect" id="node23" href="$config__parser_8hpp.html" title="Declares the ConfigParser class for parsing application configuration files." alt="" coords="2353,95,2544,121"/>
+<area shape="rect" id="node24" href="$config__parser_8cpp.html" title="Implements the ConfigParser class for parsing application configuration files." alt="" coords="2541,199,2732,225"/>
+<area shape="rect" id="node26" href="$initializer_8hpp.html" title="Declares the Initializer class for application startup routines." alt="" coords="2163,95,2329,121"/>
+<area shape="rect" id="node27" href="$json__processing_8cpp.html" title="Implements functions for parsing container event JSON and extracting resource constraints." alt="" coords="2619,95,2827,121"/>
+<area shape="rect" id="node4" href="$container__runtime__configuration_8hpp.html" title="Declares the factory selector for container runtime path factories." alt="" coords="5,191,271,233"/>
+<area shape="rect" id="node5" href="$container__runtime__configuration_8cpp.html" title="Implements the factory selector for container runtime path factories." alt="" coords="65,295,329,337"/>
+<area shape="rect" id="node10" href="$resource__monitor_8hpp.html" title="Declares the ResourceMonitor class for tracking live containers and managing resource threads." alt="" coords="692,295,883,337"/>
+<area shape="rect" id="node11" href="$resource__monitor_8cpp.html" title="Implements the ResourceMonitor class for tracking live containers and managing resource threads." alt="" coords="601,392,790,433"/>
+<area shape="rect" id="node14" href="$sqlite__database_8cpp.html" title="Implements the SQLiteDatabase class for SQLite&#45;based database operations." alt="" coords="907,295,1052,337"/>
+<area shape="rect" id="node16" href="$event__processor_8cpp.html" title="Implements the EventProcessor class for processing container events and host metrics." alt="" coords="1179,295,1361,337"/>
+<area shape="rect" id="node20" href="$event__listener_8cpp.html" title="Implements the RuntimeEventListener class for container event monitoring." alt="" coords="1466,191,1634,233"/>
+<area shape="rect" id="node25" href="$initializer_8cpp.html" title="Implements the Initializer class for application startup routines." alt="" coords="2301,199,2465,225"/>
+</map>

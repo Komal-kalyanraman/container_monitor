@@ -1,0 +1,6 @@
+<map id="ui/inc/monitor_dashboard.hpp" name="ui/inc/monitor_dashboard.hpp">
+<area shape="rect" id="node1" title="Declares the MonitorDashboard class for ncurses&#45;based container metrics UI." alt="" coords="139,5,354,32"/>
+<area shape="rect" id="node2" href="$live__metric__aggregator_8cpp.html" title="Implements the LiveMetricAggregator class for real&#45;time container metrics aggregation." alt="" coords="5,80,181,121"/>
+<area shape="rect" id="node3" href="$main_8cpp.html" title="Entry point for the Container Monitor application." alt="" coords="205,87,288,114"/>
+<area shape="rect" id="node4" href="$monitor__dashboard_8cpp.html" title="Implements the MonitorDashboard class for ncurses&#45;based container metrics UI." alt="" coords="313,87,527,114"/>
+</map>

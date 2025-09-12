@@ -1,0 +1,4 @@
+<map id="LiveMetricAggregator::~LiveMetricAggregator" name="LiveMetricAggregator::~LiveMetricAggregator">
+<area shape="rect" id="node1" title="Destructor. Ensures the worker thread is stopped." alt="" coords="5,5,187,47"/>
+<area shape="rect" id="node2" href="$classLiveMetricAggregator.html#a3a0e4fa127273209077bdcef59ea1f7c" title="Stops the aggregator thread." alt="" coords="235,5,397,47"/>
+</map>

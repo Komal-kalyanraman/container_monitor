@@ -1,0 +1,4 @@
+<map id="EventProcessor::stop" name="EventProcessor::stop">
+<area shape="rect" id="node1" title="Stops the event processor thread." alt="" coords="295,5,453,32"/>
+<area shape="rect" id="node2" href="$classEventProcessor.html#af30a066c911c3841d35854c900743b9e" title="Destructor. Ensures the worker thread is stopped." alt="" coords="5,5,247,32"/>
+</map>

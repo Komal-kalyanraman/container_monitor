@@ -1,0 +1,5 @@
+<map id="EventQueue::shutdown" name="EventQueue::shutdown">
+<area shape="rect" id="node1" title="Signals shutdown and wakes all waiting threads." alt="" coords="501,5,673,32"/>
+<area shape="rect" id="node2" href="$classEventProcessor.html#a993b6891ef36dfd09ee17acb45d95a02" title="Stops the event processor thread." alt="" coords="295,5,453,32"/>
+<area shape="rect" id="node3" href="$classEventProcessor.html#af30a066c911c3841d35854c900743b9e" title="Destructor. Ensures the worker thread is stopped." alt="" coords="5,5,247,32"/>
+</map>

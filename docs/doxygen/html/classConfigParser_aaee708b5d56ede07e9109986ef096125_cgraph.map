@@ -1,0 +1,4 @@
+<map id="ConfigParser::getBool" name="ConfigParser::getBool">
+<area shape="rect" id="node1" title="Gets a boolean value for a given key." alt="" coords="5,5,167,32"/>
+<area shape="rect" id="node2" href="$classConfigParser.html#a5e10151c9663b93869b1bc07db0053e7" title="Gets a string value for a given key." alt="" coords="215,5,347,32"/>
+</map>

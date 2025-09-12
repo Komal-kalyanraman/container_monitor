@@ -1,0 +1,5 @@
+<map id="monitoring_service/inc/resource_monitor.hpp" name="monitoring_service/inc/resource_monitor.hpp">
+<area shape="rect" id="node1" title="Declares the ResourceMonitor class for tracking live containers and managing resource threads." alt="" coords="31,5,222,47"/>
+<area shape="rect" id="node2" href="$main_8cpp.html" title="Entry point for the Container Monitor application." alt="" coords="5,102,88,129"/>
+<area shape="rect" id="node3" href="$resource__monitor_8cpp.html" title="Implements the ResourceMonitor class for tracking live containers and managing resource threads." alt="" coords="112,95,301,136"/>
+</map>

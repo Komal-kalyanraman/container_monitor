@@ -1,0 +1,5 @@
+<map id="ResourceThreadPool::stop" name="ResourceThreadPool::stop">
+<area shape="rect" id="node1" title="Stops all worker threads and flushes buffers." alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node2" href="$classResourceThreadPool.html#abc537653319086744ca546aecdbabf46" title="Flushes all metric buffers to the database." alt="" coords="208,5,363,47"/>
+<area shape="rect" id="node3" href="$classIDatabaseInterface.html#a199124b634381e618bf28ae09152b41f" title="Insert a batch of metrics for a container." alt="" coords="411,5,557,47"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="ConfigParser::getDouble" name="ConfigParser::getDouble">
+<area shape="rect" id="node1" title="Gets a double value for a given key." alt="" coords="5,5,184,32"/>
+<area shape="rect" id="node2" href="$classConfigParser.html#a5e10151c9663b93869b1bc07db0053e7" title="Gets a string value for a given key." alt="" coords="232,5,364,32"/>
+</map>

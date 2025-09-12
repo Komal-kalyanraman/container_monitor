@@ -1,0 +1,5 @@
+<map id="LiveMetricAggregator::stop" name="LiveMetricAggregator::stop">
+<area shape="rect" id="node1" title="Stops the aggregator thread." alt="" coords="235,27,397,69"/>
+<area shape="rect" id="node2" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="Main entry point for the Container Monitor application." alt="" coords="69,5,123,32"/>
+<area shape="rect" id="node3" href="$classLiveMetricAggregator.html#a10cec1ab0574c85ec272c0c0d838ae49" title="Destructor. Ensures the worker thread is stopped." alt="" coords="5,57,187,98"/>
+</map>

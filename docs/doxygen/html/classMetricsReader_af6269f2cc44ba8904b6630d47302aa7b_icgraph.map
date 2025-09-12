@@ -1,0 +1,7 @@
+<map id="MetricsReader::readUintFromFile" name="MetricsReader::readUintFromFile">
+<area shape="rect" id="node1" title="Reads an unsigned integer value from a file." alt="" coords="521,42,757,69"/>
+<area shape="rect" id="node2" href="$classMetricsReader.html#a17af94e249caadeca1140344d0cd39e1" title="Gets the container&#39;s memory usage in megabytes." alt="" coords="275,5,473,47"/>
+<area shape="rect" id="node4" href="$classMetricsReader.html#a89b92f11cac797c023cbaf8d62dc2715" title="Gets the container&#39;s current pids count." alt="" coords="288,71,460,98"/>
+<area shape="rect" id="node3" href="$classMetricsReader.html#a804cf4e44e14d976b2c2e6f083c22d63" title="Gets the container&#39;s memory usage as a percentage of its limit." alt="" coords="17,5,215,47"/>
+<area shape="rect" id="node5" href="$classMetricsReader.html#ad094288f500d2394f3091a9ca1327163" title="Gets the container&#39;s pids usage as a percentage of its limit." alt="" coords="5,71,227,98"/>
+</map>

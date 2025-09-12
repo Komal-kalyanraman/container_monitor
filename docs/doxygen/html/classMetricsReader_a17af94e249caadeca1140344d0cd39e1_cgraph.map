@@ -1,0 +1,4 @@
+<map id="MetricsReader::getMemoryUsage" name="MetricsReader::getMemoryUsage">
+<area shape="rect" id="node1" title="Gets the container&#39;s memory usage in megabytes." alt="" coords="5,5,204,47"/>
+<area shape="rect" id="node2" href="$classMetricsReader.html#af6269f2cc44ba8904b6630d47302aa7b" title="Reads an unsigned integer value from a file." alt="" coords="252,13,488,39"/>
+</map>

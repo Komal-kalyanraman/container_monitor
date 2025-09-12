@@ -1,0 +1,5 @@
+<map id="analysis/inc/live_metric_aggregator.hpp" name="analysis/inc/live_metric_aggregator.hpp">
+<area shape="rect" id="node1" title="Declares the LiveMetricAggregator class for real&#45;time container metrics aggregation and dashboard upd..." alt="" coords="81,5,257,47"/>
+<area shape="rect" id="node2" href="$live__metric__aggregator_8cpp.html" title="Implements the LiveMetricAggregator class for real&#45;time container metrics aggregation." alt="" coords="5,95,181,136"/>
+<area shape="rect" id="node3" href="$main_8cpp.html" title="Entry point for the Container Monitor application." alt="" coords="205,102,288,129"/>
+</map>

@@ -1,0 +1,12 @@
+<map id="container_runtime/src/container_runtime_configuration.cpp" name="container_runtime/src/container_runtime_configuration.cpp">
+<area shape="rect" id="node1" title="Implements the factory selector for container runtime path factories." alt="" coords="5,5,269,47"/>
+<area shape="rect" id="node2" href="$container__runtime__configuration_8hpp.html" title="Declares the factory selector for container runtime path factories." alt="" coords="91,95,352,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="67,177,144,203"/>
+<area shape="rect" id="node4" title=" " alt="" coords="184,333,243,360"/>
+<area shape="rect" id="node9" href="$docker__cgroup__v1__path_8hpp.html" title="Declares the DockerCgroupV1PathFactory for Docker cgroup v1 resource paths." alt="" coords="376,95,579,121"/>
+<area shape="rect" id="node5" href="$container__runtime__factory__interface_8hpp.html" title="Declares the interface for container runtime path factories." alt="" coords="232,169,427,211"/>
+<area shape="rect" id="node6" href="$common_8hpp.html" title="Common data structures, constants, and configuration for container monitoring." alt="" coords="283,259,389,285"/>
+<area shape="rect" id="node7" title=" " alt="" coords="399,333,465,360"/>
+<area shape="rect" id="node8" title=" " alt="" coords="277,333,374,360"/>
+<area shape="rect" id="node10" title=" " alt="" coords="501,177,563,203"/>
+</map>

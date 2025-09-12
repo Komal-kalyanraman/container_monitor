@@ -1,0 +1,6 @@
+<map id="ConfigParser::getBool" name="ConfigParser::getBool">
+<area shape="rect" id="node1" title="Gets a boolean value for a given key." alt="" coords="587,5,748,32"/>
+<area shape="rect" id="node2" href="$classConfigParser.html#a98620e3bc1a71887f39cdb0a8a8acd26" title="Converts loaded parameters to a MonitorConfig struct." alt="" coords="324,5,539,32"/>
+<area shape="rect" id="node3" href="$classInitializer.html#a0816edd9f2d054417497a4d11fdf518b" title="Parses the configuration file and returns a MonitorConfig object." alt="" coords="108,5,276,32"/>
+<area shape="rect" id="node4" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="Main entry point for the Container Monitor application." alt="" coords="5,5,60,32"/>
+</map>

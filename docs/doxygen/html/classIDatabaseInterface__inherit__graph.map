@@ -1,0 +1,4 @@
+<map id="IDatabaseInterface" name="IDatabaseInterface">
+<area shape="rect" id="node1" title="Abstract interface for database operations." alt="" coords="5,5,192,229"/>
+<area shape="rect" id="node2" href="$classSQLiteDatabase.html" title="SQLite implementation of the IDatabaseInterface." alt="" coords="5,277,192,516"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="monitoring_service/inc/event_queue.hpp" name="monitoring_service/inc/event_queue.hpp">
+<area shape="rect" id="node1" title="Declares the EventQueue class for thread&#45;safe event management." alt="" coords="222,5,383,47"/>
+<area shape="rect" id="node2" href="$main_8cpp.html" title="Entry point for the Container Monitor application." alt="" coords="197,191,280,218"/>
+<area shape="rect" id="node3" href="$event__listener_8hpp.html" title="Declares the RuntimeEventListener class for container event monitoring." alt="" coords="31,95,201,136"/>
+<area shape="rect" id="node5" href="$event__processor_8hpp.html" title="Declares the EventProcessor class for processing container events and host metrics." alt="" coords="277,95,459,136"/>
+<area shape="rect" id="node7" href="$event__queue_8cpp.html" title="Implements the EventQueue class for thread&#45;safe event management." alt="" coords="484,95,644,136"/>
+<area shape="rect" id="node4" href="$event__listener_8cpp.html" title="Implements the RuntimeEventListener class for container event monitoring." alt="" coords="5,184,173,225"/>
+<area shape="rect" id="node6" href="$event__processor_8cpp.html" title="Implements the EventProcessor class for processing container events and host metrics." alt="" coords="305,184,487,225"/>
+</map>

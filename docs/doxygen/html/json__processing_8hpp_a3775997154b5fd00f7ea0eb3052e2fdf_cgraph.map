@@ -1,0 +1,4 @@
+<map id="parseContainerEvent" name="parseContainerEvent">
+<area shape="rect" id="node1" title="Parses a container event JSON string into a ContainerEventInfo struct." alt="" coords="5,13,164,39"/>
+<area shape="rect" id="node2" href="$json__processing_8cpp.html#a06fcec68906c35632cdf3fad5aa650ae" title="Extracts resource constraints from &#39;docker/podman inspect&#39; output for a container." alt="" coords="212,5,423,47"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="RuntimeEventListener::stop" name="RuntimeEventListener::stop">
+<area shape="rect" id="node1" title="Stops the event listener thread." alt="" coords="239,5,405,47"/>
+<area shape="rect" id="node2" href="$classRuntimeEventListener.html#aa9b2343c4ebf0c9b2edfdd2b0e06b1b2" title="Destructor. Ensures the event thread is stopped." alt="" coords="5,5,191,47"/>
+</map>

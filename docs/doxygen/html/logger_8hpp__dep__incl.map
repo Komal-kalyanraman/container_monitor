@@ -1,0 +1,13 @@
+<map id="utils/inc/logger.hpp" name="utils/inc/logger.hpp">
+<area shape="rect" id="node1" title="Logging macros for the container monitor application." alt="" coords="799,5,945,32"/>
+<area shape="rect" id="node2" href="$live__metric__aggregator_8cpp.html" title="Implements the LiveMetricAggregator class for real&#45;time container metrics aggregation." alt="" coords="5,87,181,129"/>
+<area shape="rect" id="node3" href="$sqlite__database_8cpp.html" title="Implements the SQLiteDatabase class for SQLite&#45;based database operations." alt="" coords="206,87,351,129"/>
+<area shape="rect" id="node4" href="$main_8cpp.html" title="Entry point for the Container Monitor application." alt="" coords="376,95,459,121"/>
+<area shape="rect" id="node5" href="$event__listener_8cpp.html" title="Implements the RuntimeEventListener class for container event monitoring." alt="" coords="483,87,651,129"/>
+<area shape="rect" id="node6" href="$event__processor_8cpp.html" title="Implements the EventProcessor class for processing container events and host metrics." alt="" coords="675,87,858,129"/>
+<area shape="rect" id="node7" href="$resource__monitor_8cpp.html" title="Implements the ResourceMonitor class for tracking live containers and managing resource threads." alt="" coords="883,87,1072,129"/>
+<area shape="rect" id="node8" href="$resource__thread__pool_8cpp.html" title="Implements the ResourceThreadPool class for parallel container resource monitoring." alt="" coords="1096,80,1251,136"/>
+<area shape="rect" id="node9" href="$monitor__dashboard_8cpp.html" title="Implements the MonitorDashboard class for ncurses&#45;based container metrics UI." alt="" coords="1275,95,1490,121"/>
+<area shape="rect" id="node10" href="$config__parser_8cpp.html" title="Implements the ConfigParser class for parsing application configuration files." alt="" coords="1514,95,1705,121"/>
+<area shape="rect" id="node11" href="$initializer_8cpp.html" title="Implements the Initializer class for application startup routines." alt="" coords="1729,95,1893,121"/>
+</map>

@@ -1,0 +1,79 @@
+# Project settings
+PROJECT_NAME           = "Container Monitor"
+PROJECT_BRIEF          = "Container Monitor is a C++ service for managing logging, monitoring, and alerting for containerized applications."
+PROJECT_NUMBER         = "0.1.0"
+OUTPUT_DIRECTORY       = docs/doxygen
+
+# Input files
+INPUT                  = ./App README.md
+EXCLUDE                = ./App/third_party
+# IMAGE_PATH             = docs/architecture
+FILE_PATTERNS          = *.cpp *.hpp *.h *.png *.cc *.h
+RECURSIVE              = YES
+
+# Output settings
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+HTML_OUTPUT            = html
+GENERATE_TREEVIEW      = YES
+ALPHABETICAL_INDEX     = YES
+SHOW_USED_FILES        = YES
+
+# Graph settings
+HAVE_DOT               = YES
+CLASS_DIAGRAMS         = YES
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = YES
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+DOT_IMAGE_FORMAT       = svg
+INTERACTIVE_SVG        = YES
+UML_LOOK               = YES
+UML_LIMIT_NUM_FIELDS   = 50
+
+# Extraction settings
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = NO
+EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_PACKAGE        = YES
+
+# Build settings
+BUILTIN_STL_SUPPORT    = YES
+
+# Source browsing
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = YES
+REFERENCES_RELATION    = YES
+REFERENCED_BY_RELATION = YES
+
+# Path settings
+FULL_PATH_NAMES        = YES
+STRIP_FROM_PATH        = ./App
+
+# Warning settings
+QUIET                  = YES
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+
+# Preprocessing
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = NO
+SEARCH_INCLUDES        = YES
+
+# Documentation settings
+USE_MDFILE_AS_MAINPAGE = README.md
+MARKDOWN_SUPPORT       = YES
+
+# Formatting
+TAB_SIZE               = 4
+
+# Optional: Branding (uncomment and set your logo if desired)
+# PROJECT_LOGO         = path/to/logo.png
+
+# Optional: Color theme (uncomment to customize)
+HTML_COLORSTYLE_HUE  = 220

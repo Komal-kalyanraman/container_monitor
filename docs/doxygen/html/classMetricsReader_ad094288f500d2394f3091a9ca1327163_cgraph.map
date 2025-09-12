@@ -1,0 +1,5 @@
+<map id="MetricsReader::getPidsPercent" name="MetricsReader::getPidsPercent">
+<area shape="rect" id="node1" title="Gets the container&#39;s pids usage as a percentage of its limit." alt="" coords="5,5,227,32"/>
+<area shape="rect" id="node2" href="$classMetricsReader.html#a89b92f11cac797c023cbaf8d62dc2715" title="Gets the container&#39;s current pids count." alt="" coords="275,5,447,32"/>
+<area shape="rect" id="node3" href="$classMetricsReader.html#af6269f2cc44ba8904b6630d47302aa7b" title="Reads an unsigned integer value from a file." alt="" coords="495,5,731,32"/>
+</map>

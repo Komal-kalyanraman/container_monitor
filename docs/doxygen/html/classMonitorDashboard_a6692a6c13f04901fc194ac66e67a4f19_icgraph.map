@@ -1,0 +1,5 @@
+<map id="MonitorDashboard::stop" name="MonitorDashboard::stop">
+<area shape="rect" id="node1" title="Stops the dashboard UI thread." alt="" coords="207,35,385,61"/>
+<area shape="rect" id="node2" href="$main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="Main entry point for the Container Monitor application." alt="" coords="55,5,109,32"/>
+<area shape="rect" id="node3" href="$classMonitorDashboard.html#a8279c37dd0df959d92407c579a8faaef" title="Destructor. Ensures the UI thread is stopped." alt="" coords="5,57,159,98"/>
+</map>

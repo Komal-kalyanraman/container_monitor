@@ -1,0 +1,7 @@
+<map id="ConfigParser::toMonitorConfig" name="ConfigParser::toMonitorConfig">
+<area shape="rect" id="node1" title="Converts loaded parameters to a MonitorConfig struct." alt="" coords="5,54,220,81"/>
+<area shape="rect" id="node2" href="$classConfigParser.html#a5e10151c9663b93869b1bc07db0053e7" title="Gets a string value for a given key." alt="" coords="495,54,627,81"/>
+<area shape="rect" id="node3" href="$classConfigParser.html#aaee708b5d56ede07e9109986ef096125" title="Gets a boolean value for a given key." alt="" coords="277,29,438,55"/>
+<area shape="rect" id="node4" href="$classConfigParser.html#a7ecd8fa23a2651c59bae6b865725b59b" title="Gets a double value for a given key." alt="" coords="268,79,447,106"/>
+<area shape="rect" id="node5" href="$classConfigParser.html#ae5d32c782f74de2f881c0ebc5aeaf3a5" title="Gets an integer value for a given key." alt="" coords="283,130,432,157"/>
+</map>

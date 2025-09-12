@@ -1,0 +1,5 @@
+<map id="monitoring_service/inc/event_processor.hpp" name="monitoring_service/inc/event_processor.hpp">
+<area shape="rect" id="node1" title="Declares the EventProcessor class for processing container events and host metrics." alt="" coords="34,5,217,47"/>
+<area shape="rect" id="node2" href="$main_8cpp.html" title="Entry point for the Container Monitor application." alt="" coords="5,102,88,129"/>
+<area shape="rect" id="node3" href="$event__processor_8cpp.html" title="Implements the EventProcessor class for processing container events and host metrics." alt="" coords="113,95,295,136"/>
+</map>

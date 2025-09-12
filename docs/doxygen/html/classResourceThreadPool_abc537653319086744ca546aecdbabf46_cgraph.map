@@ -1,0 +1,4 @@
+<map id="ResourceThreadPool::flushAllBuffers" name="ResourceThreadPool::flushAllBuffers">
+<area shape="rect" id="node1" title="Flushes all metric buffers to the database." alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node2" href="$classIDatabaseInterface.html#a199124b634381e618bf28ae09152b41f" title="Insert a batch of metrics for a container." alt="" coords="208,5,355,47"/>
+</map>

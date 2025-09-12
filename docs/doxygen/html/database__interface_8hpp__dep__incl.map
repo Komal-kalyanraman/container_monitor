@@ -1,0 +1,12 @@
+<map id="database/inc/database_interface.hpp" name="database/inc/database_interface.hpp">
+<area shape="rect" id="node1" title="Declares the abstract interface for database operations in container monitoring." alt="" coords="429,5,599,47"/>
+<area shape="rect" id="node2" href="$sqlite__database_8hpp.html" title="Declares the SQLiteDatabase class for SQLite&#45;based database operations." alt="" coords="116,102,261,143"/>
+<area shape="rect" id="node5" href="$event__processor_8hpp.html" title="Declares the EventProcessor class for processing container events and host metrics." alt="" coords="356,102,539,143"/>
+<area shape="rect" id="node7" href="$resource__monitor_8hpp.html" title="Declares the ResourceMonitor class for tracking live containers and managing resource threads." alt="" coords="485,206,676,247"/>
+<area shape="rect" id="node9" href="$resource__thread__pool_8hpp.html" title="Declares the ResourceThreadPool class for parallel container resource monitoring." alt="" coords="637,95,791,151"/>
+<area shape="rect" id="node3" href="$sqlite__database_8cpp.html" title="Implements the SQLiteDatabase class for SQLite&#45;based database operations." alt="" coords="5,206,151,247"/>
+<area shape="rect" id="node4" href="$main_8cpp.html" title="Entry point for the Container Monitor application." alt="" coords="473,310,555,337"/>
+<area shape="rect" id="node6" href="$event__processor_8cpp.html" title="Implements the EventProcessor class for processing container events and host metrics." alt="" coords="227,206,409,247"/>
+<area shape="rect" id="node8" href="$resource__monitor_8cpp.html" title="Implements the ResourceMonitor class for tracking live containers and managing resource threads." alt="" coords="625,303,814,344"/>
+<area shape="rect" id="node10" href="$resource__thread__pool_8cpp.html" title="Implements the ResourceThreadPool class for parallel container resource monitoring." alt="" coords="802,199,957,255"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="getResourceConstraintsFromInspect" name="getResourceConstraintsFromInspect">
+<area shape="rect" id="node1" title="Extracts resource constraints from &#39;docker/podman inspect&#39; output for a container." alt="" coords="212,5,423,47"/>
+<area shape="rect" id="node2" href="$json__processing_8cpp.html#a3775997154b5fd00f7ea0eb3052e2fdf" title="Parses a container event JSON string into a ContainerEventInfo struct. If resource constraints are mi..." alt="" coords="5,13,164,39"/>
+</map>

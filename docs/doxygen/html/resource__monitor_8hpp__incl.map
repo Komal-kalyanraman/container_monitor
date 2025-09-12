@@ -1,0 +1,17 @@
+<map id="monitoring_service/inc/resource_monitor.hpp" name="monitoring_service/inc/resource_monitor.hpp">
+<area shape="rect" id="node1" title="Declares the ResourceMonitor class for tracking live containers and managing resource threads." alt="" coords="207,5,398,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,177,72,203"/>
+<area shape="rect" id="node3" title=" " alt="" coords="96,177,160,203"/>
+<area shape="rect" id="node4" href="$database__interface_8hpp.html" title="Declares the abstract interface for database operations in container monitoring." alt="" coords="454,177,629,203"/>
+<area shape="rect" id="node11" href="$resource__thread__pool_8hpp.html" title="Declares the ResourceThreadPool class for parallel container resource monitoring." alt="" coords="518,95,709,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="678,259,741,285"/>
+<area shape="rect" id="node6" title=" " alt="" coords="977,259,1028,285"/>
+<area shape="rect" id="node7" title=" " alt="" coords="496,333,555,360"/>
+<area shape="rect" id="node8" href="$common_8hpp.html" title="Common data structures, constants, and configuration for container monitoring." alt="" coords="288,259,395,285"/>
+<area shape="rect" id="node9" title=" " alt="" coords="389,333,456,360"/>
+<area shape="rect" id="node10" title=" " alt="" coords="267,333,365,360"/>
+<area shape="rect" id="node12" title=" " alt="" coords="653,177,717,203"/>
+<area shape="rect" id="node13" title=" " alt="" coords="742,177,866,203"/>
+<area shape="rect" id="node14" title=" " alt="" coords="890,177,1033,203"/>
+<area shape="rect" id="node15" href="$container__runtime__factory__interface_8hpp.html" title="Declares the interface for container runtime path factories." alt="" coords="235,169,429,211"/>
+</map>

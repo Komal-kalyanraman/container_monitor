@@ -1,0 +1,17 @@
+<map id="monitoring_service/inc/event_processor.hpp" name="monitoring_service/inc/event_processor.hpp">
+<area shape="rect" id="node1" title="Declares the EventProcessor class for processing container events and host metrics." alt="" coords="157,5,339,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,72,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="96,95,160,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="256,244,315,271"/>
+<area shape="rect" id="node5" title=" " alt="" coords="717,95,841,121"/>
+<area shape="rect" id="node6" href="$common_8hpp.html" title="Common data structures, constants, and configuration for container monitoring." alt="" coords="104,169,211,196"/>
+<area shape="rect" id="node9" href="$event__queue_8hpp.html" title="Declares the EventQueue class for thread&#45;safe event management." alt="" coords="558,95,693,121"/>
+<area shape="rect" id="node13" href="$database__interface_8hpp.html" title="Declares the abstract interface for database operations in container monitoring." alt="" coords="286,95,461,121"/>
+<area shape="rect" id="node7" title=" " alt="" coords="139,244,205,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="17,244,114,271"/>
+<area shape="rect" id="node10" title=" " alt="" coords="718,169,781,196"/>
+<area shape="rect" id="node11" title=" " alt="" coords="805,169,869,196"/>
+<area shape="rect" id="node12" title=" " alt="" coords="499,169,642,196"/>
+<area shape="rect" id="node14" title=" " alt="" coords="337,169,399,196"/>
+<area shape="rect" id="node15" title=" " alt="" coords="424,169,475,196"/>
+</map>

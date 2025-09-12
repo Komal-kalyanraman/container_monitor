@@ -1,0 +1,4 @@
+<map id="MetricsReader::getMemoryUsage" name="MetricsReader::getMemoryUsage">
+<area shape="rect" id="node1" title="Gets the container&#39;s memory usage in megabytes." alt="" coords="252,5,451,47"/>
+<area shape="rect" id="node2" href="$classMetricsReader.html#a804cf4e44e14d976b2c2e6f083c22d63" title="Gets the container&#39;s memory usage as a percentage of its limit." alt="" coords="5,5,204,47"/>
+</map>

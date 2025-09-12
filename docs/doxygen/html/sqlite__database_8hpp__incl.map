@@ -1,0 +1,12 @@
+<map id="database/inc/sqlite_database.hpp" name="database/inc/sqlite_database.hpp">
+<area shape="rect" id="node1" title="Declares the SQLiteDatabase class for SQLite&#45;based database operations." alt="" coords="241,5,387,47"/>
+<area shape="rect" id="node2" href="$database__interface_8hpp.html" title="Declares the abstract interface for database operations in container monitoring." alt="" coords="101,95,276,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,169,68,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="139,169,190,196"/>
+<area shape="rect" id="node5" title=" " alt="" coords="285,244,343,271"/>
+<area shape="rect" id="node6" href="$common_8hpp.html" title="Common data structures, constants, and configuration for container monitoring." alt="" coords="351,169,458,196"/>
+<area shape="rect" id="node9" title=" " alt="" coords="402,95,466,121"/>
+<area shape="rect" id="node10" title=" " alt="" coords="491,95,569,121"/>
+<area shape="rect" id="node7" title=" " alt="" coords="369,244,435,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="460,244,557,271"/>
+</map>

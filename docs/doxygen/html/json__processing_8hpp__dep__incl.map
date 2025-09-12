@@ -1,0 +1,5 @@
+<map id="utils/inc/json_processing.hpp" name="utils/inc/json_processing.hpp">
+<area shape="rect" id="node1" title="Declares functions and structs for parsing container event JSON." alt="" coords="101,5,311,32"/>
+<area shape="rect" id="node2" href="$event__processor_8cpp.html" title="Implements the EventProcessor class for processing container events and host metrics." alt="" coords="5,80,188,121"/>
+<area shape="rect" id="node3" href="$json__processing_8cpp.html" title="Implements functions for parsing container event JSON and extracting resource constraints." alt="" coords="213,87,421,114"/>
+</map>
