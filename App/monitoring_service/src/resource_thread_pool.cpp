@@ -1,5 +1,9 @@
+/**
+ * @file resource_thread_pool.cpp
+ * @brief Implements the ResourceThreadPool class for parallel container resource monitoring.
+ */
+
 #include "resource_thread_pool.hpp"
-#include <algorithm>
 #include <map>
 #include <cmath> 
 #include <mutex>
@@ -7,6 +11,7 @@
 #include <chrono>
 #include <cstring>
 #include <mqueue.h>
+#include <algorithm>
 #include <unordered_map>
 #include "common.hpp"
 #include "logger.hpp"
@@ -15,6 +20,12 @@
 
 std::mutex cout_mutex;
 
+/**
+ * @brief Constructs a ResourceThreadPool.
+ * @param cfg Monitor configuration.
+ * @param shutdown_flag Reference to the application's shutdown flag.
+ * @param db Reference to the database interface.
+ */
 ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db)
     : cfg_(cfg), shutdown_flag_(shutdown_flag), db_(db), thread_containers_(cfg.thread_count),
       thread_buffers_(cfg.thread_count), thread_local_paths_(cfg.thread_count), thread_local_info_(cfg.thread_count)
@@ -25,10 +36,16 @@ ResourceThreadPool::ResourceThreadPool(const MonitorConfig& cfg, std::atomic<boo
     }
 }
 
+/**
+ * @brief Destructor. Ensures all threads are stopped and buffers flushed.
+ */
 ResourceThreadPool::~ResourceThreadPool() {
     stop();
 }
 
+/**
+ * @brief Starts all worker threads.
+ */
 void ResourceThreadPool::start() {
     running_ = true;
     for (int i = 0; i < cfg_.thread_count; ++i) {
@@ -36,6 +53,9 @@ void ResourceThreadPool::start() {
     }
 }
 
+/**
+ * @brief Stops all worker threads and flushes buffers.
+ */
 void ResourceThreadPool::stop() {
     running_ = false;
     cv_.notify_all();
@@ -45,6 +65,10 @@ void ResourceThreadPool::stop() {
     }
 }
 
+/**
+ * @brief Adds a container to the thread pool for monitoring.
+ * @param name Container name.
+ */
 void ResourceThreadPool::addContainer(const std::string& name) {
     std::unique_lock<std::mutex> lock(assign_mutex_);
     flushAllBuffers();
@@ -77,6 +101,10 @@ void ResourceThreadPool::addContainer(const std::string& name) {
     cv_.notify_all();
 }
 
+/**
+ * @brief Removes a container from the thread pool.
+ * @param name Container name.
+ */
 void ResourceThreadPool::removeContainer(const std::string& name) {
     std::unique_lock<std::mutex> lock(assign_mutex_);
     flushAllBuffers();
@@ -93,6 +121,9 @@ void ResourceThreadPool::removeContainer(const std::string& name) {
     }
 }
 
+/**
+ * @brief Flushes all metric buffers to the database.
+ */
 void ResourceThreadPool::flushAllBuffers() {
     for (int i = 0; i < cfg_.thread_count; ++i) {
         auto& buffers = thread_buffers_[i];
@@ -103,6 +134,10 @@ void ResourceThreadPool::flushAllBuffers() {
     }
 }
 
+/**
+ * @brief Gets the current thread-to-container assignments.
+ * @return Map of thread index to vector of container names.
+ */
 std::map<int, std::vector<std::string>> ResourceThreadPool::getAssignments() {
     std::unique_lock<std::mutex> lock(assign_mutex_);
     std::map<int, std::vector<std::string>> result;
@@ -112,6 +147,16 @@ std::map<int, std::vector<std::string>> ResourceThreadPool::getAssignments() {
     return result;
 }
 
+/**
+ * @brief Worker thread function for collecting metrics.
+ * @param thread_index Index of the worker thread.
+ *
+ * - Collects metrics for assigned containers.
+ * - Batches metrics and sends max values to the UI via message queue.
+ * - Inserts batches into the database.
+ * - Waits for the configured sampling interval.
+ * - Handles shutdown and buffer flushing.
+ */
 void ResourceThreadPool::workerLoop(int thread_index) {
     auto& buffers = thread_buffers_[thread_index];
     auto& local_paths = thread_local_paths_[thread_index];

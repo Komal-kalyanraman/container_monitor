@@ -1,3 +1,8 @@
+/**
+ * @file monitor_dashboard.cpp
+ * @brief Implements the MonitorDashboard class for ncurses-based container metrics UI.
+ */
+
 #include "monitor_dashboard.hpp"
 #include <ncurses.h>
 #include <chrono>
@@ -5,15 +10,27 @@
 #include "logger.hpp"
 #include "common.hpp"
 
+/**
+ * @brief Constructs a MonitorDashboard.
+ * @param shutdown_flag Reference to the application's shutdown flag.
+ * @param cfg Reference to monitor configuration.
+ */
 MonitorDashboard::MonitorDashboard(std::atomic<bool>& shutdown_flag, const MonitorConfig& cfg)
     : shutdown_flag_(shutdown_flag), cfg_(cfg) {
     CM_LOG_INFO << "[MonitorDashboard] ui_refresh_interval_ms_: " << cfg_.ui_refresh_interval_ms << "\n";
 }
 
+/**
+ * @brief Destructor. Ensures the UI thread is stopped.
+ */
 MonitorDashboard::~MonitorDashboard() {
     stop();
 }
 
+/**
+ * @brief Pushes new metrics for a container.
+ * @param metrics ContainerMaxMetricsMsg struct.
+ */
 void MonitorDashboard::pushMetrics(const ContainerMaxMetricsMsg& metrics) {
     int64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::system_clock::now().time_since_epoch()).count();
@@ -29,6 +46,10 @@ void MonitorDashboard::pushMetrics(const ContainerMaxMetricsMsg& metrics) {
     data_cv_.notify_one();
 }
 
+/**
+ * @brief Removes metrics for a container.
+ * @param container_id Container identifier.
+ */
 void MonitorDashboard::pushMetricsRemoved(const std::string& container_id) {
     {
         std::lock_guard<std::mutex> lock(data_mutex_);
@@ -44,6 +65,9 @@ void MonitorDashboard::pushMetricsRemoved(const std::string& container_id) {
     data_cv_.notify_one();
 }
 
+/**
+ * @brief Starts the dashboard UI thread.
+ */
 void MonitorDashboard::start() {
     if (!running_) {
         running_ = true;
@@ -51,6 +75,9 @@ void MonitorDashboard::start() {
     }
 }
 
+/**
+ * @brief Stops the dashboard UI thread.
+ */
 void MonitorDashboard::stop() {
     running_ = false;
     data_cv_.notify_one();
@@ -59,6 +86,15 @@ void MonitorDashboard::stop() {
     }
 }
 
+/**
+ * @brief Worker thread function. Handles ncurses UI rendering and updates.
+ *
+ * - Initializes ncurses and color pairs.
+ * - Waits for metric updates or refresh interval.
+ * - Dynamically aligns columns based on container name length.
+ * - Displays metrics with color coding for alert thresholds.
+ * - Handles shutdown and cleans up ncurses.
+ */
 void MonitorDashboard::run() {
     initscr();
     cbreak();

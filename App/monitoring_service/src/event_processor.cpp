@@ -1,25 +1,54 @@
+/**
+ * @file event_processor.cpp
+ * @brief Implements the EventProcessor class for processing container events and host metrics.
+ */
+
 #include "event_processor.hpp"
 #include <iostream>
 #include "logger.hpp"
 #include "json_processing.hpp"
 #include "metrics_reader.hpp"
 
+/**
+ * @brief Constructs an EventProcessor.
+ * @param queue Reference to the event queue.
+ * @param shutdown_flag Reference to the application's shutdown flag.
+ * @param db Reference to the database interface.
+ * @param cfg Reference to the monitor configuration.
+ */
 EventProcessor::EventProcessor(EventQueue& queue, std::atomic<bool>& shutdown_flag, IDatabaseInterface& db, const MonitorConfig& cfg)
     : queue_(queue), shutdown_flag_(shutdown_flag), db_(db), cfg_(cfg) {}
 
+/**
+ * @brief Destructor. Ensures the worker thread is stopped.
+ */
 EventProcessor::~EventProcessor() { stop(); }
 
+/**
+ * @brief Starts the event processor thread.
+ */
 void EventProcessor::start() {
     running_ = true;
     worker_ = std::thread(&EventProcessor::processLoop, this);
 }
 
+/**
+ * @brief Stops the event processor thread.
+ */
 void EventProcessor::stop() {
     running_ = false;
     queue_.shutdown();
     if (worker_.joinable()) worker_.join();
 }
 
+/**
+ * @brief Worker thread function. Processes events and collects host metrics.
+ *
+ * - Periodically collects host CPU and memory usage and saves to the database.
+ * - Pops container events from the event queue, parses them, and updates the database.
+ * - Handles container creation and destruction events.
+ * - Handles shutdown and cleans up resources.
+ */
 void EventProcessor::processLoop() {
     std::string event;
     int refresh_interval = cfg_.container_event_refresh_interval_ms;
@@ -37,7 +66,6 @@ void EventProcessor::processLoop() {
         double cpu_usage_percentage = metrics_reader.getHostCpuUsagePercentage();
         double mem_usage_percentage = metrics_reader.getHostMemoryUsagePercent();
         db_.saveHostUsage(timestamp_ms, cpu_usage_percentage, mem_usage_percentage);
-        // CM_LOG_INFO << "[Host Usage] Timestamp: " << timestamp_ms << ", CPU: " << cpu_usage << "%, Memory: " << mem_usage_mb << " MB\n";
 
         if ((queue_.pop(event, refresh_interval))) {
             try {

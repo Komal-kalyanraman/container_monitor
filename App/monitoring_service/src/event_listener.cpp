@@ -1,20 +1,40 @@
+/**
+ * @file event_listener.cpp
+ * @brief Implements the RuntimeEventListener class for container event monitoring.
+ */
+
 #include "event_listener.hpp"
 #include "logger.hpp"
 #include <chrono>
 #include <cstdio>
 
+/**
+ * @brief Constructs a RuntimeEventListener.
+ * @param config Monitor configuration.
+ * @param queue Reference to the event queue.
+ * @param shutdown_flag Reference to the application's shutdown flag.
+ */
 RuntimeEventListener::RuntimeEventListener(const MonitorConfig& config, EventQueue& queue, std::atomic<bool>& shutdown_flag)
     : config_(config), event_queue_(queue), shutdown_flag_(shutdown_flag), running_(false) {}
 
+/**
+ * @brief Destructor. Ensures the event thread is stopped.
+ */
 RuntimeEventListener::~RuntimeEventListener() {
     stop();
 }
 
+/**
+ * @brief Starts the event listener thread.
+ */
 void RuntimeEventListener::start() {
     running_ = true;
     event_thread_ = std::thread(&RuntimeEventListener::eventThreadFunc, this);
 }
 
+/**
+ * @brief Stops the event listener thread.
+ */
 void RuntimeEventListener::stop() {
     running_ = false;
     if (event_thread_.joinable()) {
@@ -22,6 +42,15 @@ void RuntimeEventListener::stop() {
     }
 }
 
+/**
+ * @brief Worker thread function. Executes the event command and pushes events to the queue.
+ *
+ * - Runs the container runtime's event command (docker/podman).
+ * - Reads event output line by line.
+ * - Pushes each event to the event queue.
+ * - Sleeps for the configured refresh interval between reads.
+ * - Handles shutdown and cleans up resources.
+ */
 void RuntimeEventListener::eventThreadFunc() {
     std::string runtime_cmd;
     if (config_.runtime == "docker") {

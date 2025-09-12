@@ -1,23 +1,48 @@
+/**
+ * @file resource_monitor.cpp
+ * @brief Implements the ResourceMonitor class for tracking live containers and managing resource threads.
+ */
+
 #include "resource_monitor.hpp"
-#include "resource_thread_pool.hpp"
-#include "logger.hpp"
+#include <set>
 #include <thread>
 #include <chrono>
-#include <set>
+#include "logger.hpp"
+#include "resource_thread_pool.hpp"
 
+/**
+ * @brief Constructs a ResourceMonitor.
+ * @param db Reference to the database interface.
+ * @param shutdown_flag Reference to the application's shutdown flag.
+ * @param thread_pool Reference to the resource thread pool.
+ */
 ResourceMonitor::ResourceMonitor(IDatabaseInterface& db, std::atomic<bool>& shutdown_flag, ResourceThreadPool& thread_pool)
     : db_(db), shutdown_flag_(shutdown_flag), thread_pool_(thread_pool) {}
 
+/**
+ * @brief Starts the resource monitor thread.
+ */
 void ResourceMonitor::start() {
     running_ = true;
     monitor_thread_ = std::thread(&ResourceMonitor::monitorLoop, this);
 }
 
+/**
+ * @brief Stops the resource monitor thread.
+ */
 void ResourceMonitor::stop() {
     running_ = false;
     if (monitor_thread_.joinable()) monitor_thread_.join();
 }
 
+/**
+ * @brief Worker thread function. Monitors container changes and updates the thread pool.
+ *
+ * - Periodically checks the database for current containers.
+ * - Detects new containers and adds them to the thread pool.
+ * - Detects removed containers and removes them from the thread pool.
+ * - Sleeps between checks and handles shutdown.
+ */
 void ResourceMonitor::monitorLoop() {
     std::set<std::string> previous_containers;
     while (running_ && !shutdown_flag_) {
