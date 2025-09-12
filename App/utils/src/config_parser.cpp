@@ -1,9 +1,19 @@
+/**
+ * @file config_parser.cpp
+ * @brief Implements the ConfigParser class for parsing application configuration files.
+ */
+
 #include "config_parser.hpp"
 #include "common.hpp"
 #include "logger.hpp"
 #include <fstream>
 #include <sstream>
 
+/**
+ * @brief Loads configuration parameters from a file.
+ * @param filename Path to the configuration file.
+ * @return True if loading was successful, false otherwise.
+ */
 bool ConfigParser::load(std::string_view filename) {
     std::ifstream file{std::string(filename)};
     if (!file.is_open()) return false;
@@ -19,21 +29,45 @@ bool ConfigParser::load(std::string_view filename) {
     return true;
 }
 
+/**
+ * @brief Gets a string value for a given key.
+ * @param key Configuration key.
+ * @param default_val Default value if key is not found.
+ * @return Value as string.
+ */
 std::string ConfigParser::get(std::string_view key, std::string_view default_val) const {
     auto it = params_.find(std::string(key));
     return it != params_.end() ? it->second : std::string(default_val);
 }
 
+/**
+ * @brief Gets an integer value for a given key.
+ * @param key Configuration key.
+ * @param default_val Default value if key is not found or conversion fails.
+ * @return Value as int.
+ */
 int ConfigParser::getInt(std::string_view key, int default_val) const {
     auto val = get(key, "");
     try { return std::stoi(val); } catch (...) { return default_val; }
 }
 
+/**
+ * @brief Gets a double value for a given key.
+ * @param key Configuration key.
+ * @param default_val Default value if key is not found or conversion fails.
+ * @return Value as double.
+ */
 double ConfigParser::getDouble(std::string_view key, double default_val) const {
     auto val = get(key, "");
     try { return std::stod(val); } catch (...) { return default_val; }
 }
 
+/**
+ * @brief Gets a boolean value for a given key.
+ * @param key Configuration key.
+ * @param default_val Default value if key is not found or conversion fails.
+ * @return Value as bool.
+ */
 bool ConfigParser::getBool(std::string_view key, bool default_val) const {
     auto val = get(key, "");
     if (val == "true" || val == "1") return true;
@@ -41,6 +75,10 @@ bool ConfigParser::getBool(std::string_view key, bool default_val) const {
     return default_val;
 }
 
+/**
+ * @brief Converts loaded parameters to a MonitorConfig struct.
+ * @return MonitorConfig object.
+ */
 MonitorConfig ConfigParser::toMonitorConfig() const {
     MonitorConfig cfg;
     cfg.runtime                             = get(KEY_RUNTIME, DEFAULT_RUNTIME);
@@ -60,6 +98,10 @@ MonitorConfig ConfigParser::toMonitorConfig() const {
     return cfg;
 }
 
+/**
+ * @brief Prints the loaded configuration to the log.
+ * @param cfg MonitorConfig object to print.
+ */
 void ConfigParser::printConfig(const MonitorConfig& cfg) const {
     CM_LOG_INFO << "Container Monitor started.\n";
     CM_LOG_INFO << "Runtime: " << cfg.runtime << "\n";

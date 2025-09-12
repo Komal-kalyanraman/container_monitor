@@ -1,10 +1,21 @@
+/**
+ * @file json_processing.cpp
+ * @brief Implements functions for parsing container event JSON and extracting resource constraints.
+ */
+
 #include "json_processing.hpp"
-#include <nlohmann/json.hpp>
 #include <iostream>
 #include <cstdio>
 #include <sstream>
+#include <nlohmann/json.hpp>
 #include "common.hpp"
 
+/**
+ * @brief Extracts resource constraints from 'docker/podman inspect' output for a container.
+ * @param container_id Container ID.
+ * @param info Reference to ContainerEventInfo to populate.
+ * @return True if extraction was successful, false otherwise.
+ */
 bool getResourceConstraintsFromInspect(const std::string& container_id, ContainerEventInfo& info) {
     std::string cmd = "docker inspect " + container_id;
     FILE* pipe = popen(cmd.c_str(), "r");
@@ -43,6 +54,13 @@ bool getResourceConstraintsFromInspect(const std::string& container_id, Containe
     return false;
 }
 
+/**
+ * @brief Parses a container event JSON string into a ContainerEventInfo struct.
+ *        If resource constraints are missing, attempts to fetch them via docker/podman inspect.
+ * @param json_str JSON string representing the event.
+ * @param info Reference to ContainerEventInfo to populate.
+ * @return True if parsing was successful, false otherwise.
+ */
 bool parseContainerEvent(const std::string& json_str, ContainerEventInfo& info) {
     try {
         auto j = nlohmann::json::parse(json_str);
