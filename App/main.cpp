@@ -1,3 +1,11 @@
+/**
+ * @file main.cpp
+ * @brief Entry point for the Container Monitor application.
+ *
+ * Initializes configuration, logging, message queues, database, resource threads,
+ * event listeners/processors, UI components, and manages graceful shutdown.
+ */
+
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -19,14 +27,33 @@
 #include "resource_thread_pool.hpp"
 #include "live_metric_aggregator.hpp"
 
+/**
+ * @brief Atomic flag to signal application shutdown.
+ */
 std::atomic<bool> shutdown_requested{false};
 
-// Signal handler to set the shutdown flag
+/**
+ * @brief Signal handler to set the shutdown flag.
+ * @param signum Signal number received.
+ */
 void SignalHandler(int signum) {
     shutdown_requested = true;
     CM_LOG_INFO << "Shutdown signal received. Stopping all services... \n";
 }
 
+/**
+ * @brief Main entry point for the Container Monitor application.
+ * 
+ * - Parses configuration and initializes logging.
+ * - Sets up message queues and signal handlers.
+ * - Initializes database and resource thread pool.
+ * - Starts event listener, processor, resource monitor, and UI components.
+ * - Waits for shutdown signal and performs graceful cleanup.
+ * 
+ * @param argc Number of command-line arguments.
+ * @param argv Array of command-line arguments.
+ * @return int Exit status code.
+ */
 int main(int argc, char* argv[]) {
     // Parse configuration parameters
     MonitorConfig cfg = Initializer::parseConfig();

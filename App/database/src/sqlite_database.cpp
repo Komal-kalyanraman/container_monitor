@@ -1,9 +1,18 @@
+/**
+ * @file sqlite_database.cpp
+ * @brief Implements the SQLiteDatabase class for SQLite-based database operations.
+ */
+
 #include "sqlite_database.hpp"
 #include <iostream>
 #include <fstream>
 #include <filesystem>
 #include "logger.hpp"
 
+/**
+ * @brief Constructs a SQLiteDatabase and opens the database file.
+ * @param db_path Path to the SQLite database file.
+ */
 SQLiteDatabase::SQLiteDatabase(const std::string& db_path) : db_(nullptr) {
     if (sqlite3_open(db_path.c_str(), &db_) != SQLITE_OK) {
         CM_LOG_ERROR << "Failed to open SQLite database: " << db_path << "\n";
@@ -11,10 +20,18 @@ SQLiteDatabase::SQLiteDatabase(const std::string& db_path) : db_(nullptr) {
     }
 }
 
+/**
+ * @brief Destructor. Closes the database connection.
+ */
 SQLiteDatabase::~SQLiteDatabase() {
     if (db_) sqlite3_close(db_);
 }
 
+/**
+ * @brief Saves container information to the database and cache.
+ * @param name Container name.
+ * @param info ContainerInfo struct.
+ */
 void SQLiteDatabase::saveContainer(const std::string& name, const ContainerInfo& info) {
     if (!db_) return;
     const char* sql = SQL_INSERT_OR_REPLACE_CONTAINER;
@@ -31,6 +48,11 @@ void SQLiteDatabase::saveContainer(const std::string& name, const ContainerInfo&
     cache_[name] = info;
 }
 
+/**
+ * @brief Retrieves container information by name from the cache.
+ * @param name Container name.
+ * @return ContainerInfo struct.
+ */
 ContainerInfo SQLiteDatabase::getContainer(const std::string& name) const {
     if (!db_) return {};
     loadCache();
@@ -39,16 +61,27 @@ ContainerInfo SQLiteDatabase::getContainer(const std::string& name) const {
     return {};
 }
 
+/**
+ * @brief Returns the number of containers in the cache.
+ * @return Number of containers.
+ */
 size_t SQLiteDatabase::size() const {
     loadCache();
     return cache_.size();
 }
 
+/**
+ * @brief Returns all container information from the cache.
+ * @return Map of container name to ContainerInfo.
+ */
 const std::map<std::string, ContainerInfo>& SQLiteDatabase::getAll() const {
     loadCache();
     return cache_;
 }
 
+/**
+ * @brief Loads container info cache from the database.
+ */
 void SQLiteDatabase::loadCache() const {
     if (!db_) return;
     cache_.clear();
@@ -68,6 +101,10 @@ void SQLiteDatabase::loadCache() const {
     }
 }
 
+/**
+ * @brief Removes a container from the database and cache.
+ * @param name Container name.
+ */
 void SQLiteDatabase::removeContainer(const std::string& name) {
     if (!db_) return;
     const char* sql = SQL_DELETE_CONTAINER_BY_NAME;
@@ -80,6 +117,9 @@ void SQLiteDatabase::removeContainer(const std::string& name) {
     cache_.erase(name);
 }
 
+/**
+ * @brief Clears all tables and cached data in the database.
+ */
 void SQLiteDatabase::clearAll() {
     if (!db_) return;
     const char* sql1 = SQL_DELETE_ALL_CONTAINERS;
@@ -101,6 +141,9 @@ void SQLiteDatabase::clearAll() {
     cache_.clear();
 }
 
+/**
+ * @brief Sets up the database schema (tables).
+ */
 void SQLiteDatabase::setupSchema() {
     // Create containers table
     const char* create_containers_sql = SQL_CREATE_CONTAINERS_TABLE;
@@ -128,6 +171,11 @@ void SQLiteDatabase::setupSchema() {
     }
 }
 
+/**
+ * @brief Inserts a batch of metrics for a container.
+ * @param container_name Container name.
+ * @param metrics_vec Vector of ContainerMetrics.
+ */
 void SQLiteDatabase::insertBatch(const std::string& container_name, const std::vector<ContainerMetrics>& metrics_vec) {
     std::lock_guard<std::mutex> lock(db_mutex);
     if (!db_ || metrics_vec.empty()) return;
@@ -147,7 +195,10 @@ void SQLiteDatabase::insertBatch(const std::string& container_name, const std::v
     }
 }
 
-// Extensible export: one CSV per table, in export_dir
+/**
+ * @brief Exports all tables to CSV files in the specified directory.
+ * @param export_dir Directory to export CSV files.
+ */
 void SQLiteDatabase::exportAllTablesToCSV(const std::string& export_dir) {
     std::lock_guard<std::mutex> lock(db_mutex);
     std::filesystem::create_directories(export_dir);
@@ -201,6 +252,12 @@ void SQLiteDatabase::exportAllTablesToCSV(const std::string& export_dir) {
     }
 }
 
+/**
+ * @brief Saves host usage metrics to the database.
+ * @param timestamp_ms Timestamp in milliseconds.
+ * @param cpu_usage_percent CPU usage percent.
+ * @param mem_usage_percent Memory usage percent.
+ */
 void SQLiteDatabase::saveHostUsage(int64_t timestamp_ms, double cpu_usage_percent, double mem_usage_percent) {
     if (!db_) return;
     const char* sql = SQL_INSERT_HOST_USAGE;

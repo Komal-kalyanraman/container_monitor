@@ -1,3 +1,8 @@
+/**
+ * @file live_metric_aggregator.cpp
+ * @brief Implements the LiveMetricAggregator class for real-time container metrics aggregation.
+ */
+
 #include "live_metric_aggregator.hpp"
 #include <iostream>
 #include <mqueue.h>
@@ -9,13 +14,25 @@
 #include "common.hpp"
 #include "monitor_dashboard.hpp"
 
+/**
+ * @brief Constructs a LiveMetricAggregator.
+ * @param shutdown_flag Reference to the application's shutdown flag.
+ * @param dashboard Pointer to the MonitorDashboard instance.
+ * @param ui_refresh_interval_ms UI refresh interval in milliseconds.
+ */
 LiveMetricAggregator::LiveMetricAggregator(std::atomic<bool>& shutdown_flag, MonitorDashboard* dashboard, int ui_refresh_interval_ms)
     : shutdown_flag_(shutdown_flag), dashboard_(dashboard), ui_refresh_interval_ms_(ui_refresh_interval_ms) {}
 
+/**
+ * @brief Destructor. Ensures the worker thread is stopped.
+ */
 LiveMetricAggregator::~LiveMetricAggregator() {
     stop();
 }
 
+/**
+ * @brief Starts the aggregator thread.
+ */
 void LiveMetricAggregator::start() {
     if (!running_) {
         running_ = true;
@@ -23,6 +40,9 @@ void LiveMetricAggregator::start() {
     }
 }
 
+/**
+ * @brief Stops the aggregator thread.
+ */
 void LiveMetricAggregator::stop() {
     running_ = false;
     if (worker_.joinable()) {
@@ -30,6 +50,15 @@ void LiveMetricAggregator::stop() {
     }
 }
 
+/**
+ * @brief Worker thread function. Handles message queue reading and dashboard updates.
+ *
+ * - Waits for the POSIX message queue to appear.
+ * - Reads messages containing container metrics.
+ * - Updates the dashboard with new metrics.
+ * - Periodically removes stale containers.
+ * - Handles graceful shutdown and message queue cleanup.
+ */
 void LiveMetricAggregator::run() {
     CM_LOG_INFO << "Waiting for message queue '" << METRIC_MQ_NAME << "' to appear... \n";
 
