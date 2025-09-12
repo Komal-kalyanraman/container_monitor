@@ -213,8 +213,8 @@ void ResourceThreadPool::workerLoop(int thread_index) {
                     max_msg.max_cpu_usage_percent = max_cpu;
                     max_msg.max_memory_usage_percent = max_mem;
                     max_msg.max_pids_percent = max_pids;
-                    std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id) - 1);
-                    max_msg.container_id[sizeof(max_msg.container_id) - 1] = '\0';
+                    std::memset(max_msg.container_id, 0, sizeof(max_msg.container_id));
+                    std::strncpy(max_msg.container_id, name.c_str(), sizeof(max_msg.container_id));
 
                     mq_send(mq, reinterpret_cast<const char*>(&max_msg), METRIC_MQ_MSG_SIZE, 0);
                 }

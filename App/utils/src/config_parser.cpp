@@ -55,7 +55,7 @@ MonitorConfig ConfigParser::toMonitorConfig() const {
     cfg.alert_critical                      = getDouble(KEY_ALERT_CRITICAL, DEFAULT_ALERT_CRITICAL);
     cfg.thread_count                        = getInt(KEY_THREAD_COUNT, DEFAULT_THREAD_COUNT);
     cfg.thread_capacity                     = getInt(KEY_THREAD_CAPACITY, DEFAULT_THREAD_CAPACITY);
-    cfg.file_export_folder_path             = get(KEY_FILE_EXPORT_FOLDER_PATH, "../../storage");
+    cfg.file_export_folder_path             = get(KEY_FILE_EXPORT_FOLDER_PATH, DEFAULT_FILE_EXPORT_FOLDER_PATH);
     cfg.ui_refresh_interval_ms              = getInt(KEY_UI_REFRESH_INTERVAL_MS, DEFAULT_UI_REFRESH_INTERVAL_MS);
     return cfg;
 }

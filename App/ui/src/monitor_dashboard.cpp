@@ -32,9 +32,14 @@ void MonitorDashboard::pushMetrics(const ContainerMaxMetricsMsg& metrics) {
 void MonitorDashboard::pushMetricsRemoved(const std::string& container_id) {
     {
         std::lock_guard<std::mutex> lock(data_mutex_);
-        CM_LOG_INFO << "[MonitorDashboard] pushMetricsRemoved: " << container_id << "\n";
-        metrics_map_.erase(container_id);
-        data_updated_ = true;
+        if (metrics_map_.find(container_id) != metrics_map_.end()) {
+            metrics_map_.erase(container_id);
+            CM_LOG_INFO << "[MonitorDashboard] pushMetricsRemoved: " << container_id << "\n";
+            data_updated_ = true;
+        } else {
+            CM_LOG_INFO << "[MonitorDashboard] pushMetricsRemoved: container_id not found: " << container_id << "\n";
+            data_updated_ = false;
+        }
     }
     data_cv_.notify_one();
 }

@@ -29,13 +29,16 @@ struct ContainerMetrics {
     double pids_percent;
 };
 
+// Buffer size for container ID in messages
+inline constexpr size_t CONTAINER_ID_BUF_SIZE = 100;
+
 #pragma pack(push, 1)
 // Message structure for POSIX message queue
 struct ContainerMaxMetricsMsg {
     double max_cpu_usage_percent;
     double max_memory_usage_percent;
     double max_pids_percent;
-    char container_id[100];
+    char container_id[CONTAINER_ID_BUF_SIZE];
 };
 #pragma pack(pop)
 
@@ -103,6 +106,7 @@ inline constexpr std::string_view DEFAULT_RUNTIME = "docker";
 inline constexpr std::string_view DEFAULT_CGROUP = "v2";
 inline constexpr std::string_view DEFAULT_DATABASE = "sqlite";
 inline constexpr std::string_view DEFAULT_DB_PATH = "../../storage/metrics.db";
+inline constexpr std::string_view DEFAULT_FILE_EXPORT_FOLDER_PATH = "../../storage";
 inline constexpr int DEFAULT_RESOURCE_SAMPLING_INTERVAL_MS = 500;
 inline constexpr int DEFAULT_CONTAINER_EVENT_REFRESH_INTERVAL_MS = 1000;
 inline constexpr bool DEFAULT_UI_ENABLED = true;
@@ -139,9 +143,9 @@ inline constexpr const char* MEMINFO_FORMAT  = "%lu kB";
 inline constexpr size_t CGROUP_PATH_BUF_SIZE = 512;
 
 // Docker Cgroup v1 path formats
-inline constexpr const char* CGROUP_V1_CPU_PATH_FMT    = "/sys/fs/cgroup/cpu/docker/%s/cpuacct.usage";
-inline constexpr const char* CGROUP_V1_MEMORY_PATH_FMT = "/sys/fs/cgroup/memory/docker/%s/memory.usage_in_bytes";
-inline constexpr const char* CGROUP_V1_PIDS_PATH_FMT   = "/sys/fs/cgroup/pids/docker/%s/pids.current";
+inline constexpr const char* DOCKER_CGROUP_V1_CPU_PATH_FMT    = "/sys/fs/cgroup/cpu/docker/%s/cpuacct.usage";
+inline constexpr const char* DOCKER_CGROUP_V1_MEMORY_PATH_FMT = "/sys/fs/cgroup/memory/docker/%s/memory.usage_in_bytes";
+inline constexpr const char* DOCKER_CGROUP_V1_PIDS_PATH_FMT   = "/sys/fs/cgroup/pids/docker/%s/pids.current";
 
 // SQLite table schema and SQL statements
 inline constexpr const char* SQL_CREATE_CONTAINERS_TABLE =

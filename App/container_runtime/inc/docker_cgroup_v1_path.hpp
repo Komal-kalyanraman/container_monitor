@@ -9,11 +9,11 @@ public:
         ContainerResourcePaths paths;
         char buf[CGROUP_PATH_BUF_SIZE];
 
-        std::snprintf(buf, sizeof(buf), CGROUP_V1_CPU_PATH_FMT, container_id.c_str());
+        std::snprintf(buf, sizeof(buf), DOCKER_CGROUP_V1_CPU_PATH_FMT, container_id.c_str());
         paths.cpu_path = buf;
-        std::snprintf(buf, sizeof(buf), CGROUP_V1_MEMORY_PATH_FMT, container_id.c_str());
+        std::snprintf(buf, sizeof(buf), DOCKER_CGROUP_V1_MEMORY_PATH_FMT, container_id.c_str());
         paths.memory_path = buf;
-        std::snprintf(buf, sizeof(buf), CGROUP_V1_PIDS_PATH_FMT, container_id.c_str());
+        std::snprintf(buf, sizeof(buf), DOCKER_CGROUP_V1_PIDS_PATH_FMT, container_id.c_str());
         paths.pids_path = buf;
 
         return paths;
