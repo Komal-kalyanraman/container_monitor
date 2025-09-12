@@ -53,10 +53,10 @@ MonitorConfig ConfigParser::toMonitorConfig() const {
     cfg.batch_size                          = getInt(KEY_BATCH_SIZE, DEFAULT_BATCH_SIZE);
     cfg.alert_warning                       = getDouble(KEY_ALERT_WARNING, DEFAULT_ALERT_WARNING);
     cfg.alert_critical                      = getDouble(KEY_ALERT_CRITICAL, DEFAULT_ALERT_CRITICAL);
-    cfg.alert_violation                     = getDouble(KEY_ALERT_VIOLATION, DEFAULT_ALERT_VIOLATION);
     cfg.thread_count                        = getInt(KEY_THREAD_COUNT, DEFAULT_THREAD_COUNT);
     cfg.thread_capacity                     = getInt(KEY_THREAD_CAPACITY, DEFAULT_THREAD_CAPACITY);
-    cfg.csv_export_folder_path              = get(KEY_CSV_EXPORT_FOLDER_PATH, "../../storage");
+    cfg.file_export_folder_path             = get(KEY_FILE_EXPORT_FOLDER_PATH, DEFAULT_FILE_EXPORT_FOLDER_PATH);
+    cfg.ui_refresh_interval_ms              = getInt(KEY_UI_REFRESH_INTERVAL_MS, DEFAULT_UI_REFRESH_INTERVAL_MS);
     return cfg;
 }
 
@@ -69,9 +69,9 @@ void ConfigParser::printConfig(const MonitorConfig& cfg) const {
     CM_LOG_INFO << "UI Enabled: " << (cfg.ui_enabled ? "true" : "false") << "\n";
     CM_LOG_INFO << "Batch Size: " << cfg.batch_size << "\n";
     CM_LOG_INFO << "Alert thresholds: warning=" << cfg.alert_warning
-                << ", critical=" << cfg.alert_critical
-                << ", violation=" << cfg.alert_violation << "\n";
+                << ", critical=" << cfg.alert_critical << "\n";
     CM_LOG_INFO << "Thread count: " << cfg.thread_count << "\n";
     CM_LOG_INFO << "Thread capacity: " << cfg.thread_capacity << "\n";
-    CM_LOG_INFO << "CSV Export Path: " << cfg.csv_export_folder_path << "\n";
+    CM_LOG_INFO << "File Export Path: " << cfg.file_export_folder_path << "\n";
+    CM_LOG_INFO << "UI Refresh Interval: " << cfg.ui_refresh_interval_ms << " ms\n";
 }

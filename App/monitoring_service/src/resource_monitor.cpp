@@ -44,6 +44,6 @@ void ResourceMonitor::monitorLoop() {
 
         previous_containers = std::move(current_containers);
 
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS_LONG));
     }
 }

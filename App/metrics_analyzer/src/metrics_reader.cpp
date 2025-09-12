@@ -56,11 +56,11 @@ HostInfo MetricsReader::getHostInfo() {
 }
 
 double MetricsReader::getHostCpuUsagePercentage() {
-    std::ifstream file("/proc/stat");
+    std::ifstream file(PROC_STAT_PATH);
     std::string line;
     std::getline(file, line);
     uint64_t user, nice, system, idle, iowait, irq, softirq, steal;
-    sscanf(line.c_str(), "cpu  %lu %lu %lu %lu %lu %lu %lu %lu",
+    sscanf(line.c_str(), CPU_STAT_FORMAT,
            &user, &nice, &system, &idle, &iowait, &irq, &softirq, &steal);
     uint64_t total = user + nice + system + idle + iowait + irq + softirq + steal;
     uint64_t total_idle = idle + iowait;
@@ -78,18 +78,18 @@ double MetricsReader::getHostCpuUsagePercentage() {
 }
 
 double MetricsReader::getHostMemoryUsagePercent() {
-    std::ifstream file("/proc/meminfo");
+    std::ifstream file(PROC_MEMINFO_PATH);
     std::string line;
     uint64_t mem_total = 0, mem_free = 0, buffers = 0, cached = 0;
     while (std::getline(file, line)) {
-        if (line.find("MemTotal:") == 0)
-            sscanf(line.c_str(), "MemTotal: %lu kB", &mem_total);
-        else if (line.find("MemFree:") == 0)
-            sscanf(line.c_str(), "MemFree: %lu kB", &mem_free);
-        else if (line.find("Buffers:") == 0)
-            sscanf(line.c_str(), "Buffers: %lu kB", &buffers);
-        else if (line.find("Cached:") == 0)
-            sscanf(line.c_str(), "Cached: %lu kB", &cached);
+        if (line.find(MEMINFO_TOTAL) == 0)
+            sscanf(line.c_str(), (std::string(MEMINFO_TOTAL) + " " + MEMINFO_FORMAT).c_str(), &mem_total);
+        else if (line.find(MEMINFO_FREE) == 0)
+            sscanf(line.c_str(), (std::string(MEMINFO_FREE) + " " + MEMINFO_FORMAT).c_str(), &mem_free);
+        else if (line.find(MEMINFO_BUFFERS) == 0)
+            sscanf(line.c_str(), (std::string(MEMINFO_BUFFERS) + " " + MEMINFO_FORMAT).c_str(), &buffers);
+        else if (line.find(MEMINFO_CACHED) == 0)
+            sscanf(line.c_str(), (std::string(MEMINFO_CACHED) + " " + MEMINFO_FORMAT).c_str(), &cached);
     }
     uint64_t used = mem_total - mem_free - buffers - cached;
     double percent = (mem_total > 0) ? ((double)used / mem_total * PERCENT_FACTOR) : ZERO_PERCENT;

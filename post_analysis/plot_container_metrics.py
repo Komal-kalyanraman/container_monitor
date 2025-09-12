@@ -8,8 +8,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 
 # Load CSVs
-df = pd.read_csv('container_metrics.csv')
-host_df = pd.read_csv('host_usage.csv')
+df = pd.read_csv('../storage/container_metrics.csv')
+host_df = pd.read_csv('../storage/host_usage.csv')
 
 # Compute time axis based on host_usage.csv
 host_df['time'] = (host_df['timestamp'] - host_df['timestamp'].min()) / 1000.0
