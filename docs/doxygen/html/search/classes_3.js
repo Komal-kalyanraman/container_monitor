@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hostinfo_249',['HostInfo',['../structHostInfo.html',1,'']]]
+  ['hostinfo_252',['HostInfo',['../structHostInfo.html',1,'']]]
 ];

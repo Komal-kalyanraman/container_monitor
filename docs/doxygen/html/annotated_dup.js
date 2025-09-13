@@ -5,6 +5,7 @@ var annotated_dup =
     [ "ContainerInfo", "structContainerInfo.html", "structContainerInfo" ],
     [ "ContainerMaxMetricsMsg", "structContainerMaxMetricsMsg.html", "structContainerMaxMetricsMsg" ],
     [ "ContainerMetrics", "structContainerMetrics.html", "structContainerMetrics" ],
+    [ "ContainerMetricsEntry", "structContainerMetricsEntry.html", "structContainerMetricsEntry" ],
     [ "ContainerResourcePaths", "structContainerResourcePaths.html", "structContainerResourcePaths" ],
     [ "DockerCgroupV1PathFactory", "classDockerCgroupV1PathFactory.html", "classDockerCgroupV1PathFactory" ],
     [ "EventProcessor", "classEventProcessor.html", "classEventProcessor" ],

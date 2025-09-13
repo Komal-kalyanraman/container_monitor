@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classInitializer.html" title="Provides static methods for initializing logging, configuration, message queues, and signal handlers." alt="" coords="5,5,88,32"/>
+<area shape="rect" id="node1" href="$classIDatabaseInterface.html" title="Abstract interface for database operations." alt="" coords="5,5,152,32"/>
+<area shape="rect" id="node2" href="$classSQLiteDatabase.html" title="SQLite implementation of the IDatabaseInterface." alt="" coords="200,5,327,32"/>
 </map>

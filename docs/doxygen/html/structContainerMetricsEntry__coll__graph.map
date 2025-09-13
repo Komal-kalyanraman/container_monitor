@@ -1,0 +1,6 @@
+<map id="ContainerMetricsEntry" name="ContainerMetricsEntry">
+<area shape="rect" id="node1" title="Holds container ID, metrics, and timestamp for dashboard display." alt="" coords="107,331,273,408"/>
+<area shape="rect" id="node2" href="$structContainerMaxMetricsMsg.html" title="Message structure for POSIX message queue, containing max metrics for a container." alt="" coords="5,147,236,268"/>
+<area shape="rect" id="node3" title="STL class." alt="" coords="260,169,347,246"/>
+<area shape="rect" id="node4" title="STL class." alt="" coords="234,5,373,97"/>
+</map>

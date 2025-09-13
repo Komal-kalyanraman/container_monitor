@@ -4,13 +4,23 @@
  */
 
 #pragma once
-#include <map>
+#include <vector>
 #include <mutex>
 #include <string>
 #include <atomic>
 #include <thread>
 #include <condition_variable>
 #include "common.hpp"
+
+/**
+ * @struct ContainerMetricsEntry
+ * @brief Holds container ID, metrics, and timestamp for dashboard display.
+ */
+struct ContainerMetricsEntry {
+    std::string container_id;
+    ContainerMaxMetricsMsg metrics;
+    int64_t timestamp;
+};
 
 /**
  * @class MonitorDashboard
@@ -70,5 +80,5 @@ private:
     std::condition_variable data_cv_;       ///< Condition variable for UI updates.
     bool data_updated_ = false;             ///< Indicates if data was updated.
     bool printed_empty_ = false;            ///< Tracks if "No containers" message was printed.
-    std::map<std::string, std::pair<ContainerMaxMetricsMsg, int64_t>> metrics_map_; ///< Container metrics map.
+    std::vector<ContainerMetricsEntry> metrics_vec_; ///< Container metrics vector (ordered by creation).
 };

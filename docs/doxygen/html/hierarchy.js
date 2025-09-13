@@ -5,6 +5,7 @@ var hierarchy =
     [ "ContainerInfo", "structContainerInfo.html", null ],
     [ "ContainerMaxMetricsMsg", "structContainerMaxMetricsMsg.html", null ],
     [ "ContainerMetrics", "structContainerMetrics.html", null ],
+    [ "ContainerMetricsEntry", "structContainerMetricsEntry.html", null ],
     [ "ContainerResourcePaths", "structContainerResourcePaths.html", null ],
     [ "EventProcessor", "classEventProcessor.html", null ],
     [ "EventQueue", "classEventQueue.html", null ],

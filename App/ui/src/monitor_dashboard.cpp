@@ -7,6 +7,7 @@
 #include <ncurses.h>
 #include <chrono>
 #include <iostream>
+#include <algorithm>
 #include "logger.hpp"
 #include "common.hpp"
 
@@ -40,7 +41,19 @@ void MonitorDashboard::pushMetrics(const ContainerMaxMetricsMsg& metrics) {
                     << " | CPU: " << metrics.max_cpu_usage_percent
                     << " | Mem: " << metrics.max_memory_usage_percent
                     << " | PIDs: " << metrics.max_pids_percent << "\n";
-        metrics_map_[metrics.container_id] = std::make_pair(metrics, now);
+        // Check if container already exists, update if found, else append
+        bool found = false;
+        for (auto& entry : metrics_vec_) {
+            if (entry.container_id == metrics.container_id) {
+                entry.metrics = metrics;
+                entry.timestamp = now;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            metrics_vec_.push_back({metrics.container_id, metrics, now});
+        }
         data_updated_ = true;
     }
     data_cv_.notify_one();
@@ -53,8 +66,12 @@ void MonitorDashboard::pushMetrics(const ContainerMaxMetricsMsg& metrics) {
 void MonitorDashboard::pushMetricsRemoved(const std::string& container_id) {
     {
         std::lock_guard<std::mutex> lock(data_mutex_);
-        if (metrics_map_.find(container_id) != metrics_map_.end()) {
-            metrics_map_.erase(container_id);
+        auto it = std::remove_if(metrics_vec_.begin(), metrics_vec_.end(),
+                                 [&](const ContainerMetricsEntry& entry) {
+                                     return entry.container_id == container_id;
+                                 });
+        if (it != metrics_vec_.end()) {
+            metrics_vec_.erase(it, metrics_vec_.end());
             CM_LOG_INFO << "[MonitorDashboard] pushMetricsRemoved: " << container_id << "\n";
             data_updated_ = true;
         } else {
@@ -116,8 +133,8 @@ void MonitorDashboard::run() {
         if (!running_ || shutdown_flag_) break;
 
         size_t max_name_len = std::string(COL_CONTAINER_NAME).length();
-        for (const auto& [id, _] : metrics_map_) {
-            if (id.length() > max_name_len) max_name_len = id.length();
+        for (const auto& entry : metrics_vec_) {
+            if (entry.container_id.length() > max_name_len) max_name_len = entry.container_id.length();
         }
         max_name_len += 2;  // Added some padding
 
@@ -128,11 +145,12 @@ void MonitorDashboard::run() {
         mvprintw(0, 0, header_fmt.c_str(), COL_CONTAINER_NAME, COL_MAX_CPU, COL_MAX_MEM, COL_MAX_PIDS);
         int row = 1;
 
-        if (metrics_map_.empty()) {
+        if (metrics_vec_.empty()) {
             mvprintw(row++, 0, "No containers to display.");
         } else {
-            for (const auto& [id, pair] : metrics_map_) {
-                const auto& metrics = pair.first;
+            for (const auto& entry : metrics_vec_) {
+                const auto& metrics = entry.metrics;
+                const auto& id = entry.container_id;
 
                 // Determine color for each metric
                 auto color_for = [&](double value) {

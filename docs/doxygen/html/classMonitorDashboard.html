@@ -126,7 +126,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Displays live container metrics in a color-coded ncurses UI. </p>
 <p>Receives metrics via message queue, updates the display, and removes stale containers. Supports dynamic column alignment and color coding based on alert thresholds. </p>
 
-<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8hpp_source.html#l00022">22</a> of file <a class="el" href="monitor__dashboard_8hpp_source.html">monitor_dashboard.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8hpp_source.html#l00032">32</a> of file <a class="el" href="monitor__dashboard_8hpp_source.html">monitor_dashboard.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a62d472ccc7449cfb78050528454e74e8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a62d472ccc7449cfb78050528454e74e8">&#9670;&nbsp;</a></span>MonitorDashboard()</h2>
@@ -163,10 +163,10 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00018">18</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    : shutdown_flag_(shutdown_flag), cfg_(cfg) {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <a class="code" href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a> &lt;&lt; <span class="stringliteral">&quot;[MonitorDashboard] ui_refresh_interval_ms_: &quot;</span> &lt;&lt; cfg_.<a class="code" href="structMonitorConfig.html#a72672d65a392772a8610cea459237cc3">ui_refresh_interval_ms</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00019">19</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    : shutdown_flag_(shutdown_flag), cfg_(cfg) {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <a class="code" href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a> &lt;&lt; <span class="stringliteral">&quot;[MonitorDashboard] ui_refresh_interval_ms_: &quot;</span> &lt;&lt; cfg_.<a class="code" href="structMonitorConfig.html#a72672d65a392772a8610cea459237cc3">ui_refresh_interval_ms</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="logger_8hpp_source.html#l00032">CM_LOG_INFO</a>, and <a class="el" href="common_8hpp_source.html#l00032">MonitorConfig::ui_refresh_interval_ms</a>.</p>
 
@@ -189,12 +189,12 @@ Public Member Functions</h2></td></tr>
 
 <p>Destructor. Ensures the UI thread is stopped. </p>
 
-<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00026">26</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                                    {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classMonitorDashboard.html#a6692a6c13f04901fc194ac66e67a4f19">stop</a>();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00027">27</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                    {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="classMonitorDashboard.html#a6692a6c13f04901fc194ac66e67a4f19">stop</a>();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;}</div>
 </div><!-- fragment -->
-<p class="reference">References <a class="el" href="monitor__dashboard_8cpp_source.html#l00081">stop()</a>.</p>
+<p class="reference">References <a class="el" href="monitor__dashboard_8cpp_source.html#l00098">stop()</a>.</p>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -228,21 +228,33 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00034">34</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                                                                        {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    int64_t now = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        std::chrono::system_clock::now().time_since_epoch()).count();</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        std::lock_guard&lt;std::mutex&gt; lock(data_mutex_);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <a class="code" href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a> &lt;&lt; <span class="stringliteral">&quot;[MonitorDashboard] pushMetrics: &quot;</span> &lt;&lt; metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a9aa23bf3ee8883e30e9b6202f33f1c52">container_id</a></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                    &lt;&lt; <span class="stringliteral">&quot; | CPU: &quot;</span> &lt;&lt; metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a4d6109e1cc81124fcd536eda1fba9a3e">max_cpu_usage_percent</a></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                    &lt;&lt; <span class="stringliteral">&quot; | Mem: &quot;</span> &lt;&lt; metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a518a86ee712cdba37fcfd384ba8afb8a">max_memory_usage_percent</a></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                    &lt;&lt; <span class="stringliteral">&quot; | PIDs: &quot;</span> &lt;&lt; metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a841f9ba5175b87a4580baaceadb6564d">max_pids_percent</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        metrics_map_[metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a9aa23bf3ee8883e30e9b6202f33f1c52">container_id</a>] = std::make_pair(metrics, now);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        data_updated_ = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    }</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    data_cv_.notify_one();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00035">35</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                                                                        {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    int64_t now = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        std::chrono::system_clock::now().time_since_epoch()).count();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        std::lock_guard&lt;std::mutex&gt; lock(data_mutex_);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a> &lt;&lt; <span class="stringliteral">&quot;[MonitorDashboard] pushMetrics: &quot;</span> &lt;&lt; metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a9aa23bf3ee8883e30e9b6202f33f1c52">container_id</a></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                    &lt;&lt; <span class="stringliteral">&quot; | CPU: &quot;</span> &lt;&lt; metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a4d6109e1cc81124fcd536eda1fba9a3e">max_cpu_usage_percent</a></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                    &lt;&lt; <span class="stringliteral">&quot; | Mem: &quot;</span> &lt;&lt; metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a518a86ee712cdba37fcfd384ba8afb8a">max_memory_usage_percent</a></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                    &lt;&lt; <span class="stringliteral">&quot; | PIDs: &quot;</span> &lt;&lt; metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a841f9ba5175b87a4580baaceadb6564d">max_pids_percent</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="comment">// Check if container already exists, update if found, else append</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordtype">bool</span> found = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; entry : metrics_vec_) {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            <span class="keywordflow">if</span> (entry.container_id == metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a9aa23bf3ee8883e30e9b6202f33f1c52">container_id</a>) {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                entry.metrics = metrics;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                entry.timestamp = now;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                found = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            }</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordflow">if</span> (!found) {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            metrics_vec_.push_back({metrics.<a class="code" href="structContainerMaxMetricsMsg.html#a9aa23bf3ee8883e30e9b6202f33f1c52">container_id</a>, metrics, now});</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        data_updated_ = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    data_cv_.notify_one();</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="logger_8hpp_source.html#l00032">CM_LOG_INFO</a>, <a class="el" href="common_8hpp_source.html#l00060">ContainerMaxMetricsMsg::container_id</a>, <a class="el" href="common_8hpp_source.html#l00057">ContainerMaxMetricsMsg::max_cpu_usage_percent</a>, <a class="el" href="common_8hpp_source.html#l00058">ContainerMaxMetricsMsg::max_memory_usage_percent</a>, and <a class="el" href="common_8hpp_source.html#l00059">ContainerMaxMetricsMsg::max_pids_percent</a>.</p>
 
@@ -272,21 +284,25 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00053">53</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                                                                       {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        std::lock_guard&lt;std::mutex&gt; lock(data_mutex_);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">if</span> (metrics_map_.find(container_id) != metrics_map_.end()) {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            metrics_map_.erase(container_id);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <a class="code" href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a> &lt;&lt; <span class="stringliteral">&quot;[MonitorDashboard] pushMetricsRemoved: &quot;</span> &lt;&lt; container_id &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            data_updated_ = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <a class="code" href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a> &lt;&lt; <span class="stringliteral">&quot;[MonitorDashboard] pushMetricsRemoved: container_id not found: &quot;</span> &lt;&lt; container_id &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            data_updated_ = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    data_cv_.notify_one();</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00066">66</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                                                                       {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        std::lock_guard&lt;std::mutex&gt; lock(data_mutex_);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">auto</span> it = std::remove_if(metrics_vec_.begin(), metrics_vec_.end(),</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                                 [&amp;](<span class="keyword">const</span> <a class="code" href="structContainerMetricsEntry.html">ContainerMetricsEntry</a>&amp; entry) {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                                     return entry.container_id == container_id;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                                 });</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">if</span> (it != metrics_vec_.end()) {</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            metrics_vec_.erase(it, metrics_vec_.end());</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <a class="code" href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a> &lt;&lt; <span class="stringliteral">&quot;[MonitorDashboard] pushMetricsRemoved: &quot;</span> &lt;&lt; container_id &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            data_updated_ = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <a class="code" href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a> &lt;&lt; <span class="stringliteral">&quot;[MonitorDashboard] pushMetricsRemoved: container_id not found: &quot;</span> &lt;&lt; container_id &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            data_updated_ = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    data_cv_.notify_one();</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
 </div><!-- fragment -->
 <p class="reference">References <a class="el" href="logger_8hpp_source.html#l00032">CM_LOG_INFO</a>.</p>
 
@@ -309,13 +325,13 @@ Here is the call graph for this function:</div>
 
 <p>Starts the dashboard UI thread. </p>
 
-<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00071">71</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                             {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">if</span> (!running_) {</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        running_ = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        worker_ = std::thread(&amp;MonitorDashboard::run, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00088">88</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                             {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">if</span> (!running_) {</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        running_ = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        worker_ = std::thread(&amp;MonitorDashboard::run, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}</div>
 </div><!-- fragment -->
 <p class="reference">Referenced by <a class="el" href="main_8cpp_source.html#l00057">main()</a>.</p>
 <div class="dynheader">
@@ -343,16 +359,16 @@ Here is the caller graph for this function:</div>
 
 <p>Stops the dashboard UI thread. </p>
 
-<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00081">81</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
-<div class="fragment"><div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                            {</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    running_ = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    data_cv_.notify_one();</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">if</span> (worker_.joinable()) {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        worker_.join();</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    }</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;}</div>
+<p class="definition">Definition at line <a class="el" href="monitor__dashboard_8cpp_source.html#l00098">98</a> of file <a class="el" href="monitor__dashboard_8cpp_source.html">monitor_dashboard.cpp</a>.</p>
+<div class="fragment"><div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                            {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    running_ = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    data_cv_.notify_one();</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">if</span> (worker_.joinable()) {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        worker_.join();</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}</div>
 </div><!-- fragment -->
-<p class="reference">Referenced by <a class="el" href="main_8cpp_source.html#l00057">main()</a>, and <a class="el" href="monitor__dashboard_8cpp_source.html#l00026">~MonitorDashboard()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="main_8cpp_source.html#l00057">main()</a>, and <a class="el" href="monitor__dashboard_8cpp_source.html#l00027">~MonitorDashboard()</a>.</p>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
@@ -369,10 +385,11 @@ Here is the caller graph for this function:</div>
 </div><!-- doc-content -->
 <div class="ttc" id="astructContainerMaxMetricsMsg_html_a9aa23bf3ee8883e30e9b6202f33f1c52"><div class="ttname"><a href="structContainerMaxMetricsMsg.html#a9aa23bf3ee8883e30e9b6202f33f1c52">ContainerMaxMetricsMsg::container_id</a></div><div class="ttdeci">char container_id[CONTAINER_ID_BUF_SIZE]</div><div class="ttdoc">Container ID.</div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00060">common.hpp:60</a></div></div>
 <div class="ttc" id="astructContainerMaxMetricsMsg_html_a518a86ee712cdba37fcfd384ba8afb8a"><div class="ttname"><a href="structContainerMaxMetricsMsg.html#a518a86ee712cdba37fcfd384ba8afb8a">ContainerMaxMetricsMsg::max_memory_usage_percent</a></div><div class="ttdeci">double max_memory_usage_percent</div><div class="ttdoc">Maximum memory usage percent.</div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00058">common.hpp:58</a></div></div>
-<div class="ttc" id="aclassMonitorDashboard_html_a6692a6c13f04901fc194ac66e67a4f19"><div class="ttname"><a href="classMonitorDashboard.html#a6692a6c13f04901fc194ac66e67a4f19">MonitorDashboard::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops the dashboard UI thread.</div><div class="ttdef"><b>Definition:</b> <a href="monitor__dashboard_8cpp_source.html#l00081">monitor_dashboard.cpp:81</a></div></div>
+<div class="ttc" id="aclassMonitorDashboard_html_a6692a6c13f04901fc194ac66e67a4f19"><div class="ttname"><a href="classMonitorDashboard.html#a6692a6c13f04901fc194ac66e67a4f19">MonitorDashboard::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops the dashboard UI thread.</div><div class="ttdef"><b>Definition:</b> <a href="monitor__dashboard_8cpp_source.html#l00098">monitor_dashboard.cpp:98</a></div></div>
 <div class="ttc" id="alogger_8hpp_html_a13620e8436f16badd4e01d4fd57467e2"><div class="ttname"><a href="logger_8hpp.html#a13620e8436f16badd4e01d4fd57467e2">CM_LOG_INFO</a></div><div class="ttdeci">#define CM_LOG_INFO</div><div class="ttdoc">Info-level logging macro (glog).</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00032">logger.hpp:32</a></div></div>
 <div class="ttc" id="astructMonitorConfig_html_a72672d65a392772a8610cea459237cc3"><div class="ttname"><a href="structMonitorConfig.html#a72672d65a392772a8610cea459237cc3">MonitorConfig::ui_refresh_interval_ms</a></div><div class="ttdeci">int ui_refresh_interval_ms</div><div class="ttdoc">UI refresh interval in milliseconds.</div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00032">common.hpp:32</a></div></div>
 <div class="ttc" id="astructContainerMaxMetricsMsg_html_a841f9ba5175b87a4580baaceadb6564d"><div class="ttname"><a href="structContainerMaxMetricsMsg.html#a841f9ba5175b87a4580baaceadb6564d">ContainerMaxMetricsMsg::max_pids_percent</a></div><div class="ttdeci">double max_pids_percent</div><div class="ttdoc">Maximum PIDs usage percent.</div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00059">common.hpp:59</a></div></div>
+<div class="ttc" id="astructContainerMetricsEntry_html"><div class="ttname"><a href="structContainerMetricsEntry.html">ContainerMetricsEntry</a></div><div class="ttdoc">Holds container ID, metrics, and timestamp for dashboard display.</div><div class="ttdef"><b>Definition:</b> <a href="monitor__dashboard_8hpp_source.html#l00019">monitor_dashboard.hpp:19</a></div></div>
 <div class="ttc" id="astructContainerMaxMetricsMsg_html_a4d6109e1cc81124fcd536eda1fba9a3e"><div class="ttname"><a href="structContainerMaxMetricsMsg.html#a4d6109e1cc81124fcd536eda1fba9a3e">ContainerMaxMetricsMsg::max_cpu_usage_percent</a></div><div class="ttdeci">double max_cpu_usage_percent</div><div class="ttdoc">Maximum CPU usage percent.</div><div class="ttdef"><b>Definition:</b> <a href="common_8hpp_source.html#l00057">common.hpp:57</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
