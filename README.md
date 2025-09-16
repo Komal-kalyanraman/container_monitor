@@ -1,59 +1,91 @@
-# Container Monitor for Software Defined Vehicles (SDV) & Embedded Systems
+# Container Monitor for Automotive Systems
 
 ## Overview
 
 This project is a highly configurable, real-time container resource monitoring solution specifically designed for the emerging domain of **Software Defined Vehicles (SDV)** and embedded environments. As the automotive industry transitions toward SDV architectures, containers are becoming an integral part of in-vehicle software deployment. This tool enables precise control over how container metrics are collected, visualized, and exported, making it ideal for diagnostics, validation, and post-analysis in SDV and embedded use cases where timing, reliability, and low system overhead are critical.
 
-## Why Is This Project Important?
+## Features
 
-- **SDV & Automotive Focus:**  
-  Modern vehicles are evolving into software platforms, with containers enabling modular, updatable, and secure software stacks. Real-time monitoring of these containers is essential for diagnostics, validation, and ensuring system health in SDV architectures.
+- **Automotive & SDV Focus:**  
+  - Designed for in-vehicle, embedded, and test-bench environments.
+  - Real-time monitoring of containerized workloads on ECUs and gateways.
 - **Fine-Grained Control:**  
-  Unlike generic monitoring tools, this project allows you to tune sampling rates, batch sizes, thread counts, and alert thresholds to match the requirements of your SDV hardware and use case.
+  - Tune sampling rates, batch sizes, thread counts, and alert thresholds via config.
 - **Diagnostics & Post-Analysis:**  
-  The tool is designed to support both live diagnostics (for engineers and operators) and post-analysis (via export to CSV/database), making it valuable throughout the SDV software lifecycle.
+  - Live dashboard for operators and engineers.
+  - Export metrics to CSV or database for traceability and compliance.
 - **Operator & Developer Friendly:**  
-  Provides a real-time dashboard, safe configuration via a GUI, and export options for historical analysis, making it suitable for both engineers and operators in test benches, HIL/SIL setups, and in-vehicle systems.
-- **Reliability & Safety:**  
-  Centralized configuration and validation help prevent human error, supporting safe deployment in critical SDV environments.
+  - Ncurses-based UI with color-coded alerts and dynamic alignment.
+  - Tkinter GUI for safe, validated configuration file generation.
+- **Resource Management:**  
+  - Thread pool and batch processing for efficient metric collection.
+- **Extensible & Maintainable:**  
+  - Modular C++ codebase, Doxygen documentation, and easy integration with new metrics or storage backends.
+- **Centralized Configuration:**  
+  - All runtime parameters in a single `parameter.conf` file.
 
-## How Does It Work?
+## Folder Structure
 
-1. **Configuration:**
-   - All runtime parameters (sampling intervals, batch size, thread count, alert thresholds, etc.) are set in a single `parameter.conf` file.
-   - A Tkinter-based GUI (`create_config_gui.py`) is provided to generate and validate this config file, ensuring only valid values are used.
+```
+App/
+├── analysis/           # Analysis logic for live metrics aggregation
+├── build/              # Build artifacts (CMake, binaries, etc.)
+├── container_runtime/  # Container runtime path factories and configuration
+├── database/           # Database interface and SQLite implementation
+├── metrics_analyzer/   # Metrics reading and analysis logic
+├── monitoring_service/ # Event listeners, processors, resource monitoring, thread pool
+├── thirdparty/         # External dependencies (if any)
+├── ui/                 # Ncurses dashboard and UI logic
+├── utils/              # Common utilities (config parsing, logging, common types)
+└── main.cpp            # Application entry point
 
-2. **Metric Collection:**
-   - The system uses a thread pool to collect CPU, memory, and PID metrics from all running containers.
-   - Metrics are read directly from kernel cgroup files for accuracy and low latency.
+config/
+├── create_config_gui.py   # Tkinter GUI for safe config generation
+└── parameter.conf         # Centralized configuration file
 
-3. **Real-Time Dashboard:**
-   - An ncurses-based UI displays live metrics for each container.
-   - The dashboard features color-coded alerts, dynamic column alignment, and only shows active containers.
+storage/
+├── container_metrics.csv  # Exported container metrics
+├── host_usage.csv         # Exported host metrics
+└── metrics.db             # SQLite database (if enabled)
 
-4. **Resource Management:**
-   - Batch processing and tunable thread pools allow efficient metric collection, even on resource-constrained SDV hardware.
-   - Sampling rates and refresh intervals can be adjusted to balance performance and overhead.
+post_analysis/
+└── plot_container_metrics.py # Scripts for plot creation for further analysis
+```
 
-5. **Historical Tracking & Export:**
-   - Metrics can be exported to CSV files or a database for compliance, traceability, and further analysis—supporting post-analysis and diagnostics.
+## Quick Start
 
-6. **Alerting:**
-   - Configurable warning and critical thresholds trigger color-coded alerts in the UI, helping operators quickly identify issues.
+1. **Install Requirements**
+   - Linux with cgroup v1 or v2 support
+   - C++17 compiler, CMake
+   - Python 3.x (for config GUI)
+   - Ncurses library
+   - SQLite (for database export, if enabled)
 
-7. **Documentation & Extensibility:**
-   - The codebase is modular and documented with Doxygen, making it easy to extend for new metrics, storage backends, or integration with automotive-grade systems.
+2. **Generate Configuration**
+   - Run the GUI:  
+     ```bash
+     python3 config/create_config_gui.py
+     ```
+   - Fill in parameters and save to generate `parameter.conf`.
 
-## Typical Use Cases
+3. **Build the Project**
+   - From the root directory:
+     ```bash
+     mkdir -p App/build
+     cd App/build
+     cmake ..
+     make
+     ```
 
-- **SDV Diagnostics & Validation:**  
-  Monitor containerized applications running on ECUs or gateways during validation, testing, and in-field diagnostics in SDV platforms.
-- **Embedded Systems:**  
-  Track resource usage and health of containers in real time, with minimal overhead.
-- **Operator Consoles:**  
-  Provide a live dashboard for engineers and operators to monitor system status and respond to alerts.
-- **Compliance & Traceability:**  
-  Export historical metrics for analysis, reporting, and regulatory compliance in automotive environments.
+4. **Run the Monitor**
+   - From the build directory:
+     ```bash
+     ./container_monitor
+     ```
+   - The ncurses dashboard will display live container metrics.
+
+5. **Export & Analyze**
+   - Metrics are exported to CSV/database in the `storage/` folder for post-analysis.
 
 ## How Is This Solution Better Than Other Tools?
 
@@ -67,28 +99,7 @@ This project is a highly configurable, real-time container resource monitoring s
   Powerful for cloud/enterprise, but requires complex setup, not real-time, and not suitable for embedded/SDV without significant adaptation.
 
 - [**podman stats**](https://docs.podman.io/en/latest/markdown/podman-stats.1.html) / [**docker stats**](https://docs.docker.com/engine/reference/commandline/stats/):  
-  Simple CLI tools, no historical export, no alerting, no dashboard, and no configurability for
-
-## Getting Started
-
-1. **Configure Parameters:**
-   - Use the provided Tkinter GUI (`create_config_gui.py`) to generate a valid `parameter.conf`.
-   - All limits and options are enforced to prevent misconfiguration.
-
-2. **Build & Run:**
-   - Build the project using CMake.
-   - Run the main application; the dashboard will display live container metrics.
-
-3. **Export & Analyze:**
-   - Metrics can be exported to CSV or database for further analysis.
-
-## Requirements
-
-- Linux system with cgroup v1 or v2 support.
-- C++17 compiler, CMake.
-- Python 3.x (for config GUI).
-- Ncurses library.
-- SQLite (for database export, if enabled).
+  Simple CLI tools, no historical export, no alerting, no dashboard, and no configurability for sampling or resource management.
 
 ## Documentation
 
