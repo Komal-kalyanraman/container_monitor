@@ -141,7 +141,7 @@ This UI provides a clear, color-coded, and dynamically aligned view of all live 
 - **Dynamic Alignment:** Columns automatically adjust to container name length for readability.
 - **Minimal Overhead:** The UI is lightweight and suitable for embedded and automotive environments.
 
-<img src="./docs/images/ncurses_ui.gif" alt="Ncurses UI Demo" style="width:60%;">
+<img src="./docs/images/ncurses_ui.gif" alt="Ncurses UI Demo" style="width:100%;">
 
 ## Post-Analysis Dashboard & Interactive Plotting
 
@@ -156,9 +156,23 @@ For in-depth analysis, use the provided Tkinter-based post-analysis dashboard (`
 - **Toggle Host Metrics:** Show or hide host CPU and memory usage for a clearer container-only perspective.
 - **Live Data Inspection:** Hover over the plots to see precise values for all selected containers and the host at any time point.
 
-<img src="./docs/images/post_analysis_ui.gif" alt="Post-Analysis UI Demo" style="width:60%;">
+<img src="./docs/images/post_analysis_ui.gif" alt="Post-Analysis UI Demo" style="width:100%;">
 
 *The above demo shows the interactive post-analysis dashboard, where you can zoom, scroll, select containers, and toggle host metrics for detailed resource usage analysis.*
+
+## Video Walkthroughs
+
+To help users and contributors better understand the project, two YouTube videos will be provided:
+
+1. **Project Motivation & Background**  
+   This video will explain the motivation behind building a real-time container monitor for SDV/automotive/embedded environments, the challenges addressed, and the unique features of this solution.
+
+
+2. **Live Demo & Usage Guide**  
+   This video will walk through the setup, configuration, real-time dashboard, and post-analysis features, demonstrating the tool in action.
+
+
+*Once available, the videos will be embedded here for easy access.*
 
 ## How Is This Solution Better Than Other Tools?
 
@@ -173,6 +187,19 @@ For in-depth analysis, use the provided Tkinter-based post-analysis dashboard (`
 
 - [**podman stats**](https://docs.podman.io/en/latest/markdown/podman-stats.1.html) / [**docker stats**](https://docs.docker.com/engine/reference/commandline/stats/):  
   Simple CLI tools, no historical export, no alerting, no dashboard, and no configurability for sampling or resource management.
+
+## Future Work
+
+- **Podman Support:**  
+  Upcoming releases will add full support for monitoring containers managed by Podman, in addition to Docker.
+
+- **Cgroup v2 Compatibility:**  
+  The tool will be extended to support systems using cgroup v2, ensuring compatibility with the latest Linux distributions and container runtimes.
+
+- **Expanded Metrics:**  
+  Beyond CPU, memory, and PID monitoring, future versions will track additional cgroup parameters such as I/O, network usage, and block device statistics, providing a more comprehensive view of container resource consumption.
+
+If you have specific feature requests or would like to contribute, please open an issue or submit a pull request!
 
 ## Documentation & Architecture
 
