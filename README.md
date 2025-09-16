@@ -143,7 +143,7 @@ This UI provides a clear, color-coded, and dynamically aligned view of all live 
 - **Minimal Overhead:** The UI is lightweight and suitable for embedded and automotive environments.
 
 <div align="center">
-  <img src="./docs/images/ncurses_ui.gif" alt="Ncurses UI Demo" style="width:150%;">
+  <img src="./docs/images/ncurses_ui.gif" alt="Ncurses UI Demo" style="width:100%;">
 </div>
 
 ## Post-Analysis Dashboard & Interactive Plotting

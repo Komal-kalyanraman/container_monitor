@@ -181,14 +181,29 @@ These patterns ensure modularity, extensibility, and maintainability.
 - **Add a Config Option:**  
   Update the config parser and GUI to support new parameters.
 
-## Example Architecture Diagram
+## Architecture Diagram
 
-<!-- Placeholder for future diagram -->
-<!--
-<div align="center">
-  <img src="architecture_example_diagram.png" alt="Example Architecture Diagram" style="width:80%;">
+<div align="center" style="width:90%;">
+  
+  ![Architecture Diagram](./architecture_diagram.png)
+  
 </div>
--->
+
+## Sequence Diagram
+
+<div align="center" style="width:90%;">
+  
+  ![Sequence Diagram](./sequence_diagram.png)
+  
+</div>
+
+## Deployment Diagram
+
+<div align="center" style="width:90%;">
+  
+  ![Deployment Diagram](./deployment_diagram.png)
+  
+</div>
 
 ## References
 
