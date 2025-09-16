@@ -95,39 +95,39 @@ These patterns ensure modularity, extensibility, and maintainability.
 
 ## Component Descriptions
 
-### 1. Analysis Layer (`analysis/`)
+### 1. Analysis Layer
 
 - **Live Metric Aggregator:**  
   Aggregates and processes live resource metrics for containers, supporting real-time and historical analysis.
 
-### 2. Container Runtime Layer (`container_runtime/`)
+### 2. Container Runtime Layer
 
 - **Runtime Configuration & Factory:**  
   Abstracts the details of different container runtimes (Docker, Podman), cgroup versions and path resolution.
 
-### 3. Database Layer (`database/`)
+### 3. Database Layer
 
 - **Database Interface:**  
   Abstracts storage of historical metrics, supporting both CSV and SQLite (with future extensibility).
 
-### 4. Metrics Analyzer Layer (`metrics_analyzer/`)
+### 4. Metrics Analyzer Layer
 
 - **Metrics Reader:**  
   Reads and parses resource usage data from cgroup files and runtime APIs.
 
-### 5. Monitoring Service Layer (`monitoring_service/`)
+### 5. Monitoring Service Layer
 
 - **Event Listener & Processor:**  
   Listens for container lifecycle events and processes resource updates.
 - **Resource Monitor & Thread Pool:**  
   Periodically samples resource usage using a thread pool for scalability.
 
-### 6. UI Layer (`ui/`)
+### 6. UI Layer
 
 - **Ncurses Dashboard:**  
   Provides a real-time, color-coded, and dynamically aligned dashboard for operators.
 
-### 7. Utilities (`utils/`)
+### 7. Utilities
 
 - **Config Parser:**  
   Centralized configuration management, supporting both file and GUI-based editing.
@@ -136,7 +136,7 @@ These patterns ensure modularity, extensibility, and maintainability.
 - **Common Types:**  
   Shared data structures and helpers.
 
-### 8. Post-Analysis (`post_analysis/`)
+### 8. Post-Analysis
 
 - **Plotting Scripts:**  
   Tkinter/matplotlib-based dashboard for interactive post-analysis of exported metrics.
@@ -209,7 +209,3 @@ These patterns ensure modularity, extensibility, and maintainability.
 
 - [Doxygen Documentation](../doxygen/html/index.html)
 - [README.md](../../README.md)
-
----
-
-_For questions, suggestions, or contributions, please open an issue or pull request on

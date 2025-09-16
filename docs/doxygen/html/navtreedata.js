@@ -46,14 +46,14 @@ var NAVTREE =
       [ "Folder Structure", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md18", null ],
       [ "Design Patterns Used", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md19", null ],
       [ "Component Descriptions", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md20", [
-        [ "1. Analysis Layer (<tt>analysis/</tt>)", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md21", null ],
-        [ "2. Container Runtime Layer (<tt>container_runtime/</tt>)", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md22", null ],
-        [ "3. Database Layer (<tt>database/</tt>)", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md23", null ],
-        [ "4. Metrics Analyzer Layer (<tt>metrics_analyzer/</tt>)", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md24", null ],
-        [ "5. Monitoring Service Layer (<tt>monitoring_service/</tt>)", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md25", null ],
-        [ "6. UI Layer (<tt>ui/</tt>)", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md26", null ],
-        [ "7. Utilities (<tt>utils/</tt>)", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md27", null ],
-        [ "8. Post-Analysis (<tt>post_analysis/</tt>)", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md28", null ]
+        [ "1. Analysis Layer", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md21", null ],
+        [ "2. Container Runtime Layer", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md22", null ],
+        [ "3. Database Layer", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md23", null ],
+        [ "4. Metrics Analyzer Layer", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md24", null ],
+        [ "5. Monitoring Service Layer", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md25", null ],
+        [ "6. UI Layer", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md26", null ],
+        [ "7. Utilities", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md27", null ],
+        [ "8. Post-Analysis", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md28", null ]
       ] ],
       [ "Data Flow", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md29", null ],
       [ "Extensibility", "md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html#autotoc_md30", null ],

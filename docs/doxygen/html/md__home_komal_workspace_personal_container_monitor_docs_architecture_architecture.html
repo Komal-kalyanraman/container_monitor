@@ -166,31 +166,31 @@ Design Patterns Used</h1>
 <h1><a class="anchor" id="autotoc_md20"></a>
 Component Descriptions</h1>
 <h2><a class="anchor" id="autotoc_md21"></a>
-1. Analysis Layer (&lt;tt&gt;analysis/&lt;/tt&gt;)</h2>
+1. Analysis Layer</h2>
 <ul>
 <li><b>Live Metric Aggregator:</b> <br  />
  Aggregates and processes live resource metrics for containers, supporting real-time and historical analysis.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md22"></a>
-2. Container Runtime Layer (&lt;tt&gt;container_runtime/&lt;/tt&gt;)</h2>
+2. Container Runtime Layer</h2>
 <ul>
 <li><b>Runtime Configuration &amp; Factory:</b> <br  />
  Abstracts the details of different container runtimes (Docker, Podman), cgroup versions and path resolution.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md23"></a>
-3. Database Layer (&lt;tt&gt;database/&lt;/tt&gt;)</h2>
+3. Database Layer</h2>
 <ul>
 <li><b>Database Interface:</b> <br  />
  Abstracts storage of historical metrics, supporting both CSV and SQLite (with future extensibility).</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md24"></a>
-4. Metrics Analyzer Layer (&lt;tt&gt;metrics_analyzer/&lt;/tt&gt;)</h2>
+4. Metrics Analyzer Layer</h2>
 <ul>
 <li><b>Metrics Reader:</b> <br  />
  Reads and parses resource usage data from cgroup files and runtime APIs.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md25"></a>
-5. Monitoring Service Layer (&lt;tt&gt;monitoring_service/&lt;/tt&gt;)</h2>
+5. Monitoring Service Layer</h2>
 <ul>
 <li><b>Event Listener &amp; Processor:</b> <br  />
  Listens for container lifecycle events and processes resource updates.</li>
@@ -198,13 +198,13 @@ Component Descriptions</h1>
  Periodically samples resource usage using a thread pool for scalability.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md26"></a>
-6. UI Layer (&lt;tt&gt;ui/&lt;/tt&gt;)</h2>
+6. UI Layer</h2>
 <ul>
 <li><b>Ncurses Dashboard:</b> <br  />
  Provides a real-time, color-coded, and dynamically aligned dashboard for operators.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md27"></a>
-7. Utilities (&lt;tt&gt;utils/&lt;/tt&gt;)</h2>
+7. Utilities</h2>
 <ul>
 <li><b>Config Parser:</b> <br  />
  Centralized configuration management, supporting both file and GUI-based editing.</li>
@@ -214,7 +214,7 @@ Component Descriptions</h1>
  Shared data structures and helpers.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md28"></a>
-8. Post-Analysis (&lt;tt&gt;post_analysis/&lt;/tt&gt;)</h2>
+8. Post-Analysis</h2>
 <ul>
 <li><b>Plotting Scripts:</b> <br  />
  Tkinter/matplotlib-based dashboard for interactive post-analysis of exported metrics.</li>
@@ -273,10 +273,8 @@ Deployment Diagram</div></div>
 References</h1>
 <ul>
 <li><a href="../doxygen/html/index.html">Doxygen Documentation</a></li>
-<li>../../README.md "README.md"</li>
+<li>../../README.md "README.md" </li>
 </ul>
-<hr  />
-<p>_For questions, suggestions, or contributions, please open an issue or pull request on </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
