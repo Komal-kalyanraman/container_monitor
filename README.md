@@ -89,8 +89,9 @@ post_analysis/
 
 ## Configuration GUI
 
-<img src="./docs/images/config_gui.png" alt="Container Monitor Config Generator" style="width:60%;">
-<!-- ![Container Monitor Config Generator](./docs/images/config_gui.png) -->
+<div align="center">
+  <img src="./docs/images/config_gui.png" alt="Container Monitor Config Generator" style="width:60%;">
+</div>
 
 *The above GUI (Tkinter-based) allows you to safely generate and validate your configuration file (`parameter.conf`).*
 
@@ -141,7 +142,9 @@ This UI provides a clear, color-coded, and dynamically aligned view of all live 
 - **Dynamic Alignment:** Columns automatically adjust to container name length for readability.
 - **Minimal Overhead:** The UI is lightweight and suitable for embedded and automotive environments.
 
-<img src="./docs/images/ncurses_ui.gif" alt="Ncurses UI Demo" style="width:100%;">
+<div align="center">
+  <img src="./docs/images/ncurses_ui.gif" alt="Ncurses UI Demo" style="width:150%;">
+</div>
 
 ## Post-Analysis Dashboard & Interactive Plotting
 
@@ -156,7 +159,9 @@ For in-depth analysis, use the provided Tkinter-based post-analysis dashboard (`
 - **Toggle Host Metrics:** Show or hide host CPU and memory usage for a clearer container-only perspective.
 - **Live Data Inspection:** Hover over the plots to see precise values for all selected containers and the host at any time point.
 
-<img src="./docs/images/post_analysis_ui.gif" alt="Post-Analysis UI Demo" style="width:100%;">
+<div align="center">
+  <img src="./docs/images/post_analysis_ui.gif" alt="Post-Analysis UI Demo" style="width:100%;">
+</div>
 
 *The above demo shows the interactive post-analysis dashboard, where you can zoom, scroll, select containers, and toggle host metrics for detailed resource usage analysis.*
 
