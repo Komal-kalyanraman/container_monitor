@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Container Monitor: Podman Multi-Container Resource Monitor</title>
+<title>Container Monitor: Container Monitor for Automotive Systems</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -84,53 +84,227 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Podman Multi-Container Resource Monitor </div>  </div>
+<div class="title">Container Monitor for Automotive Systems </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This Python script continuously monitors live CPU, memory, and PID usage for <b>all running Podman containers</b> on your system. It dynamically adds new containers to monitoring and removes them when stopped or deleted. Output is similar to <code>podman stats</code>, but uses direct cgroup kernel data for accuracy.</p>
-<h1><a class="anchor" id="autotoc_md1"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md1"></a>
+Overview</h1>
+<p>This project is a highly configurable, real-time container resource monitoring solution specifically designed for the emerging domain of <b>Software Defined Vehicles (SDV)</b> and embedded environments. As the automotive industry transitions toward SDV architectures, containers are becoming an integral part of in-vehicle software deployment. This tool enables precise control over how container metrics are collected, visualized, and exported, making it ideal for diagnostics, validation, and post-analysis in SDV and embedded use cases where timing, reliability, and low system overhead are critical.</p>
+<h1><a class="anchor" id="autotoc_md2"></a>
 Features</h1>
 <ul>
-<li>Tracks all running containers (no need to specify names/IDs).</li>
-<li>Prints live stats every second: container ID, name, CPU %, memory usage/limit, memory %, PIDs, average CPU %.</li>
-<li>Dynamically adds/removes containers as they start/stop.</li>
-<li>Uses cgroup v1 resource files (default for most Podman setups).</li>
-<li>No dependencies except Python 3.</li>
+<li><b>Automotive &amp; SDV Focus:</b> <br  />
+<ul>
+<li>Designed for in-vehicle, embedded, and test-bench environments.</li>
+<li>Real-time monitoring of containerized workloads on ECUs and gateways.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md2"></a>
-Usage</h1>
-<ol type="1">
-<li><b>Run the script as root (or with sudo):</b> <div class="fragment"><div class="line">sudo python3 cgroups_resource_reader.py</div>
-</div><!-- fragment --></li>
-<li><b>Output example:</b> <div class="fragment"><div class="line">ID           NAME           CPU %     MEM USAGE / LIMIT   MEM %    PIDS   AVG CPU %</div>
-<div class="line">04cf567d5479 nginx-limited   2.50%      7.24MB / 256.0MB   2.83%      9      2.50%</div>
-<div class="line">...</div>
-</div><!-- fragment --></li>
-<li><b>Stop monitoring:</b> Press <code>Ctrl+C</code> to exit.</li>
-</ol>
+</li>
+<li><b>Fine-Grained Control:</b> <br  />
+<ul>
+<li>Tune sampling rates, batch sizes, thread counts, and alert thresholds via config.</li>
+</ul>
+</li>
+<li><b>Diagnostics &amp; Post-Analysis:</b> <br  />
+<ul>
+<li>Live dashboard for operators and engineers.</li>
+<li>Export metrics to CSV or database for traceability and compliance.</li>
+</ul>
+</li>
+<li><b>Operator &amp; Developer Friendly:</b> <br  />
+<ul>
+<li>Ncurses-based UI with color-coded alerts and dynamic alignment.</li>
+<li>Tkinter GUI for safe, validated configuration file generation.</li>
+</ul>
+</li>
+<li><b>Resource Management:</b> <br  />
+<ul>
+<li>Thread pool and batch processing for efficient metric collection.</li>
+</ul>
+</li>
+<li><b>Extensible &amp; Maintainable:</b> <br  />
+<ul>
+<li>Modular C++ codebase, Doxygen documentation, and easy integration with new metrics or storage backends.</li>
+</ul>
+</li>
+<li><b>Centralized Configuration:</b> <br  />
+<ul>
+<li>All runtime parameters in a single <code>parameter.conf</code> file.</li>
+</ul>
+</li>
+</ul>
 <h1><a class="anchor" id="autotoc_md3"></a>
-Notes</h1>
-<ul>
-<li>The script uses <code>sudo podman</code> commands and reads cgroup files, so root privileges are required.</li>
-<li>For cgroup v2 support, extend the script with logic for unified cgroup v2 resource files.</li>
-<li>Works with Podman containers; can be adapted for Docker with minor changes.</li>
+Folder Structure</h1>
+<div class="fragment"><div class="line">App/</div>
+<div class="line">├── analysis/           # Analysis logic for live metrics aggregation</div>
+<div class="line">├── build/              # Build artifacts (CMake, binaries, etc.)</div>
+<div class="line">├── container_runtime/  # Container runtime path factories and configuration</div>
+<div class="line">├── database/           # Database interface and SQLite implementation</div>
+<div class="line">├── metrics_analyzer/   # Metrics reading and analysis logic</div>
+<div class="line">├── monitoring_service/ # Event listeners, processors, resource monitoring, thread pool</div>
+<div class="line">├── thirdparty/         # External dependencies (if any)</div>
+<div class="line">├── ui/                 # Ncurses dashboard and UI logic</div>
+<div class="line">├── utils/              # Common utilities (config parsing, logging, common types)</div>
+<div class="line">└── main.cpp            # Application entry point</div>
+<div class="line"> </div>
+<div class="line">config/</div>
+<div class="line">├── create_config_gui.py   # Tkinter GUI for safe config generation</div>
+<div class="line">└── parameter.conf         # Centralized configuration file</div>
+<div class="line"> </div>
+<div class="line">storage/</div>
+<div class="line">├── container_metrics.csv  # Exported container metrics</div>
+<div class="line">├── host_usage.csv         # Exported host metrics</div>
+<div class="line">└── metrics.db             # SQLite database (if enabled)</div>
+<div class="line"> </div>
+<div class="line">post_analysis/</div>
+<div class="line">└── plot_container_metrics.py # Scripts for plot creation for further analysis</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
+Quick Start</h1>
+<ol type="1">
+<li><b>Install Requirements</b><ul>
+<li>Linux with cgroup v1 or v2 support</li>
+<li>C++17 compiler, CMake</li>
+<li>Python 3.x (for config GUI)</li>
+<li>Ncurses library</li>
+<li>SQLite (for database export, if enabled)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md4"></a>
-Requirements</h1>
-<ul>
-<li>Python 3.x</li>
-<li>Podman installed and running containers</li>
-<li>Root privileges (or configure passwordless sudo for podman and file reads)</li>
+</li>
+<li><b>Generate Configuration</b><ul>
+<li>Run the GUI: <br  />
+ ```bash python3 config/create_config_gui.py ``<code></code></li>
+<li><code>Fill in parameters and save to generate</code>parameter.conf`.</li>
 </ul>
+</li>
+<li><b>Build the Project</b><ul>
+<li>From the root directory: ```bash mkdir -p App/build cd App/build cmake .. make ```</li>
+</ul>
+</li>
+<li><b>Run the Monitor</b><ul>
+<li>From the build directory: ```bash ./container_monitor ```</li>
+<li>The ncurses dashboard will display live container metrics.</li>
+</ul>
+</li>
+<li><b>Export &amp; Analyze</b><ul>
+<li>Metrics are exported to CSV/database in the <code>storage/</code> folder for post-analysis.</li>
+</ul>
+</li>
+</ol>
 <h1><a class="anchor" id="autotoc_md5"></a>
-Extending</h1>
+Configuration GUI</h1>
+<div align="center"> <img src="./docs/images/config_gui.png" alt="Container Monitor Config Generator" style="width:40%;" class="inline"/> </div><p>*The above GUI (Tkinter-based) allows you to safely generate and validate your configuration file (<code>parameter.conf</code>).*</p>
+<h1><a class="anchor" id="autotoc_md6"></a>
+parameter.conf Example</h1>
+<div class="fragment"><div class="line">runtime=docker</div>
+<div class="line">cgroup=v1</div>
+<div class="line">database=sqlite</div>
+<div class="line">ui_refresh_interval_ms=2000</div>
+<div class="line">resource_sampling_interval_ms=100</div>
+<div class="line">container_event_refresh_interval_ms=100</div>
+<div class="line">db_path=../../storage/metrics.db</div>
+<div class="line">ui_enabled=true</div>
+<div class="line">batch_size=20</div>
+<div class="line">alert_warning=80.0</div>
+<div class="line">alert_critical=100.0</div>
+<div class="line">thread_count=3</div>
+<div class="line">thread_capacity=5</div>
+<div class="line">file_export_folder_path=../../storage</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
+Parameter Explanations</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Parameter </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>runtime</code> </td><td class="markdownTableBodyNone">Container runtime to monitor (<code>docker</code> or <code>podman</code>).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>cgroup</code> </td><td class="markdownTableBodyNone">Cgroup version used by the system (<code>v1</code> or <code>v2</code>).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>database</code> </td><td class="markdownTableBodyNone">Database backend for historical storage (<code>sqlite</code>, <code>mysql</code>, etc.).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ui_refresh_interval_ms</code> </td><td class="markdownTableBodyNone">UI dashboard refresh interval in milliseconds.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>resource_sampling_interval_ms</code> </td><td class="markdownTableBodyNone">How often to sample container resource usage (CPU, memory, PIDs, etc) in milliseconds.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>container_event_refresh_interval_ms</code> </td><td class="markdownTableBodyNone">How often to poll for container start/stop events in milliseconds.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>db_path</code> </td><td class="markdownTableBodyNone">Path to the database file for storing metrics.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>ui_enabled</code> </td><td class="markdownTableBodyNone">Enable (<code>true</code>) or disable (<code>false</code>) the ncurses dashboard UI.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>batch_size</code> </td><td class="markdownTableBodyNone">Number of container samples to process by each thread.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>alert_warning</code> </td><td class="markdownTableBodyNone">Warning threshold (percentage) with Yellow color in Ncurses UI for resource usage (e.g., 80.0 for 80%).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>alert_critical</code> </td><td class="markdownTableBodyNone">Critical threshold (percentage) with Red color in Ncurses UI for resource usage (e.g., 100.0 for 100%).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>thread_count</code> </td><td class="markdownTableBodyNone">Number of resource monitoring threads to spawn.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>thread_capacity</code> </td><td class="markdownTableBodyNone">Maximum number of containers each thread can handle.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>file_export_folder_path</code> </td><td class="markdownTableBodyNone">Directory where CSV and other export files are saved.  </td></tr>
+</table>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Ncurses-Based Real-Time Dashboard</h1>
+<p>This UI provides a clear, color-coded, and dynamically aligned view of all live containers and their max resource usage. It is designed for both engineers and operators, making it easy to monitor system health at a glance.</p>
 <ul>
-<li>Add cgroup v2 support for newer systems.</li>
-<li>Add CSV or log file output for historical tracking.</li>
-<li>Integrate with a real-time dashboard or UI.</li>
+<li><b>Live Updates:</b> The dashboard refreshes at a configurable interval, always showing the latest max metrics.</li>
+<li><b>Color-Coded Alerts:</b> Resource usage is highlighted in green, yellow, or red based on configurable thresholds for quick status assessment.</li>
+<li><b>Dynamic Alignment:</b> Columns automatically adjust to container name length for readability.</li>
+<li><b>Minimal Overhead:</b> The UI is lightweight and suitable for embedded and automotive environments.</li>
 </ul>
-<hr  />
-<p>**This script is ideal for development, validation, and lightweight monitoring in automotive and embedded </p>
+<div align="center"> <img src="./docs/images/ncurses_ui.gif" alt="Ncurses UI Demo" style="width:100%;" class="inline"/> </div><h1><a class="anchor" id="autotoc_md9"></a>
+Post-Analysis Dashboard &amp; Interactive Plotting</h1>
+<p>After collecting live metrics, this project enables powerful post-analysis through CSV and database exports. The <code>storage/</code> folder contains <code>container_metrics.csv</code>, <code>host_usage.csv</code>, and (optionally) <code>metrics.db</code> (SQLite).</p>
+<p>For in-depth analysis, use the provided Tkinter-based post-analysis dashboard (<code>post_analysis/plot_container_metrics.py</code>). This interactive tool allows you to:</p>
+<ul>
+<li><b>Visualize Resource Usage:</b> Plot CPU, memory, and PIDs for each container and the host over time.</li>
+<li><b>Zoom In/Out:</b> Focus on specific time windows using the zoom controls.</li>
+<li><b>Scroll Timeline:</b> Move across the time axis to inspect different periods of activity.</li>
+<li><b>Select Containers:</b> Toggle visibility of individual containers to declutter the view or focus on specific workloads.</li>
+<li><b>Toggle Host Metrics:</b> Show or hide host CPU and memory usage for a clearer container-only perspective.</li>
+<li><b>Live Data Inspection:</b> Hover over the plots to see precise values for all selected containers and the host at any time point.</li>
+</ul>
+<div align="center"> <img src="./docs/images/post_analysis_ui.gif" alt="Post-Analysis UI Demo" style="width:100%;" class="inline"/> </div><p><em>The above demo shows the interactive post-analysis dashboard, where you can zoom, scroll, select containers, and toggle host metrics for detailed resource usage analysis.</em></p>
+<h1><a class="anchor" id="autotoc_md10"></a>
+Video Walkthroughs</h1>
+<p>To help users and contributors better understand the project, two YouTube videos will be provided:</p>
+<ol type="1">
+<li><b>Project Motivation &amp; Background</b> <br  />
+ This video will explain the motivation behind building a real-time container monitor for SDV/automotive/embedded environments, the challenges addressed, and the unique features of this solution.</li>
+<li><b>Live Demo &amp; Usage Guide</b> <br  />
+ This video will walk through the setup, configuration, real-time dashboard, and post-analysis features, demonstrating the tool in action.</li>
+</ol>
+<p><em>Once available, the videos will be embedded here for easy access.</em></p>
+<h1><a class="anchor" id="autotoc_md11"></a>
+How Is This Solution Better Than Other Tools?</h1>
+<ul>
+<li><a href="https://github.com/google/cadvisor"><b>cAdvisor</b></a>: <br  />
+ Heavyweight, designed for cloud/Kubernetes, not for embedded/SDV. No real-time dashboard, limited sampling control, and not easily configurable for automotive use cases.</li>
+<li><a href="https://github.com/f18m/cmonitor/tree/master"><b>cmonitor</b></a>: <br  />
+ General-purpose, console-based, Python (higher overhead), limited configurability, no advanced UI, and not tailored for SDV/automotive.</li>
+<li><b>Grafana/Prometheus:</b> <br  />
+ Powerful for cloud/enterprise, but requires complex setup, not real-time, and not suitable for embedded/SDV without significant adaptation.</li>
+<li><a href="https://docs.podman.io/en/latest/markdown/podman-stats.1.html"><b>podman stats</b></a> / <a href="https://docs.docker.com/engine/reference/commandline/stats/"><b>docker stats</b></a>: <br  />
+ Simple CLI tools, no historical export, no alerting, no dashboard, and no configurability for sampling or resource management.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md12"></a>
+Future Work</h1>
+<ul>
+<li><b>Podman Support:</b> <br  />
+ Upcoming releases will add full support for monitoring containers managed by Podman, in addition to Docker.</li>
+<li><b>Cgroup v2 Compatibility:</b> <br  />
+ The tool will be extended to support systems using cgroup v2, ensuring compatibility with the latest Linux distributions and container runtimes.</li>
+<li><b>Expanded Metrics:</b> <br  />
+ Beyond CPU, memory, and PID monitoring, future versions will track additional cgroup parameters such as I/O, network usage, and block device statistics, providing a more comprehensive view of container resource consumption.</li>
+</ul>
+<p>If you have specific feature requests or would like to contribute, please open an issue or submit a pull request!</p>
+<h1><a class="anchor" id="autotoc_md13"></a>
+Documentation &amp; Architecture</h1>
+<ul>
+<li>For a comprehensive overview of the system design, security, and extensibility, see <a class="el" href="md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html">Architecture Documentation</a>.</li>
+<li>Doxygen HTML docs: After building, open <code>docs/doxygen/html/index.html</code> in your browser.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md14"></a>
+License</h1>
+<p>This project is licensed under the MIT License. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

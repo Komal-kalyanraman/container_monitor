@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['livemetricaggregator_256',['LiveMetricAggregator',['../classLiveMetricAggregator.html',1,'']]]
+  ['livemetricaggregator_258',['LiveMetricAggregator',['../classLiveMetricAggregator.html',1,'']]]
 ];

@@ -1,12 +1,13 @@
 var files_dup =
 [
-    [ "analysis", "dir_b8678fa8510b7ff9a55ffd4d18fd5e47.html", "dir_b8678fa8510b7ff9a55ffd4d18fd5e47" ],
-    [ "build", "dir_4fef79e7177ba769987a8da36c892c5f.html", "dir_4fef79e7177ba769987a8da36c892c5f" ],
-    [ "container_runtime", "dir_76f7b3dfdf7ef58b4071a3457cb3eaa1.html", "dir_76f7b3dfdf7ef58b4071a3457cb3eaa1" ],
-    [ "database", "dir_f32c53f2c0f0ccaeb11076e30674d5f4.html", "dir_f32c53f2c0f0ccaeb11076e30674d5f4" ],
-    [ "metrics_analyzer", "dir_b91396c56c4ed290d3e98181f0f8d8f6.html", "dir_b91396c56c4ed290d3e98181f0f8d8f6" ],
-    [ "monitoring_service", "dir_482341060f0705f23db581d5f413eb3b.html", "dir_482341060f0705f23db581d5f413eb3b" ],
-    [ "ui", "dir_1788f8309b1a812dcb800a185471cf6c.html", "dir_1788f8309b1a812dcb800a185471cf6c" ],
-    [ "utils", "dir_cbdb8362360e11eafe2fa3bc74cf0ffd.html", "dir_cbdb8362360e11eafe2fa3bc74cf0ffd" ],
+    [ "analysis", "dir_b08bd9d679859e38df591d38874428cf.html", "dir_b08bd9d679859e38df591d38874428cf" ],
+    [ "build", "dir_421eabf8cef99c47dc7565c67d33d6e8.html", "dir_421eabf8cef99c47dc7565c67d33d6e8" ],
+    [ "container_runtime", "dir_35b4dbb5c3bcc548e4b8d584f9998e50.html", "dir_35b4dbb5c3bcc548e4b8d584f9998e50" ],
+    [ "database", "dir_f8c6f0679b123304d35aae1bb0e284fb.html", "dir_f8c6f0679b123304d35aae1bb0e284fb" ],
+    [ "docs", "dir_49e56c817e5e54854c35e136979f97ca.html", "dir_49e56c817e5e54854c35e136979f97ca" ],
+    [ "metrics_analyzer", "dir_5b88f23e5ce5d71b62454edad0dae155.html", "dir_5b88f23e5ce5d71b62454edad0dae155" ],
+    [ "monitoring_service", "dir_bd5c8ce9abb18634af07da06fff2da26.html", "dir_bd5c8ce9abb18634af07da06fff2da26" ],
+    [ "ui", "dir_fe6388d7d200ae9bafafbb3a8c5e4d3e.html", "dir_fe6388d7d200ae9bafafbb3a8c5e4d3e" ],
+    [ "utils", "dir_f08c1ffadff6e9e08f49766ff6ac3753.html", "dir_f08c1ffadff6e9e08f49766ff6ac3753" ],
     [ "main.cpp", "main_8cpp.html", "main_8cpp" ]
 ];

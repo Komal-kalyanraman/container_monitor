@@ -90,7 +90,7 @@ post_analysis/
 ## Configuration GUI
 
 <div align="center">
-  <img src="./docs/images/config_gui.png" alt="Container Monitor Config Generator" style="width:60%;">
+  <img src="./docs/images/config_gui.png" alt="Container Monitor Config Generator" style="width:40%;">
 </div>
 
 *The above GUI (Tkinter-based) allows you to safely generate and validate your configuration file (`parameter.conf`).*
