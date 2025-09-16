@@ -1,4 +1,4 @@
-# Container Monitor for Automotive Systems
+# Container Monitor for Embedded Systems
 
 ## Overview
 
@@ -20,7 +20,7 @@ This project is a highly configurable, real-time container resource monitoring s
 - **Resource Management:**  
   - Thread pool and batch processing for efficient metric collection.
 - **Extensible & Maintainable:**  
-  - Modular C++ codebase, Doxygen documentation, and easy integration with new metrics or storage backends.
+  - Modular C++ 17 codebase, Doxygen documentation, and easy integration with new metrics or storage backends.
 - **Centralized Configuration:**  
   - All runtime parameters in a single `parameter.conf` file.
 
@@ -56,7 +56,7 @@ post_analysis/
 
 1. **Install Requirements**
    - Linux with cgroup v1 or v2 support
-   - C++17 compiler, CMake
+   - C++ 17 compiler, CMake
    - Python 3.x (for config GUI)
    - Ncurses library
    - SQLite (for database export, if enabled)

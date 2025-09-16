@@ -2,13 +2,13 @@
 
 ## Overview
 
-**Container Monitor** is a modular, extensible, and real-time C++ monitoring solution designed for embedded, and automotive environments. The system is architected for reliability, low overhead, and ease of integration, providing live and historical resource metrics for containerized workloads running on ECUs, gateways, and test benches.
+**Container Monitor** is a modular, extensible, and real-time C++ 17 monitoring solution designed for embedded, and automotive environments. The system is architected for reliability, low overhead, and ease of integration, providing live and historical resource metrics for containerized workloads running on ECUs, gateways, and test benches.
 
 The architecture emphasizes separation of concerns, configurability, and extensibility—enabling support for multiple container runtimes (Docker, Podman), cgroup versions, and storage backends. All runtime parameters are centralized, and the system is designed for both operator and developer usability, with a focus on diagnostics, validation, and post-analysis.
 
 **Key architectural highlights:**
 
-- **Modular C++ Codebase:**  
+- **Modular C++ 17 Codebase:**  
   Each subsystem (analysis, runtime, database, metrics, monitoring, UI, utils) is isolated for maintainability and extensibility.
 - **Centralized Configuration:**  
   All runtime parameters are managed/tuned via a single config file (`parameter.conf`), with a GUI for safe editing.
