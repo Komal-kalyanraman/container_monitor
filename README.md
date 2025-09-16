@@ -171,6 +171,14 @@ For in-depth analysis, use the provided Tkinter-based post-analysis dashboard (`
 
 *The above demo shows the interactive post-analysis dashboard, where you can zoom, scroll, select containers, and toggle host metrics for detailed resource usage analysis.*
 
+## Test Container Image
+
+For testing and generating container load, the following Docker image is used:
+
+[**komalkalyanraman/stress-tools** on Docker Hub](https://hub.docker.com/repository/docker/komalkalyanraman/stress-tools/general)
+
+You can use this image to simulate CPU, memory, and other resource usage inside containers during development and validation of the container monitor application.
+
 ## Video Walkthroughs
 
 To help users and contributors better understand the project, two YouTube videos will be provided:
