@@ -101,7 +101,7 @@ constexpr uint64_t KILOBYTES_PER_MEGABYTE = 1024;        ///< Kilobytes per mega
 
 // Sleep duration in milliseconds
 inline constexpr int MAIN_LOOP_SLEEP_MS = 100;           ///< Main loop sleep duration.
-inline constexpr int SLEEP_MS_SHORT   = 1;               ///< Short sleep duration.
+inline constexpr int SLEEP_MS_SHORT   = 10;               ///< Short sleep duration.
 inline constexpr int SLEEP_MS_MEDIUM  = 500;             ///< Medium sleep duration.
 inline constexpr int SLEEP_MS_LONG    = 1000;            ///< Long sleep duration.
 
