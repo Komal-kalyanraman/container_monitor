@@ -68,13 +68,21 @@ post_analysis/
      ```
    - Fill in parameters and save to generate `parameter.conf`.
 
-3. **Build the Project**
+3. **Build the Project (Debug or Release Mode)**
    - From the root directory:
      ```bash
      mkdir -p App/build
      cd App/build
-     cmake ..
-     make
+     ```
+   - **Debug build (for development/profiling):**
+     ```bash
+     cmake -DCMAKE_BUILD_TYPE=Debug ..
+     make -j$(nproc)
+     ```
+   - **Release build (optimized, small binary ~300 KB):**
+     ```bash
+     cmake -DCMAKE_BUILD_TYPE=Release ..
+     make -j$(nproc)
      ```
 
 4. **Run the Monitor**
@@ -86,6 +94,10 @@ post_analysis/
 
 5. **Export & Analyze**
    - Metrics are exported to CSV/database in the `storage/` folder for post-analysis.
+
+> **Note:**  
+> - Debug mode includes debug symbols and profiling support, resulting in a larger, slower binary.
+> - Release mode enables full optimizations and produces a compact, fast binary (typically ~300 KB).
 
 ## Configuration GUI
 

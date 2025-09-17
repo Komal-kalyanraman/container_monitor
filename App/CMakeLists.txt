@@ -1,14 +1,22 @@
 cmake_minimum_required(VERSION 3.14)
-project(ContainerMonitor VERSION 0.0.1 LANGUAGES CXX)
+project(ContainerMonitor VERSION 0.1.0 LANGUAGES CXX)
 
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+# Set default build type to Release if not specified
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+endif()
 
 # Set C++ standard and compiler options
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-Wno-deprecated-declarations)
+
+# Set flags for Debug and Release
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -pg")
+set(CMAKE_EXE_LINKER_FLAGS_DEBUG "-pg")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+set(CMAKE_EXE_LINKER_FLAGS_RELEASE "")
 
 # Find required packages (always required)
 find_package(SQLite3 REQUIRED)
