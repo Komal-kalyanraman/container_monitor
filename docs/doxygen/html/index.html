@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Container Monitor: Container Monitor for Automotive Systems</title>
+<title>Container Monitor: Container Monitor for Embedded Systems</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -84,7 +84,7 @@ $(document).ready(function(){initNavTree('index.html',''); initResizable(); });
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Container Monitor for Automotive Systems </div>  </div>
+<div class="title">Container Monitor for Embedded Systems </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="autotoc_md1"></a>
@@ -123,7 +123,7 @@ Features</h1>
 </li>
 <li><b>Extensible &amp; Maintainable:</b> <br  />
 <ul>
-<li>Modular C++ codebase, Doxygen documentation, and easy integration with new metrics or storage backends.</li>
+<li>Modular C++ 17 codebase, Doxygen documentation, and easy integration with new metrics or storage backends.</li>
 </ul>
 </li>
 <li><b>Centralized Configuration:</b> <br  />
@@ -162,7 +162,7 @@ Quick Start</h1>
 <ol type="1">
 <li><b>Install Requirements</b><ul>
 <li>Linux with cgroup v1 or v2 support</li>
-<li>C++17 compiler, CMake</li>
+<li>C++ 17 compiler, CMake</li>
 <li>Python 3.x (for config GUI)</li>
 <li>Ncurses library</li>
 <li>SQLite (for database export, if enabled)</li>
@@ -174,8 +174,10 @@ Quick Start</h1>
 <li><code>Fill in parameters and save to generate</code>parameter.conf`.</li>
 </ul>
 </li>
-<li><b>Build the Project</b><ul>
-<li>From the root directory: ```bash mkdir -p App/build cd App/build cmake .. make ```</li>
+<li><b>Build the Project (Debug or Release Mode)</b><ul>
+<li>From the root directory: ```bash mkdir -p App/build cd App/build ```</li>
+<li><b>Debug build (for development/profiling):</b> ```bash cmake -DCMAKE_BUILD_TYPE=Debug .. make -j ```</li>
+<li><b>Release build (optimized, small binary ~300 KB):</b> ```bash cmake -DCMAKE_BUILD_TYPE=Release .. make -j ```</li>
 </ul>
 </li>
 <li><b>Run the Monitor</b><ul>
@@ -188,6 +190,13 @@ Quick Start</h1>
 </ul>
 </li>
 </ol>
+<blockquote class="doxtable">
+<p><b>Note:</b> <br  />
+</p><ul>
+<li>Debug mode includes debug symbols and profiling support, resulting in a larger, slower binary.</li>
+<li>Release mode enables full optimizations and produces a compact, fast binary (typically ~300 KB). </li>
+</ul>
+</blockquote>
 <h1><a class="anchor" id="autotoc_md5"></a>
 Configuration GUI</h1>
 <div align="center" style="width:40%;"></div><div align="center" style="width:40%;"> <img src="./docs/images/config_gui.png" alt="Container Monitor Config Generator" class="inline"/></div><div align="center" style="width:40%;"></div><p>*The above GUI (Tkinter-based) allows you to safely generate and validate your configuration file (<code>parameter.conf</code>).*</p>
@@ -264,6 +273,11 @@ Post-Analysis Dashboard &amp; Interactive Plotting</h1>
 </ul>
 <div align="center" style="width:100%;"></div><div align="center" style="width:100%;"> <img src="./docs/images/post_analysis_ui.gif" alt="Post-Analysis UI Demo" class="inline"/></div><div align="center" style="width:100%;"></div><p><em>The above demo shows the interactive post-analysis dashboard, where you can zoom, scroll, select containers, and toggle host metrics for detailed resource usage analysis.</em></p>
 <h1><a class="anchor" id="autotoc_md10"></a>
+Test Container Image</h1>
+<p>For testing and generating container load, the following Docker image is used:</p>
+<p><a href="https://hub.docker.com/repository/docker/komalkalyanraman/stress-tools/general"><b>komalkalyanraman/stress-tools</b> on Docker Hub</a></p>
+<p>You can use this image to simulate CPU, memory, and other resource usage inside containers during development and validation of the container monitor application.</p>
+<h1><a class="anchor" id="autotoc_md11"></a>
 Video Walkthroughs</h1>
 <p>To help users and contributors better understand the project, two YouTube videos will be provided:</p>
 <ol type="1">
@@ -273,7 +287,7 @@ Video Walkthroughs</h1>
  This video will walk through the setup, configuration, real-time dashboard, and post-analysis features, demonstrating the tool in action.</li>
 </ol>
 <p><em>Once available, the videos will be embedded here for easy access.</em></p>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md12"></a>
 How Is This Solution Better Than Other Tools?</h1>
 <ul>
 <li><a href="https://github.com/google/cadvisor"><b>cAdvisor</b></a>: <br  />
@@ -285,7 +299,7 @@ How Is This Solution Better Than Other Tools?</h1>
 <li><a href="https://docs.podman.io/en/latest/markdown/podman-stats.1.html"><b>podman stats</b></a> / <a href="https://docs.docker.com/engine/reference/commandline/stats/"><b>docker stats</b></a>: <br  />
  Simple CLI tools, no historical export, no alerting, no dashboard, and no configurability for sampling or resource management.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md13"></a>
 Future Work</h1>
 <ul>
 <li><b>Podman Support:</b> <br  />
@@ -296,13 +310,13 @@ Future Work</h1>
  Beyond CPU, memory, and PID monitoring, future versions will track additional cgroup parameters such as I/O, network usage, and block device statistics, providing a more comprehensive view of container resource consumption.</li>
 </ul>
 <p>If you have specific feature requests or would like to contribute, please open an issue or submit a pull request!</p>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Documentation &amp; Architecture</h1>
 <ul>
 <li>For a comprehensive overview of the system design, security, and extensibility, see <a class="el" href="md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html">Architecture Documentation</a>.</li>
 <li>Doxygen HTML docs: After building, open <code>docs/doxygen/html/index.html</code> in your browser.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md14"></a>
+<h1><a class="anchor" id="autotoc_md15"></a>
 License</h1>
 <p>This project is licensed under the MIT License. </p>
 </div></div><!-- PageDoc -->

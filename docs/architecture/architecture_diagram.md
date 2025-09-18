@@ -181,3 +181,81 @@ graph TD
     class Docker,Podman runtime;
     class Storage storage;
 ```
+
+### Multi-Threaded architecture diagram
+```mermaid
+flowchart TD
+    classDef main fill:#e3f2fd,stroke:#1976d2,stroke-width:2px;
+    classDef event fill:#fff3e0,stroke:#fb8c00,stroke-width:2px;
+    classDef queue fill:#ede7f6,stroke:#8e24aa,stroke-width:2px;
+    classDef monitor fill:#e8f5e9,stroke:#43a047,stroke-width:2px;
+    classDef pool fill:#fce4ec,stroke:#d81b60,stroke-width:2px;
+    classDef worker fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px;
+    classDef mq fill:#e0f7fa,stroke:#00838f,stroke-width:2px;
+    classDef db fill:#fffde7,stroke:#fbc02d,stroke-width:2px;
+    classDef ui fill:#f1f8e9,stroke:#689f38,stroke-width:2px;
+
+    MainThread["Main Thread (main.cpp)"]
+    EventListenerThread["EventListener Thread"]
+    EventQueue["EventQueue (Thread-Safe)"]
+    EventProcessorThread["EventProcessor Thread"]
+    ResourceMonitorThread["ResourceMonitor Thread"]
+    ResourceThreadPool["ResourceThreadPool"]
+    WorkerThread0["Worker Thread 0"]
+    WorkerThread1["Worker Thread 1"]
+    WorkerThreadN["Worker Thread N"]
+    LinuxMQ["Linux Message Queue (MQ)"]
+    MetricReader["MetricReader"]
+    UIThread["UI Thread (optional)"]
+    Database["Database (mutex protected)"]
+
+    class MainThread main;
+    class EventListenerThread,EventProcessorThread event;
+    class EventQueue queue;
+    class ResourceMonitorThread monitor;
+    class ResourceThreadPool pool;
+    class WorkerThread0,WorkerThread1,WorkerThreadN worker;
+    class LinuxMQ mq;
+    class MetricReader ui;
+    class UIThread ui;
+    class Database db;
+
+    MainThread --> EventListenerThread
+    MainThread --> EventProcessorThread
+    MainThread --> ResourceMonitorThread
+    MainThread --> ResourceThreadPool
+
+    EventListenerThread -->|Push Events| EventQueue
+    EventProcessorThread -->|Pop Events| EventQueue
+
+    EventProcessorThread -->|Update Containers/Events| Database
+    EventProcessorThread -->|Save Host Metrics| Database
+
+    ResourceMonitorThread -->|Poll Containers| Database
+    ResourceMonitorThread -->|Allocate Containers| ResourceThreadPool
+
+    ResourceThreadPool --> WorkerThread0
+    ResourceThreadPool --> WorkerThread1
+    ResourceThreadPool --> WorkerThreadN
+
+    WorkerThread0 -->|Insert Batch mutex| Database
+    WorkerThread1 -->|Insert Batch mutex| Database
+    WorkerThreadN -->|Insert Batch mutex| Database
+
+    WorkerThread0 -->|Send Max Metrics| LinuxMQ
+    WorkerThread1 -->|Send Max Metrics| LinuxMQ
+    WorkerThreadN -->|Send Max Metrics| LinuxMQ
+
+    LinuxMQ --> MetricReader
+    LinuxMQ -.-> UIThread
+
+    %% Details (optional, can be added as notes or in documentation)
+    click MainThread "main.cpp"
+    click EventListenerThread "event_listener.cpp"
+    click EventProcessorThread "event_processor.cpp"
+    click ResourceMonitorThread "resource_monitor.cpp"
+    click ResourceThreadPool "resource_thread_pool.cpp"
+    click EventQueue "event_queue.cpp"
+    click MetricReader "metrics_reader.cpp"
+    click Database "sqlite_database.cpp"
+```

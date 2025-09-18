@@ -41,6 +41,6 @@ var searchData=
   ['csv_5fcontainer_5fmetrics_5fheader_45',['CSV_CONTAINER_METRICS_HEADER',['../common_8hpp.html#a8f7e418b01059ce08f7ea0510ff40d22',1,'common.hpp']]],
   ['csv_5fhost_5fusage_5ffilename_46',['CSV_HOST_USAGE_FILENAME',['../common_8hpp.html#a4ea1a97f4733fd97382604f755b7970d',1,'common.hpp']]],
   ['cxx_5fstd_47',['CXX_STD',['../CMakeCXXCompilerId_8cpp.html#a34cc889e576a1ae6c84ae9e0a851ba21',1,'CMakeCXXCompilerId.cpp']]],
-  ['container_20monitor_20for_20automotive_20systems_48',['Container Monitor for Automotive Systems',['../index.html',1,'']]],
+  ['container_20monitor_20for_20embedded_20systems_48',['Container Monitor for Embedded Systems',['../index.html',1,'']]],
   ['container_20monitor_20architecture_49',['Container Monitor Architecture',['../md__home_komal_workspace_personal_container_monitor_docs_architecture_architecture.html',1,'']]]
 ];

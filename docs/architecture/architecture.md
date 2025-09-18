@@ -189,6 +189,53 @@ These patterns ensure modularity, extensibility, and maintainability.
   
 </div>
 
+## Multi-Threaded Architecture
+
+<div align="center" style="width:90%;">
+  
+  ![Architecture Diagram](./multi-threaded_architecture.png)
+  
+</div>
+
+The Container Monitor uses a robust multi-threaded architecture to achieve efficient, scalable, and real-time monitoring of container resources. The design leverages a thread pool for parallel resource collection, event-driven processing, and safe inter-thread communication using thread-safe queues and Linux message queues.
+
+**Key components and responsibilities:**
+
+- **Main Thread:**  
+  Initializes all subsystems, starts worker threads, and manages application shutdown.
+
+- **Event Listener Thread:**  
+  Listens for container runtime events (e.g., Docker/Podman) and pushes them to a thread-safe event queue.
+
+- **Event Processor Thread:**  
+  Pops events from the event queue, updates the database with container lifecycle changes, and periodically collects host-level metrics (CPU, memory), saving them to the database.
+
+- **Resource Monitor Thread:**  
+  Periodically polls the database for the current set of containers and manages dynamic allocation/removal of containers to the resource thread pool.
+
+- **Resource Thread Pool:**  
+  Manages multiple worker threads, each responsible for monitoring a subset of containers. Each worker thread:
+  - Collects resource metrics for its assigned containers.
+  - Batches and inserts metrics into the database (using mutex protection).
+  - Sends maximum metrics to the Linux message queue for UI consumption.
+
+- **Linux Message Queue (MQ):**  
+  Used for efficient, lock-free communication of live metrics from worker threads to the UI and metric aggregator.
+
+- **Metric Reader:**  
+  Consumes metrics from the Linux message queue for further analysis or aggregation.
+
+- **UI Thread (optional):**  
+  Reads live metrics from the message queue and displays them in a real-time ncurses dashboard.
+
+- **Database:**  
+  Central storage for all container and host metrics, protected by mutexes to ensure thread safety during concurrent writes.
+
+**Data flow highlights:**
+- Event-driven updates and host metrics collection are handled by the event processor.
+- Resource monitoring is parallelized across a thread pool for scalability.
+- All metrics and events are persisted in the database, while live metrics are streamed to the UI via the Linux message queue.
+
 ## Sequence Diagram
 
 <div align="center" style="width:90%;">

@@ -87,13 +87,13 @@ $(document).ready(function(){initNavTree('md__home_komal_workspace_personal_cont
 <div class="title">Container Monitor Architecture </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="autotoc_md16"></a>
+<div class="textblock"><h1><a class="anchor" id="autotoc_md17"></a>
 Overview</h1>
-<p><b>Container Monitor</b> is a modular, extensible, and real-time C++ monitoring solution designed for embedded, and automotive environments. The system is architected for reliability, low overhead, and ease of integration, providing live and historical resource metrics for containerized workloads running on ECUs, gateways, and test benches.</p>
+<p><b>Container Monitor</b> is a modular, extensible, and real-time C++ 17 monitoring solution designed for embedded, and automotive environments. The system is architected for reliability, low overhead, and ease of integration, providing live and historical resource metrics for containerized workloads running on ECUs, gateways, and test benches.</p>
 <p>The architecture emphasizes separation of concerns, configurability, and extensibility—enabling support for multiple container runtimes (Docker, Podman), cgroup versions, and storage backends. All runtime parameters are centralized, and the system is designed for both operator and developer usability, with a focus on diagnostics, validation, and post-analysis.</p>
 <p><b>Key architectural highlights:</b></p>
 <ul>
-<li><b>Modular C++ Codebase:</b> <br  />
+<li><b>Modular C++ 17 Codebase:</b> <br  />
  Each subsystem (analysis, runtime, database, metrics, monitoring, UI, utils) is isolated for maintainability and extensibility.</li>
 <li><b>Centralized Configuration:</b> <br  />
  All runtime parameters are managed/tuned via a single config file (<code>parameter.conf</code>), with a GUI for safe editing.</li>
@@ -116,9 +116,9 @@ Overview</h1>
 <li><b>Production Focus:</b> Centralized config, robust error handling, and post-analysis support.</li>
 </ul>
 <p>This document provides a deep dive into the system architecture, component responsibilities, data flow, extensibility points, and the design patterns that make Container Monitor a robust foundation for modern container monitoring needs.</p>
-<h1><a class="anchor" id="autotoc_md17"></a>
-System Architecture</h1>
 <h1><a class="anchor" id="autotoc_md18"></a>
+System Architecture</h1>
+<h1><a class="anchor" id="autotoc_md19"></a>
 Folder Structure</h1>
 <div class="fragment"><div class="line">App/ </div>
 <div class="line">├── analysis/           # Live metrics aggregation logic </div>
@@ -143,7 +143,7 @@ Folder Structure</h1>
 <div class="line"> </div>
 <div class="line">post_analysis/ </div>
 <div class="line">└── plot_container_metrics.py # Post-analysis plotting scripts</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md19"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md20"></a>
 Design Patterns Used</h1>
 <ul>
 <li><b>Factory Pattern:</b> <br  />
@@ -163,33 +163,33 @@ Design Patterns Used</h1>
  <em>Location:</em> <code>utils/</code></li>
 </ul>
 <p>These patterns ensure modularity, extensibility, and maintainability.</p>
-<h1><a class="anchor" id="autotoc_md20"></a>
+<h1><a class="anchor" id="autotoc_md21"></a>
 Component Descriptions</h1>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md22"></a>
 1. Analysis Layer</h2>
 <ul>
 <li><b>Live Metric Aggregator:</b> <br  />
  Aggregates and processes live resource metrics for containers, supporting real-time and historical analysis.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 2. Container Runtime Layer</h2>
 <ul>
 <li><b>Runtime Configuration &amp; Factory:</b> <br  />
  Abstracts the details of different container runtimes (Docker, Podman), cgroup versions and path resolution.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md23"></a>
+<h2><a class="anchor" id="autotoc_md24"></a>
 3. Database Layer</h2>
 <ul>
 <li><b>Database Interface:</b> <br  />
  Abstracts storage of historical metrics, supporting both CSV and SQLite (with future extensibility).</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md24"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 4. Metrics Analyzer Layer</h2>
 <ul>
 <li><b>Metrics Reader:</b> <br  />
  Reads and parses resource usage data from cgroup files and runtime APIs.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md25"></a>
+<h2><a class="anchor" id="autotoc_md26"></a>
 5. Monitoring Service Layer</h2>
 <ul>
 <li><b>Event Listener &amp; Processor:</b> <br  />
@@ -197,13 +197,13 @@ Component Descriptions</h1>
 <li><b>Resource Monitor &amp; Thread Pool:</b> <br  />
  Periodically samples resource usage using a thread pool for scalability.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md26"></a>
+<h2><a class="anchor" id="autotoc_md27"></a>
 6. UI Layer</h2>
 <ul>
 <li><b>Ncurses Dashboard:</b> <br  />
  Provides a real-time, color-coded, and dynamically aligned dashboard for operators.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md27"></a>
+<h2><a class="anchor" id="autotoc_md28"></a>
 7. Utilities</h2>
 <ul>
 <li><b>Config Parser:</b> <br  />
@@ -213,13 +213,13 @@ Component Descriptions</h1>
 <li><b>Common Types:</b> <br  />
  Shared data structures and helpers.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md28"></a>
+<h2><a class="anchor" id="autotoc_md29"></a>
 8. Post-Analysis</h2>
 <ul>
 <li><b>Plotting Scripts:</b> <br  />
  Tkinter/matplotlib-based dashboard for interactive post-analysis of exported metrics.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md29"></a>
+<h1><a class="anchor" id="autotoc_md30"></a>
 Data Flow</h1>
 <ol type="1">
 <li><b>Configuration:</b> <br  />
@@ -237,7 +237,7 @@ Data Flow</h1>
 <li><b>Post-Analysis:</b> <br  />
  The exported data can be visualized interactively using the provided plotting scripts.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md30"></a>
+<h1><a class="anchor" id="autotoc_md31"></a>
 Extensibility</h1>
 <ul>
 <li><b>Add a Container Runtime:</b> <br  />
@@ -251,25 +251,63 @@ Extensibility</h1>
 <li><b>Add a Config Option:</b> <br  />
  Update the config parser and GUI to support new parameters.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md31"></a>
+<h1><a class="anchor" id="autotoc_md32"></a>
 Architecture Diagram</h1>
 <div align="center" style="width:90%;"></div><div align="center" style="width:90%;"> <div class="image">
 <img src="architecture_diagram.png" alt=""/>
 <div class="caption">
 Architecture Diagram</div></div>
-   </div><div align="center" style="width:90%;"></div><h1><a class="anchor" id="autotoc_md32"></a>
+   </div><div align="center" style="width:90%;"></div><h1><a class="anchor" id="autotoc_md33"></a>
+Multi-Threaded Architecture</h1>
+<div align="center" style="width:90%;"></div><div align="center" style="width:90%;"> <div class="image">
+<img src="multi-threaded_architecture.png" alt=""/>
+<div class="caption">
+Architecture Diagram</div></div>
+   </div><div align="center" style="width:90%;"></div><p>The Container Monitor uses a robust multi-threaded architecture to achieve efficient, scalable, and real-time monitoring of container resources. The design leverages a thread pool for parallel resource collection, event-driven processing, and safe inter-thread communication using thread-safe queues and Linux message queues.</p>
+<p><b>Key components and responsibilities:</b></p>
+<ul>
+<li><b>Main Thread:</b> <br  />
+ Initializes all subsystems, starts worker threads, and manages application shutdown.</li>
+<li><b>Event Listener Thread:</b> <br  />
+ Listens for container runtime events (e.g., Docker/Podman) and pushes them to a thread-safe event queue.</li>
+<li><b>Event Processor Thread:</b> <br  />
+ Pops events from the event queue, updates the database with container lifecycle changes, and periodically collects host-level metrics (CPU, memory), saving them to the database.</li>
+<li><b>Resource Monitor Thread:</b> <br  />
+ Periodically polls the database for the current set of containers and manages dynamic allocation/removal of containers to the resource thread pool.</li>
+<li><b>Resource Thread Pool:</b> <br  />
+ Manages multiple worker threads, each responsible for monitoring a subset of containers. Each worker thread:<ul>
+<li>Collects resource metrics for its assigned containers.</li>
+<li>Batches and inserts metrics into the database (using mutex protection).</li>
+<li>Sends maximum metrics to the Linux message queue for UI consumption.</li>
+</ul>
+</li>
+<li><b>Linux Message Queue (MQ):</b> <br  />
+ Used for efficient, lock-free communication of live metrics from worker threads to the UI and metric aggregator.</li>
+<li><b>Metric Reader:</b> <br  />
+ Consumes metrics from the Linux message queue for further analysis or aggregation.</li>
+<li><b>UI Thread (optional):</b> <br  />
+ Reads live metrics from the message queue and displays them in a real-time ncurses dashboard.</li>
+<li><b>Database:</b> <br  />
+ Central storage for all container and host metrics, protected by mutexes to ensure thread safety during concurrent writes.</li>
+</ul>
+<p><b>Data flow highlights:</b></p><ul>
+<li>Event-driven updates and host metrics collection are handled by the event processor.</li>
+<li>Resource monitoring is parallelized across a thread pool for scalability.</li>
+<li>All metrics and events are persisted in the database, while live metrics are streamed to the UI via the Linux message queue.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md34"></a>
 Sequence Diagram</h1>
 <div align="center" style="width:90%;"></div><div align="center" style="width:90%;"> <div class="image">
 <img src="sequence_diagram.png" alt=""/>
 <div class="caption">
 Sequence Diagram</div></div>
-   </div><div align="center" style="width:90%;"></div><h1><a class="anchor" id="autotoc_md33"></a>
+   </div><div align="center" style="width:90%;"></div><h1><a class="anchor" id="autotoc_md35"></a>
 Deployment Diagram</h1>
 <div align="center" style="width:90%;"></div><div align="center" style="width:90%;"> <div class="image">
 <img src="deployment_diagram.png" alt=""/>
 <div class="caption">
 Deployment Diagram</div></div>
-   </div><div align="center" style="width:90%;"></div><h1><a class="anchor" id="autotoc_md34"></a>
+   </div><div align="center" style="width:90%;"></div><h1><a class="anchor" id="autotoc_md36"></a>
 References</h1>
 <ul>
 <li><a href="../doxygen/html/index.html">Doxygen Documentation</a></li>
