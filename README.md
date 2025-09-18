@@ -198,12 +198,20 @@ To help users and contributors better understand the project, two YouTube videos
 1. **Project Motivation & Background**  
    This video will explain the motivation behind building a real-time container monitor for SDV/automotive/embedded environments, the challenges addressed, and the unique features of this solution.
 
+<div align="center">
+  <a href="https://youtu.be/aagshRCnSb0">
+    <img src="docs/images/container_monitor.png" alt="Project Overview & Motivation" width="500">
+  </a>
+</div>
 
 2. **Live Demo & Usage Guide**  
    This video will walk through the setup, configuration, real-time dashboard, and post-analysis features, demonstrating the tool in action.
 
-
-*Once available, the videos will be embedded here for easy access.*
+<div align="center">
+  <a href="https://youtu.be/cqreQxMdZCE">
+    <img src="docs/images/container_monitor_demo.png" alt="Project Overview & Motivation" width="500">
+  </a>
+</div>
 
 ## How Is This Solution Better Than Other Tools?
 

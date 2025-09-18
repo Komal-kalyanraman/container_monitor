@@ -1,7 +1,7 @@
 # Project settings
 PROJECT_NAME           = "Container Monitor"
 PROJECT_BRIEF          = "Container Monitor is a C++ service for managing logging, monitoring, and alerting for containerized applications."
-PROJECT_NUMBER         = "0.1.0"
+PROJECT_NUMBER         = "0.1.1"
 OUTPUT_DIRECTORY       = docs/doxygen
 
 # Input files
